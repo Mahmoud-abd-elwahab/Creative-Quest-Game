@@ -1,6 +1,17 @@
 # CREATIVE QUEST — PROJECT BIBLE v1.0
 Status: PRE-PRODUCTION / TEAM ALIGNMENT. This document defines the TARGET, not a claim that features are implemented.
 
+## Owner-approved personal learning north star (2026-11-08)
+
+**Product priority supersedes any implied commercial-scale RPG requirement in this Bible.** Creative Quest is a **single-player personal tool to improve Creative Thinking and Advertising through entertaining questions and challenges**, not a game intended for sale or monetization. The RPG wrapper prevents boredom, supports repeated practice, and makes progress rewarding.
+
+**Working effort guideline: ~70% learning design, assessment, transferable thinking practice and actionable WHY-feedback; ~30% meaningful gameplay, hero/world identity, compact Boss challenges and visual reward.** These are priorities, not measured elapsed effort. Keep approved hero/world references and QA infrastructure; **do not** expand big maps, expensive animations or 500 items before proving a useful short-session learning loop.
+
+**First personal release focus:** 15–20 minute sessions of 3–5 varied challenges, honest criteria-based feedback, reliable saved progress and visible RPG motivation. **Near-term training bank: 30 high-quality distinct challenges validated first in batches of 5–10**, not generated in bulk. Improvement on **unseen briefs from different sectors** is the outcome; XP and level count only indicate engagement.
+
+Read the product-priority addendum: [Personal Creative Training RPG direction](PRODUCT-DIRECTION-PERSONAL-LEARNING.md). It changes **scope/sequence**, not existing G0/G1 API contracts or the owner's canonical hero identity; QA blockers and release NO-GO remain.
+
+
 ## Vision — الرؤية
 An actual 2D Creative Thinking Adventure RPG, not a quiz with game-themed cards. The player moves through distinct interactive worlds, meets characters, collects clues, fights conceptual Bosses, and learns to reason through real creative advertising problems.
 
