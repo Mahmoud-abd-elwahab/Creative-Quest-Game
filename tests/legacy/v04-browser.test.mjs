@@ -6,8 +6,8 @@
  *   npx playwright install chromium
  * Run: node --test tests/legacy/v04-browser.test.mjs
  *
- * This file deliberately has no skip-as-pass fallback: missing Playwright means
- * every browser case is SKIPPED / NOT VERIFIED, NOT a green release gate.
+ * Missing Playwright causes explicit prerequisite FAIL and browser test SKIPs,
+ * not green CI; browser availability is a release gate.
  * Uses only tests/ and qa/ for test code and generated evidence.
  */
 import test, { before, after } from 'node:test';
@@ -27,6 +27,11 @@ let pw = null;
 try { pw = await import('playwright'); } catch { /* report SKIPPED, never pass */ }
 const skipBrowser = pw ? false :
   'BLOCKED: playwright/browser binary unavailable; install prerequisites first';
+
+// Critical gate: skipped tests cannot yield a green CI exit status.
+test('Playwright browser test prerequisites are present', () => {
+  assert.ok(pw, 'BLOCKED: install Playwright + Chromium. All browser skips are NOT a PASS.');
+});
 let server, browser, base;
 
 if (pw) {
