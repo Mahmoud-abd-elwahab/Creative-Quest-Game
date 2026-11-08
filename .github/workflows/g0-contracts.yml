@@ -1,0 +1,33 @@
+name: G0 contract checks (not release QA)
+on:
+  pull_request:
+    branches: [main, cq/integration/vertical-slice]
+  push:
+    branches: [cq/integration/vertical-slice]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: Typed contracts and authored-data schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Strict TypeScript contracts
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts typescript@5.9.3
+          ./node_modules/.bin/tsc --strict --noEmit --target ES2022 --module ES2022 --moduleResolution Bundler --lib ES2022,DOM src/contracts/v1.ts
+      - name: Python JSON Schema dependency
+        run: python -m pip install --disable-pip-version-check jsonschema==4.26.0
+      - name: Draft2020-12 and authored challenge checks
+        run: python src/contracts/verify-v1.py
+      - name: Gate scope statement
+        run: |
+          echo "This job checks typed contracts and authored ChallengeSpec JSON only."
+          echo "It does not establish passing gameplay, legacy-save migration, Boss, mobile accessibility or production release readiness."
