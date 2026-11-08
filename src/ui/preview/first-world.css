@@ -245,7 +245,7 @@ textarea::placeholder { color:#95a8b4; }
 .boss-preview-feedback { margin:8px 0 0; padding:10px 13px; border-radius:10px; border:1px solid #79968a; background:#274239; font-size:13px; line-height:1.8; }
 .boss-preview-feedback[hidden] { display:none; }
 @media(max-width:390px) { .xp-pill { display:none; } }
-@media(max-width:280px) { .brand-mark { display:none; } .brand-text strong { white-space:normal; overflow-wrap:anywhere; font-size:10px; } .quest-card { max-width:calc(100% - 14px); inset-inline-start:7px; inset-inline-end:7px; } .evidence-option { padding:9px; gap:8px; } }
+@media(max-width:280px) { .brand-mark { display:none; } .brand-text strong { white-space:normal; overflow-wrap:anywhere; font-size:10px; } .quest-card { max-width:calc(100% - 14px); inset-inline-start:7px; inset-inline-end:7px; } .evidence-option { padding:9px; gap:8px; } .status-chip,.safe-hint { display:none; } .quest-icon { display:none; } .game-controls { left:8px; right:8px; } .movement { width:70px; height:70px; } .movement>span { font-size:48px; } .movement-center { width:31px; height:31px; border-width:2px; } .interact-button { width:62px; height:62px; border-width:2px; font-size:11px; } .interact-glyph { font-size:16px; } }
 
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important; }
