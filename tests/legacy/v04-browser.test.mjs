@@ -19,6 +19,12 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SAVE_KEY = 'creative-quest-2d-v02';
+const fixtureBank = JSON.parse(await readFile(resolve(root, 'tests/fixtures/legacy-v04-save-cases.json'), 'utf8'));
+const saveFixture = id => {
+  const found = fixtureBank.scenarios.find(f => f.id === id);
+  assert.ok(found, 'Missing QA save fixture: ' + id);
+  return structuredClone(found.save);
+};
 const prefix = '/Creative-Quest-Game/';
 const evidenceDir = process.env.QA_EVIDENCE_DIR || resolve(root, 'qa/evidence/runtime');
 const types = { '.html': 'text/html', '.svg': 'image/svg+xml',
@@ -76,6 +82,11 @@ async function session(t, name, options = {}) {
       if (localStorage.getItem(key) === null) localStorage.setItem(key, JSON.stringify(value));
     }, { key: SAVE_KEY, value: options.save });
   }
+  if (typeof options.rawSave === 'string') {
+    await context.addInitScript(({ key, raw }) => {
+      if (localStorage.getItem(key) === null) localStorage.setItem(key, raw);
+    }, { key: SAVE_KEY, raw: options.rawSave });
+  }
   const page = await context.newPage();
   const runtimeErrors = [], consoleErrors = [];
   page.on('pageerror', (error) => runtimeErrors.push(String(error)));
@@ -103,11 +114,7 @@ async function begin(page) {
   await page.locator('#overlay').waitFor({ state: 'hidden' });
 }
 
-const bossFixture = () => ({
-  done: Array.from({ length: 9 }, (_, i) => i + 1),
-  unlocked: 10, xp: 180, attempts: {}, answers: {}, bossPhase: 0,
-  bossPhases: {}, started: true
-});
+const bossFixture = () => saveFixture('boss-ready');
 
 const state = (page) => page.evaluate(() => window.CreativeQuestDiagnostics.getState());
 const stored = (page) => page.evaluate((key) => JSON.parse(localStorage.getItem(key)), SAVE_KEY);
@@ -123,6 +130,32 @@ test('initial load: intro, canvas, diagnostics, no uncaught JS exceptions',
     assert.ok(geometry.width > 0 && geometry.height > 0);
     assert.equal((await state(page)).unlocked, 1);
     assert.deepEqual(runtimeErrors, []);
+  });
+
+test('legacy localStorage fixture remains intact during boot and reload',
+  { skip: skipBrowser }, async (t) => {
+    const save = saveFixture('after-level-1');
+    const { page, runtimeErrors } = await session(t, '02-legacy-saved-progress', { save });
+    assert.equal((await state(page)).unlocked, 2);
+    assert.deepEqual(await stored(page), save);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => Boolean(window.CreativeQuestDiagnostics));
+    assert.equal((await state(page)).unlocked, 2);
+    assert.deepEqual(await stored(page), save);
+    assert.deepEqual(runtimeErrors, []);
+  });
+
+test('corrupted legacy saves fall back safely without forcing a write on boot',
+  { skip: skipBrowser }, async (t) => {
+    for (const fixture of fixtureBank.corruptCases) {
+      const { page, runtimeErrors } = await session(t, '02-invalid-' + fixture.id, {
+        rawSave: fixture.raw
+      });
+      assert.equal((await state(page)).unlocked, 1);
+      assert.equal(await page.locator('#start').isVisible(), true);
+      assert.equal(await page.evaluate(k => localStorage.getItem(k), SAVE_KEY), fixture.raw);
+      assert.deepEqual(runtimeErrors, []);
+    }
   });
 
 test('desktop keyboard movement and real in-world interaction',
