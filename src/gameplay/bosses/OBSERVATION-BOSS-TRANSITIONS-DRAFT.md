@@ -1,3 +1,5 @@
+> **SUPERSEDED FOR CURRENT W01 DESIGN:** See [W01-BOSS-STATE-MACHINE-V2-PROPOSAL.md](./W01-BOSS-STATE-MACHINE-V2-PROPOSAL.md). The Game Director approved a more demanding three-phase design for prototyping: Evidence Lens → Mirror (test tentative interpretation) → Forge (construct an actionable Concept). This older proposal's Phase 2/3 and transitions are retained only as audit history, NOT approved implementation guidance. HQ contracts are still pending.
+
 # First Observation Boss — Transition & Integration Draft
 
 **Status:** PROPOSAL ONLY. Not an approved BossSpec or a runtime implementation.
