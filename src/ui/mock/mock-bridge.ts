@@ -78,7 +78,8 @@ export class MockUIBridge implements UIBridgeV1 {
         const answer = command.answer.mode === 'options' ? command.answer.selectedIds : [];
         const correct = answer.length === 2 && answer.includes('loan-return') &&
           answer.includes('reading-start');
-        const partial = answer.includes('loan-return') || answer.includes('reading-start');
+        const partial = answer.length === 1 &&
+          (answer.includes('loan-return') || answer.includes('reading-start'));
         const trust = this.forceTrust ? 'SELF_REVIEWED_UNVERIFIED' : 'STRUCTURED_VERIFIED';
         const result: AssessmentResultV1 = {
           schemaVersion: 1, challengeId: command.challengeId,
