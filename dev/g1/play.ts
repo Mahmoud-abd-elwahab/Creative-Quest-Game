@@ -75,7 +75,9 @@ const game = new Phaser.Game({
 // scene.events on an unbooted Scene instance. Mark readiness when truly active.
 const confirmStarted = (): void => {
   if (scene.sys?.isActive()) {
-    status!.textContent = 'عالم الملاحظة جاهز. قرّب من الدليل واضغط E أو زر الفحص.';
+    status!.textContent = bridge.saveHealth.writable
+      ? 'عالم الملاحظة جاهز. قرّب من الدليل واضغط E أو زر الفحص.'
+      : 'الحفظ غير متاح في المتصفح ده. تقدر تجرّب التحدي، لكن المكافآت مش هتتحفظ.';
     document.documentElement.dataset.g1Play = 'ready';
   } else requestAnimationFrame(confirmStarted);
 };
