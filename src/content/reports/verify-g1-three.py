@@ -139,7 +139,7 @@ def check():
         else:
             raise AssertionError("Expected unknown option failure")
         challenges.append(c)
-        print(f"PASS {slot_id}: schema, slot/rubric, options, response-mode, 2 supported + 2 partial + 2 unsupported finite-key examples")
+        print(f"PASS {slot_id}: schema/slot/rubric/options and 6 trial keys (2 supported pass; 4 do not pass). Semantic partial labels NOT checked by this test.")
 
     for key in ("id", "slotId", "scenarioId", "cognitiveOperation"):
         values = [c[key] for c in challenges]
