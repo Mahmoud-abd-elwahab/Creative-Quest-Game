@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-08",
+  "reviewed_source_sha": "40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1",
+  "method": "GitHub connector files loaded into isolated JavaScript V8 and executed; these were NOT browser integration tests",
+  "content_integrity": {
+    "non_boss_levels": 90,
+    "boss_levels": 10,
+    "worlds": 10,
+    "ids_complete_1_to_100": true,
+    "duplicate_numeric_ids": 0,
+    "duplicate_normalized_titles": 0,
+    "duplicate_normalized_evidence": 0,
+    "duplicate_normalized_questions": 0,
+    "structured_level_answer_groups_checked": 63,
+    "answer_validation_findings": 0,
+    "semantic_novelty_or_learning_transfer_confirmed": false
+  },
+  "exact_source_isolation": {
+    "keyboard": {
+      "source": "index.html global keydown handler",
+      "synthetic_event": "Space on TEXTAREA while dialog mode",
+      "observed_defaultPrevented": true,
+      "expected_defaultPrevented": false,
+      "classification": "P1 confirmed in isolated V8 handler"
+    },
+    "service_worker": {
+      "source": "service-worker.js activation event",
+      "input_cache_names": [
+        "portfolio-cache-v1",
+        "creative-quest-adventure-v04",
+        "other-pwa-v2"
+      ],
+      "deleted": [
+        "portfolio-cache-v1",
+        "other-pwa-v2"
+      ],
+      "expected_deleted": [],
+      "classification": "P1 confirmed in isolated V8 service-worker event"
+    }
+  },
+  "browser_attempt": {
+    "playwright_python_available": true,
+    "chromium_executable": "/usr/bin/chromium",
+    "chromium_version": "144.0.7559.96",
+    "initial_default_launch": "BLOCKED: Chromium headless shell binary missing",
+    "followup_with_explicit_executable": "Browser launched; navigation to local test fixture blocked with net::ERR_BLOCKED_BY_ADMINISTRATOR",
+    "full_game_runtime_run": false,
+    "local_pwa_browser_reproduction_run": false,
+    "actual_github_pages_verified": false,
+    "browser_artifact_screenshots": 0
+  },
+  "code_review": {
+    "github_branch": "cq/qa/5",
+    "ci_wired": false,
+    "main_modified": false,
+    "source_files_modified": false
+  }
+}

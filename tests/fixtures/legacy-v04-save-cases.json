@@ -1,0 +1,168 @@
+{
+  "fixtureFormat": "creative-quest/v0.4-save-baseline",
+  "version": 1,
+  "storageKey": "creative-quest-2d-v02",
+  "sourceBaselineSha": "40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1",
+  "warning": "Synthetic data only, not user progress. Never delete or overwrite an actual legacy save during migration.",
+  "scenarios": [
+    {
+      "id": "fresh",
+      "description": "New first-time visitor with never-started state",
+      "save": {
+        "done": [],
+        "unlocked": 1,
+        "xp": 0,
+        "attempts": {},
+        "answers": {},
+        "bossPhase": 0,
+        "bossPhases": {},
+        "started": false
+      },
+      "expected": {
+        "unlocked": 1,
+        "done": 0,
+        "xp": 0,
+        "introVisible": true
+      }
+    },
+    {
+      "id": "after-level-1",
+      "description": "Player finished first true free-text challenge",
+      "save": {
+        "done": [
+          1
+        ],
+        "unlocked": 2,
+        "xp": 20,
+        "attempts": {
+          "1": 1
+        },
+        "answers": {
+          "1": "بعض الناس استعاروا كتب ورجعوها قبل ما يخلصوا قرايتها"
+        },
+        "bossPhase": 0,
+        "bossPhases": {},
+        "started": true
+      },
+      "expected": {
+        "unlocked": 2,
+        "done": 1,
+        "xp": 20,
+        "introVisible": false
+      }
+    },
+    {
+      "id": "boss-ready",
+      "description": "World one nine normal challenges passed; Boss 10 not started",
+      "save": {
+        "done": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "unlocked": 10,
+        "xp": 180,
+        "attempts": {},
+        "answers": {},
+        "bossPhase": 0,
+        "bossPhases": {},
+        "started": true
+      },
+      "expected": {
+        "unlocked": 10,
+        "done": 9,
+        "xp": 180,
+        "introVisible": false
+      }
+    },
+    {
+      "id": "boss-middle",
+      "description": "First Boss half-completed, resume phase after reload",
+      "save": {
+        "done": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "unlocked": 10,
+        "xp": 180,
+        "attempts": {},
+        "answers": {},
+        "bossPhase": 1,
+        "bossPhases": {},
+        "started": true
+      },
+      "expected": {
+        "unlocked": 10,
+        "done": 9,
+        "xp": 180,
+        "bossPhase": 1,
+        "introVisible": false
+      }
+    },
+    {
+      "id": "world-two-unlocked",
+      "description": "World one first Boss completed; begin world two",
+      "save": {
+        "done": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "unlocked": 11,
+        "xp": 230,
+        "attempts": {},
+        "answers": {},
+        "bossPhase": 3,
+        "bossPhases": {},
+        "started": true
+      },
+      "expected": {
+        "unlocked": 11,
+        "done": 10,
+        "xp": 230,
+        "bossPhase": 3,
+        "introVisible": false
+      }
+    }
+  ],
+  "corruptCases": [
+    {
+      "id": "malformed-json",
+      "raw": "{bad-json",
+      "expected": {
+        "unlocked": 1,
+        "done": 0,
+        "introVisible": true
+      }
+    },
+    {
+      "id": "done-not-array",
+      "raw": "{\"done\":\"not-an-array\",\"unlocked\":80}",
+      "expected": {
+        "unlocked": 1,
+        "done": 0,
+        "introVisible": true
+      }
+    }
+  ]
+}
