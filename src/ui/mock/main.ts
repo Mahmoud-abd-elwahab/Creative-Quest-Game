@@ -8,7 +8,9 @@ const status = document.querySelector<HTMLElement>('#mock-status');
 const failSave = document.querySelector<HTMLInputElement>('#simulate-save-failure');
 const unverified = document.querySelector<HTMLInputElement>('#simulate-unverified');
 const failPause = document.querySelector<HTMLInputElement>('#simulate-pause-failure');
-if (!mount || !trigger || !status || !failSave || !unverified || !failPause) {
+const offline = document.querySelector<HTMLInputElement>('#simulate-offline');
+const locked = document.querySelector<HTMLInputElement>('#simulate-locked');
+if (!mount || !trigger || !status || !failSave || !unverified || !failPause || !offline || !locked) {
   throw new Error('Mock harness missing required elements');
 }
 const bridge = new MockUIBridge();
@@ -19,8 +21,9 @@ function configure(): void {
     unverified: unverified!.checked,
     pauseFailure: failPause!.checked
   });
+  overlay.setAvailability(locked!.checked ? 'locked' : offline!.checked ? 'offline' : 'ready');
 }
-for (const control of [failSave, unverified, failPause]) control.addEventListener('change', configure);
+for (const control of [failSave, unverified, failPause, offline, locked]) control.addEventListener('change', configure);
 trigger.addEventListener('click', () => {
   configure();
   status.textContent = 'الحالة: طلب Pause للـMock Bridge.';
