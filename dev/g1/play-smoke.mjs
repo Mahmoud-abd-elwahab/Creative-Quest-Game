@@ -46,7 +46,18 @@ try {
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     await page.evaluate(old => localStorage.setItem('creative-quest-2d-v02', old), legacy);
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => document.documentElement.dataset.g1Play === 'ready', null, { timeout: 20000 });
+    try {
+      await page.waitForFunction(() => document.documentElement.dataset.g1Play === 'ready', null, { timeout: 8500 });
+    } catch (error) {
+      const state = await page.evaluate(() => ({
+        stageReady: document.documentElement.dataset.g1Play ?? null,
+        canvasCount: document.querySelectorAll('#game-root canvas').length,
+        stageAvailable: Boolean(window.__cqG1Stage),
+        status: document.getElementById('status')?.textContent ?? ''
+      }));
+      throw new Error('G1 scene did not become ready: ' +
+        JSON.stringify({ state, errors, cause: String(error) }));
+    }
     const canvas = page.locator('#game-root canvas');
     await canvas.waitFor({ state: 'visible' });
     const stage = () => page.evaluate(() => window.__cqG1Stage.state());
