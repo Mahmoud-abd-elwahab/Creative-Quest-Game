@@ -25,6 +25,7 @@ run_test official-boot npm run smoke:g1
 run_test official-e01 npm run smoke:play:g1
 run_test independent-contract node --test tests/g1/e01-contract-qa.test.mjs
 run_test independent-browser node --test tests/g1/e01-browser-qa.test.mjs
+run_test landscape-input-59 node --test tests/g1/landscape-input-59.test.mjs
 if [ "$FAILED" -ne 0 ]; then
   echo 'QA G1 FAIL: CHANGES REQUIRED. No automatic release permission.' | tee -a "$LOG"
   exit 1
