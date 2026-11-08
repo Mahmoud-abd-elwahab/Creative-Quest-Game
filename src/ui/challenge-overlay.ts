@@ -218,6 +218,11 @@ export class FirstChallengeOverlay {
         this.clearTimeout();
         this.closeRequestId = null;
         this.dialog.close();
+        // Native dialog.close() may restore opener focus immediately.
+        // Keep focus on an accessible waiting status until engine.resumed ack.
+        this.setOutside('النافذة اتقفلت. بنستنى تأكيد رجوع الحركة للعالم.');
+        this.outsideStatus.tabIndex = -1;
+        this.outsideStatus.focus({ preventScroll: true });
         this.phaseValue = 'waiting-resume';
         this.resumeRequestId = this.requestId();
         this.watchAck('resume');
