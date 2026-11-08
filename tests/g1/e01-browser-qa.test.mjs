@@ -18,6 +18,8 @@ import { chromium } from 'playwright';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const evidence = resolve(root, 'qa/evidence/g1/runtime');
+const inputEvidence = join(evidence, 'issue-59');
+const inputCaseByPage = new WeakMap();
 const url = 'http://127.0.0.1:4187/Creative-Quest-Game/g1/play.html';
 const legacyKey = 'creative-quest-2d-v02', currentKey = 'creative-quest-2d-v1';
 const legacy = JSON.stringify({
@@ -27,6 +29,7 @@ const legacy = JSON.stringify({
 let server, browser, stderr = '';
 before(async () => {
   await mkdir(evidence, { recursive: true });
+  await mkdir(inputEvidence, { recursive: true });
   server = spawn(process.execPath, [
     'node_modules/vite/bin/vite.js', 'preview', '--config', 'vite.g1.config.mjs',
     '--host', '127.0.0.1', '--port', '4187', '--strictPort'
@@ -59,6 +62,7 @@ async function pageFor(t, name, settings = {}) {
     }, { key: legacyKey, old: settings.save ?? legacy });
   }
   const page = await context.newPage();
+  inputCaseByPage.set(page, name);
   const errors = [], network = [];
   page.on('pageerror', error => errors.push('pageerror: ' + error.message));
   page.on('console', message => {
@@ -101,8 +105,63 @@ async function openWorldNode(page) {
     await page.waitForFunction(() => window.__cqG1Stage.state().near, null, { timeout: 8000 });
   } finally { await page.keyboard.up('ArrowUp'); }
   assert.equal((await stage(page)).near, true);
-  await page.keyboard.press('e');
-  await page.locator('.cq-dialog[open]').waitFor({ state: 'visible', timeout: 7000 });
+  // Issue #59: passive E-key/focus/status trace on the ACTUAL ORIGINAL repro,
+  // not a parallel helper whose timing may happen to avoid the intermittent bug.
+  const qaName = inputCaseByPage.get(page) ?? 'unknown';
+  const beforeE = await page.evaluate(() => {
+    const trace = [];
+    const elementInfo = node => node ? { tag: node.tagName, id: node.id } : null;
+    const record = (kind, event) => trace.push({
+      at: performance.now(), kind, key: event?.key ?? null,
+      target: elementInfo(event?.target), active: elementInfo(document.activeElement),
+      trusted: event?.isTrusted ?? null, prevented: event?.defaultPrevented ?? null,
+      stage: window.__cqG1Stage?.state() ?? null
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'e' || event.key === 'E') record('keydown', event);
+    }, true);
+    document.addEventListener('keyup', event => {
+      if (event.key === 'e' || event.key === 'E') record('keyup', event);
+    }, true);
+    document.addEventListener('focusin', event => record('focusin', event), true);
+    const status = document.getElementById('status');
+    if (status) new MutationObserver(() => record('status.mutation', null))
+      .observe(status, { childList: true, subtree: true, characterData: true });
+    Object.defineProperty(window, '__cqQA59OriginalInput', { value: trace });
+    return { stage: window.__cqG1Stage?.state() ?? null,
+      active: elementInfo(document.activeElement), hasFocus: document.hasFocus(),
+      sceneReady: document.documentElement.dataset.g1Play ?? null };
+  });
+  await page.keyboard.press('e'); // unchanged original one-frame key pulse
+  let openFailure = null;
+  try {
+    await page.locator('.cq-dialog[open]').waitFor({ state: 'visible', timeout: 7000 });
+  } catch (error) { openFailure = error; }
+  const afterE = await page.evaluate(() => ({
+    stage: window.__cqG1Stage?.state() ?? null,
+    active: document.activeElement ? {
+      tag: document.activeElement.tagName, id: document.activeElement.id
+    } : null,
+    hasFocus: document.hasFocus(), sceneReady: document.documentElement.dataset.g1Play ?? null,
+    modalOpen: Boolean(document.querySelector('.cq-dialog[open]')),
+    status: document.getElementById('status')?.textContent ?? '',
+    keyTrace: [...(window.__cqQA59OriginalInput ?? [])]
+  }));
+  // Preserve evidence whether the ORIGINAL flow passes or fails. Do not
+  // diagnostic-tap, increase timeout, call openLevel, or change focus.
+  try {
+    await writeFile(join(inputEvidence, qaName + '-original-e.json'),
+      JSON.stringify({ case: qaName, beforeE, afterE,
+        error: openFailure ? String(openFailure) : null,
+        sourceSha: process.env.GITHUB_SHA ?? 'LOCAL_SHA_UNPINNED',
+        browser: browser.version(), viewport: page.viewportSize()
+      }, null, 2));
+    await page.screenshot({ path: join(inputEvidence, qaName + '-original-e.png'),
+      fullPage: true, animations: 'disabled' });
+  } catch (artifactError) {
+    console.error('QA Issue #59 forensic artifact write failed:', String(artifactError));
+  }
+  if (openFailure) throw openFailure;
   assert.equal((await stage(page)).paused, true);
   assert.equal((await stage(page)).openChallengeId, 'cq_obs_w01_e01_inspect_v1');
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'cq-title');
