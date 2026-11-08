@@ -48,7 +48,8 @@
     const url = new URL(location.href);
     if (screen === 'hud') url.searchParams.delete('screen');
     else url.searchParams.set('screen',screen);
-    history.replaceState(null,'',url);
+    try { history.replaceState(null,'',url); }
+    catch (_) { /* file:// preview can have an opaque origin; screen remains usable. */ }
   }
 
   function render(screen, opener) {
