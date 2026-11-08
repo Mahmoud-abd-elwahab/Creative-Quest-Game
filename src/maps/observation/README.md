@@ -93,3 +93,35 @@ The diagram is schematic: authoritative edges are in `traversal.draft.json`, not
 - **Boss/Engine:** Boss entrance interaction ID, arena transition and portal ID. Engine owns loading/rendering/movement.
 
 **Next world task ONLY after approvals:** convert this graph into a dimensioned, versioned tilemap with exact collision polygons and run a real Android viewport traversal test before presenting it as complete.
+
+## 0.2 continuation — collision ownership and design-only preview
+
+The first SVG proof used four abstract debug rectangles. Those would risk becoming invisible walls. **Replaced them** with 9 circular tree-root footprints (visible brown root art) and 1 lake ellipse (visible dark water); these are colliders only in the concept proof, not adopted game engine data. Decorative shadows, rocks without agreed footprints, and empty understory remain unblocked. The floor beyond the bright trail is **freely walkable** in the design preview to avoid unexplained movement walls.
+
+### Additional owned-path deliverables
+- `geometry.draft.json`: **1280×760 SVG sketch units** (not pixels/tiles), 15 sketch node centers, 17 linked sketch trail segments, 10 explicitly visible collision owners, and 5 synthetic free/blocked samples.
+- `manifest.draft.json`: non-runtime source/export register, provisional color values and licensing status.
+- `validate-graybox.mjs`: dependency-free Node checker for IDs, graph reachability, crossing segments, minimum clearances from drawn obstacles, preview layer presence, collision samples, and SVG/JSON consistency.
+- `../../../art-source/worlds/observation/interactive-graybox-review.html`: standalone graybox camera/touch test harness using an abstract marker, *not the canonical hero*, engine, UI, or release build.
+
+### How HQ or QA can reproduce locally
+
+From repository root (on a machine with Node and Python):
+
+```bash
+node src/maps/observation/validate-graybox.mjs
+python -m http.server 8000
+```
+
+Open `http://localhost:8000/art-source/worlds/observation/interactive-graybox-review.html` in a browser. Use WASD/arrows or the on-screen D-pad; test reset, layer toggles, and **Check sampled paths**. This fixture uses 10 sketch-unit avatar radius and 145 sketch-units/second **only for design review**. It has no challenge/XP/save interactions. It is intentionally not linked into production `index.html`.
+
+### Evidence, accuracy, and remaining checks
+
+- Read back all JSON/SVG/script files on the branch after commit.
+- Graph reachability: **15/15**, nine encounters, 17 unique edges.
+- Five authored collision samples independently evaluated: **5/5 PASS**.
+- Validator algorithm executed against fetched branch files in a JavaScript evaluator: **PASS**, no failures (10 visible blocker footprints, all route clearances valid).
+- Preview module syntax parsing: **PASS**. Its relative source file paths were verified by inspection.
+- **NOT RUN:** actual Node CLI execution from a cloned repo, a real browser/Android end-to-end movement test, Phaser/Engine integration, real touch fidelity, frame performance, device screenshot, and production map size/camera tests.
+
+This 0.2 work does **not unblock the production conversion**. HQ must still sign authoritative map coordinates, collision units/shapes, camera, loader and game/hero scale; Learning/Boss IDs and Game Director art approval are still pending. Only after contract signoff should a new runtime-specific tilemap, proper asset set and QA Android traversal evidence be claimed.
