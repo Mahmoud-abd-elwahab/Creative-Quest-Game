@@ -32,7 +32,12 @@ const sourceFiles = [
 try {
   compile(sourceFiles, ['--rootDir', 'src', '--outDir', temp]);
   // Full scene compile checks Phaser types, even though browser automation is owned by HQ/QA.
-  compile(['src/game/g1/observation-scene.ts'], ['--noEmit']);
+  const sceneCheck = spawnSync(exe, [
+    '--strict', '--skipLibCheck', '--pretty', 'false', '--target', 'ES2022',
+    '--module', 'ESNext', '--moduleResolution', 'Bundler', '--lib', 'ES2022,DOM',
+    '--noEmit', 'src/game/g1/observation-scene.ts',
+  ], { cwd: root, encoding: 'utf8' });
+  if (sceneCheck.status !== 0) throw Error('Phaser scene TS compile failed: ' + sceneCheck.stdout + sceneCheck.stderr);
   writeFileSync(join(temp, 'package.json'), '{"type":"module"}\n');
 } catch (error) { rmSync(temp, { recursive: true, force: true }); throw error; }
 const adapter = await import(pathToFileURL(join(temp, 'adapters/g1/save-state.js')).href);
