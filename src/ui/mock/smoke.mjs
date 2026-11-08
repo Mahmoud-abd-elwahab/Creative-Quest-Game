@@ -62,27 +62,43 @@ try {
     await choices.nth(0).focus();
     await page.keyboard.press('Space'); // verifies Space is not globally intercepted by UI
     assert.equal(await choices.nth(0).isChecked(), true);
-    assert.equal(await page.locator('.cq-submit').isDisabled(), true);
-    await choices.nth(2).check();
-    assert.equal(await page.locator('.cq-submit').isEnabled(), true);
+    assert.equal(await page.locator('.cq-submit').isEnabled(), true,
+      'P1 #46: one supported choice MUST enable formative submit');
     await page.locator('.cq-submit').click();
     await page.locator('.cq-feedback[data-state="partial"]').waitFor({ state: 'visible' });
     assert.match((await page.locator('.cq-feedback').innerText()), /جزء|تفسير/);
-    await page.locator('.cq-option input').nth(2).uncheck();
-    await page.locator('.cq-option input').nth(1).check();
+    assert.equal(await page.locator('.cq-reward').count(), 0, 'PARTIAL never claims saved XP');
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.mockPaused), 'true',
+      'Partial must keep the world paused while choices can be repaired');
+    await page.screenshot({ path: `${evidence}/g1-ui-${test.id}-partial.png`, animations: 'disabled' });
+    await choices.nth(2).check(); // supported plus unsupported is NOT partial
+    await page.locator('.cq-submit').click();
+    await page.locator('.cq-feedback[data-state="try_again"]').waitFor({ state: 'visible' });
+    assert.equal(await page.locator('.cq-reward').count(), 0, 'Mixed wrong cannot reward');
+    await choices.nth(2).uncheck();
+    await choices.nth(1).check();
     await page.locator('.cq-hint-button').click();
     await page.locator('.cq-hint:not([hidden])').waitFor({ state: 'visible' });
     await page.locator('.cq-submit').click();
     await page.locator('.cq-feedback[data-state="passed"]').waitFor({ state: 'visible' });
     await page.locator('.cq-reward').waitFor({ state: 'visible' });
     assert.match(await page.locator('.cq-reward').innerText(), /\+20 XP/);
-    assert.equal(await page.locator('.cq-submit').isDisabled(), true, 'No repeat submit after reward');
+    assert.equal(await page.locator('.cq-submit').isEnabled(), true,
+      'P2 #47: committed receipt must enable return-to-world CTA');
+    assert.equal((await page.locator('.cq-submit').innerText()).trim(), 'ارجع للعالم',
+      'No stale waiting-for-save label after committed receipt');
+    assert.equal((await page.locator('.cq-feedback ul li').allTextContents()).length, 1,
+      'Only the mock-provided one unique rubric criterion appears');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
     assert.equal(overflow, false, '360px/landscape/desktop must not overflow horizontally');
     const box = await page.locator('.cq-dialog').boundingBox();
     assert.ok(box && box.x >= -1 && box.x + box.width <= test.size.width + 1, 'Modal clips horizontally');
     await page.screenshot({ path: `${evidence}/g1-ui-${test.id}.png`, animations: 'disabled' });
-    await page.keyboard.press('Escape');
+    if (test.id === 'mobile360') {
+      await page.locator('.cq-submit').click(); // confirmation CTA uses close/resume handshake
+    } else {
+      await page.keyboard.press('Escape'); // keyboard close path remains supported
+    }
     await page.waitForFunction(() => !document.querySelector('.cq-dialog')?.open);
     await page.waitForFunction(() => document.activeElement?.id === 'open-challenge');
     assert.equal(await page.locator('html').getAttribute('data-mock-paused-at-close'),
@@ -93,7 +109,7 @@ try {
       /dialog.closed>engine.resumed$/, 'Close and resume ack order must be exact');
     assert.deepEqual(errors, [], 'No runtime browser errors');
     await context.close();
-    console.log('PASS:', test.id, 'paused before open; keyboard; partial; hint; receipt; focus returned; no horizontal overflow');
+    console.log('PASS:', test.id, 'P1 single-evidence partial; mixed wrong; hint/retry; P2 confirmed CTA; pause/resume/focus; no overflow');
   }
   const page = await browser.newPage({ viewport: { width: 360, height: 800 } });
   await page.goto(url);
@@ -106,7 +122,10 @@ try {
   await page.locator('.cq-save-error:not([hidden])').waitFor();
   assert.equal(await page.locator('.cq-reward').count(), 0,
     'Failed save must never display committed XP');
-  console.log('PASS: mock save failure surfaced, no reward claim');
+  assert.equal(await page.locator('.cq-submit').isEnabled(), true,
+    'Failed save can retry the same answer without claiming receipt');
+  assert.match(await page.locator('.cq-submit').innerText(), /حاول إرسال الإجابة تاني/);
+  console.log('PASS: mock save failure visible, no XP claim, answer retry available');
   await page.close();
 
   const locked = await browser.newPage({ viewport: { width: 360, height: 800 } });
