@@ -235,3 +235,55 @@ test('corrupt old save never overwritten and never mints unverifiable XP', async
   assert.equal((await newState(page)), null);
   assert.equal(await oldBytes(page), bad);
 });
+
+
+test('quota denied: correct answer cannot mint unpersisted XP', async t => {
+  const { page } = await pageFor(t, '08-quota-denied');
+  await page.addInitScript(key => {
+    const original = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (name, value) {
+      if (name === key) throw new DOMException('Quota exceeded', 'QuotaExceededError');
+      return original.call(this, name, value);
+    };
+  }, currentKey);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => document.documentElement.dataset.g1Play === 'ready');
+  await openWorldNode(page);
+  await pick(page, 0, 1);
+  await page.locator('.cq-submit').click();
+  await page.locator('.cq-save-error:not([hidden])').waitFor();
+  assert.equal((await stage(page)).xp, 35);
+  assert.equal(await oldBytes(page), legacy);
+  assert.equal(await newState(page), null);
+  assert.equal(await page.locator('.cq-reward').count(), 0);
+});
+
+test('blocked localStorage getter: fail gracefully rather than crash staging', async t => {
+  const context = await browser.newContext({ viewport: { width: 360, height: 740 } });
+  await context.addInitScript(() => {
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      get() { throw new DOMException('Blocked', 'SecurityError'); }
+    });
+  });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  t.after(async () => {
+    try {
+      await page.screenshot({ path: join(evidence, '09-storage-getter-blocked.png'),
+        fullPage: true });
+    } catch {}
+    await writeFile(join(evidence, '09-storage-getter-blocked.json'),
+      JSON.stringify({ url, errors, browser: browser.version(),
+        status: 'expected-red if staging script aborts on window.localStorage access'
+      }, null, 2));
+    await context.close();
+  });
+  const response = await page.goto(url, { waitUntil: 'domcontentloaded' });
+  assert.equal(response?.status(), 200);
+  await page.waitForFunction(() => document.documentElement.dataset.g1Play === 'ready',
+    null, { timeout: 4000 });
+  assert.deepEqual(errors, [], 'LocalStorage getter exception must not abort game bootstrap');
+  assert.match(await page.locator('#status').innerText(), /الحفظ|Save|غير متاح/i);
+});
