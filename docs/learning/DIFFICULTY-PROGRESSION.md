@@ -1,23 +1,27 @@
-# Difficulty & Progression Rules (v1.0-draft)
+# Difficulty & Progression Rules (v1.1-draft)
 Issue #3 | Scope: pedagogy, not implemented game-state behavior | HQ ChallengeSpec approval PENDING.
 
 ## Five difficulty bands: measurable cognitive changes
-| Band | Operation | Evidence load | New decision demand | Example slot | What success proves |
-|---|---|---|---|---|---|
-| D1 Recognition | Identify direct observation vs interpretation | 2–3 short source statements; one obvious distractor | Select grounded statement, cite one source | E01–E02 | Can locate what is said/shown |
-| D2 Diagnosis | Identify overclaim, contradiction, missing evidence | 3–4 mixed-source records; ≥1 tempting plausible inference | Explain specifically what a claim cannot establish | E03–E04 | Can detect evidence error |
-| D3 Reconstruction | Repair and reconcile | 4–5 records with a counterexample or false generalisation | Rewrite a flawed claim while preserving supported facts | E05–E06 | Can change the reasoning, not wording alone |
-| D4 Constrained Creation | Produce a bounded observation and research decision | 5–6 records, mixed sample/context, explicit 2–3 constraints | Draft a warranted statement; compare plausible reasons without asserting one | E07–E08 | Can create without evidence leap |
-| D5 Transfer/Critique | Use method in new brief/medium and critique | New sector plus brief, 2 evidence formats, client pressure, missing product proof | Separate what is known/unknown and advise action | E09 + Boss phase 3 | Can act when context and surface cues change |
-Increasing difficulty must add **cognitive load**, not visual noise, wordiness, time pressure or arbitrary fake trick answers. Exact evidence counts are design targets; QA may tune for accessibility. D5 must be solvable without advance knowledge of real brands.
+| Band | Operation | Cognitive load / evidence | First-world slots | Independent demonstration |
+|---|---|---|---|---|
+| D1 Recognition | Inspect/Connect direct evidence | Two short witness/source records; identify action and its provenance | E01–E02 | Classify a witnessed act and link it to a real clue without inventing motive |
+| D2 Diagnosis | Arrange/Compare/Deflect/Route | Two or more contexts, before–after record, competing plausible speculation and possible counterexample | E03–E06 | Infer direction or context, then label certainty and restrict what is not proved |
+| D3 Reconstruction | Interview/Test evidence gap | Two rival explanations plus underdetermined behavioral record; choose non-leading differentiator | E07–E08 + B01 retrieval | Select a research step that could distinguish two rival claims; reject leading questions |
+| D4 Constrained creation | Forge accountable concept seed | Evidence card + hypothesis with uncertainty + confirmed **fictional** product action + execution feasibility | E09 + B02 | Construct a bounded claim, preview a tangible Concept, defend brand relevance without claiming Concept mastery |
+| D5 Transfer/Critique | Boss new-case defense | New craft-fair sector; evidence collection, competing motivations, product/service truth card and competing execution routes | B03 | Compare two defensible Concepts and explain safe evidence/product boundaries in unfamiliar case |
+Each successive band adds **a new cognitive operation and dependency**. Longer text, time pressure or more graphics alone do not make difficulty higher. Levels L08/L09 and Boss preview possible Insight/Concept but **only OBS** is eligible for reliable first-world mastery. Exact number of evidence cards is a draft and QA may tune for accessibility.
 
-## Per-encounter delta (no blind repetition)
-- E01 identify ONE direct statement; E02 interpret scope of TWO numerical observations.
-- E03 triangulate evidence across different source formats; E04 detect missing denominator/selection and refuse a tempting causal leap.
-- E05 repair a false client conclusion; E06 integrate a counterexample and limit the audience segment.
-- E07 create a source-referenced observation with constraints; E08 propose rival explanations and a discriminating question.
-- E09 apply the entire observation discipline to an unfamiliar advertising brief; separate safe client-facing claim and proof required.
-Boss phase 1 retrieves classification from unfamiliar material; phase 2 repairs the fake research finding against new evidence; phase 3 defends a new brief boundary and identifies a test. Boss is NOT three cosmetic forms of the same MC question.
+## Per-encounter cognitive delta (Game Director aligned)
+- E01 Inspect: identify two directly recorded library borrowing/return actions. E02 Connect: source-link nursery NPC statement to a physical care card; provenance matters, not another simple “fact” button.
+- E03 Arrange: reconstruct cinema booking *change over time*. E04 Compare: juxtapose two clothing fit sequences, rejecting unsupported confidence diagnosis.
+- E05 Deflect: three-way certainty labels for music Skip: fact vs **possible hypothesis** vs unsupported overgeneralization. E06 Route: condition behavior by workday vs weekend café context without false universal cause.
+- E07 Interview: devise a neutral follow-up at board-game shop to discriminate motivations. E08 Test: compare two defensible gallery hypotheses with evidence-gathering methods and preserve uncertainty.
+- E09 Forge: coworking low-use Observation → explicitly uncertain motivation → **fictionally supplied and provable** pay-per-day product role → a tangible Concept seed, not just “premium background”; this previews later skills and does not award them as mastered.
+- Boss B01 retrieves source classification within craft-fair evidence; B02 allows **two** supported potential insights paired with appropriate distinguishing tests; B03 demonstrates unfamiliar-case applied Concept defense anchored to organizer proof. The stages change thought process, not just format or monster HP.
+
+## Creative integration and progression guardrails
+Game Director W01 draft (PR #11) is approved **for prototyping only**: player uses Evidence Lens in غابة الملاحظة. The Learning Architect maps cognitive goals, not camera coordinates, physics, exact hero identity or Boss combat behavior. At least seven of nine first-world decisions must affect actual path/evidence/NPC state after integration; this is an acceptance requirement, not a current test result.
+“Recognition → Diagnosis → Reconstruction → Constrained Creation → Transfer/Critique” describes cognitive demands; not every band implies a compulsory mastery badge. In particular E07/E08 are *research method* reconstruction and the new E09 is guided creation. The Boss's new crafts-fair brief is an unseen context distinct from prior nine.
 
 ## Decision rules: performance signals and trust
 Define status for each skill and level attempt:
