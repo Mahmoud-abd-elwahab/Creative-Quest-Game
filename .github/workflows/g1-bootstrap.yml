@@ -1,7 +1,7 @@
 name: G1 isolated Phaser bootstrap (not production)
 on:
   push:
-    branches: [cq/hq/g1-bootstrap]
+    branches: [cq/hq/g1-bootstrap, cq/integration/vertical-slice]
   pull_request:
     branches: [cq/integration/vertical-slice]
   workflow_dispatch:
