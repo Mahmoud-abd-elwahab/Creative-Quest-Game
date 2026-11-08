@@ -68,7 +68,7 @@ async function session(t, name, options = {}) {
   });
   if (options.save) {
     await context.addInitScript(({ key, value }) => {
-      localStorage.setItem(key, JSON.stringify(value));
+      if (localStorage.getItem(key) === null) localStorage.setItem(key, JSON.stringify(value));
     }, { key: SAVE_KEY, value: options.save });
   }
   const page = await context.newPage();
