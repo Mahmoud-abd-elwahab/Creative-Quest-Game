@@ -38,7 +38,7 @@ Game Director approved provisional W01 art grammar: pine/jade/turquoise forest, 
 
 ## Product goal / visual direction to review
 
-The first realm teaches **Observation vs unverified interpretation**. UI should expose environmental evidence before asking for a conclusion; never treat guessing a word as a Creative Thinking achievement. In exploration, keep most of the canvas unobscured. When a challenge begins, switch to a DOM form with enough reading space for three evidence quotes, user input and reasoned feedback.
+The first realm teaches **Observation vs unverified interpretation**. UI should expose environmental evidence before asking for a conclusion; never treat guessing a word as a Creative Thinking achievement. In exploration, keep most of the canvas unobscured. When a challenge begins, switch to a DOM overlay with evidence inspection or task-appropriate controls and reasoned feedback. L01 uses two observed-evidence selections, not a mandatory long-text answer.
 
 Provisional aesthetic: dark midnight ink, muted jade, lime for interaction, amber for attention, coral for error, violet for Boss. This retains legacy v0.4 recognition but is **not a Game Director sign-off**. No hero/world/Boss art is authored here; landscape in preview is an abstract placement placeholder, not a playable map.
 
@@ -125,21 +125,21 @@ flowchart TD
 ## Spatial wireframes (portrait priority)
 
 ```text
-360px Android / Explore                 360px Android / Challenge
+360px Android / Explore                 360px Android / L01 Inspect
 ┌────────────────────────────┐           ┌────────────────────────────┐
-│ CQ   WORLD 01       XP 120 │           │ ×   المهمة 01             │
-│ ┌────────────────────────┐ │           │     OBSERVATION · LV 01    │
-│ │ لاحظ السلوك قبل السبب   │ │           │ ────────────────────────   │
-│ │ وصل للحارس وابدأ      │ │           │ معلومات من الموقف          │
-│ └────────────────────────┘ │           │ ① اقتباس قصير...          │
-│                            │           │ ② اقتباس قصير...          │
-│   CANVAS / WORLD ART       │           │ ③ اقتباس قصير...          │
-│   not provided by UI       │           │                          │
-│           ◇ guardian       │           │ مهمتك: اكتب Observation    │
-│                            │           │ ┌──────────────────────┐ │
-│  ◎ joystick       ◉ تفاعل │           │ │ إجابتك...           │ │
-│                            │           │ └──────────────────────┘ │
-│             bottom safe    │           │ [تلميح] [راجع إجابتي]    │
+│ CQ   WORLD 01       XP —   │           │ ×  افحص آثار الاستعارة    │
+│ ┌────────────────────────┐ │           │    OBSERVATION · LEVEL 01 │
+│ │ شاف ولا افترض؟        │ │           │ ───────────────────────── │
+│ │ افحص دليلين من الحارس │ │           │ ☐ وصل إرجاع: كتابين       │
+│ └────────────────────────┘ │           │ ☐ سجل قراءة: بدايات       │
+│                            │           │ ☐ تفسير «كلهم زهقانين»  │
+│   CANVAS / WORLD ART       │           │                          │
+│   not provided by UI       │           │ اختار دليلين من اللي حصل │
+│           ◇ evidence       │           │ اتحدد 0 من 2             │
+│                            │           │                          │
+│  ◎ joystick       ◉ افحص  │           │ [تلميح] [شوف Feedback]   │
+│                            │           │ (Design preview only)    │
+│             bottom safe    │           │                          │
 └────────────────────────────┘           └────────────────────────────┘
 ```
 
