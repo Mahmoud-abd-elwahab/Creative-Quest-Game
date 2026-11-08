@@ -29,6 +29,8 @@ const cases = [
   { id: 'L740-short-1', width: 740, height: 360, mobile: true, key: 'press' },
   { id: 'L740-short-2', width: 740, height: 360, mobile: true, key: 'press' },
   { id: 'L740-short-3', width: 740, height: 360, mobile: true, key: 'press' },
+  { id: 'D1280-rapid-E-edge', width: 1280, height: 800, mobile: false, key: 'rapid' },
+  { id: 'L740-rapid-E-edge', width: 740, height: 360, mobile: true, key: 'rapid' },
   { id: 'P360-short-control', width: 360, height: 740, mobile: true, key: 'press' },
   { id: 'L740-held-key-diagnostic', width: 740, height: 360, mobile: true, key: 'held' },
   { id: 'L740-inspect-button-control', width: 740, height: 360, mobile: true, key: 'touch-button' }
@@ -178,7 +180,7 @@ async function waitOpen(page, timeout = 7000) {
   } catch { return false; }
 }
 
-test('Issue #59: repeat direct E, held E, portrait and touch inspect without masking failures',
+test('Issue #59: repeat default and rapid E, held-E, portrait and touch without masking failures',
   async t => {
     const failed = [];
     const summary = [];
@@ -193,6 +195,11 @@ test('Issue #59: repeat direct E, held E, portrait and touch inspect without mas
         assert.equal(before.state?.openChallengeId, null);
         if (item.key === 'press') {
           await page.keyboard.press('e'); // MUST match current flaky baseline
+        } else if (item.key === 'rapid') {
+          // Intentional quick real key tap; not a shortcut or a modified Engine path.
+          // This reproduces a 0.6ms down/up pulse seen in actual CI failure.
+          await page.keyboard.down('e');
+          await page.keyboard.up('e');
         } else if (item.key === 'held') {
           await page.keyboard.down('e');
           await delay(125); // DIFFERENTIAL DIAGNOSIS, not replacement acceptance
@@ -208,7 +215,7 @@ test('Issue #59: repeat direct E, held E, portrait and touch inspect without mas
           animations: 'disabled', fullPage: true });
         record.primaryScreenshot = item.id + '-primary-after.png';
         const after = record.observations.at(-1).snapshot;
-        record.shortKeyAccepted = item.key === 'press' ? opened : null;
+        record.shortKeyAccepted = (item.key === 'press' || item.key === 'rapid') ? opened : null;
         if (item.key === 'touch-button') record.touchControlAccepted = opened;
         record.domTrace = await page.evaluate(() => [...window.__cqQA59Trace]);
         if (!opened && item.key !== 'touch-button') {
