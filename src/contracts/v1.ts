@@ -137,6 +137,12 @@ export interface BossPhaseSpec {
   slotId: string; // OBS-W1-B01..03
   challengeId: string;
   effectEventId: string; // e.g., fog-cracks, mirror-path, bridge-built
+  /** Guards must be checked by Boss/Engine; a button click is never sufficient. */
+  guard: {
+    requiredCriterionIds: string[];
+    requireStructuredStep: boolean;
+    allowTransparentSelfReviewForNarrative: boolean;
+  };
 }
 export interface BossSpecV1 {
   schemaVersion: 1;
@@ -197,6 +203,7 @@ export type GameCommand =
   | { type: 'dialog.close.request'; requestId: string }
   | { type: 'engine.pause.request'; requestId: string; reason: 'dialog' | 'menu' | 'boss' }
   | { type: 'engine.resume.request'; requestId: string }
+  | { type: 'boss.action'; requestId: string; bossId: string; phaseId: BossPhaseId; challengeId: string; answer: ChallengeAnswer }
   | { type: 'boss.retry'; requestId: string; bossId: string };
 export type GameEvent =
   | { type: 'engine.paused'; requestId: string }
@@ -205,7 +212,7 @@ export type GameEvent =
   | { type: 'dialog.closed'; requestId: string }
   | { type: 'assessment.recorded'; requestId: string; result: AssessmentResultV1 }
   | { type: 'reward.committed'; requestId: string; receipt: RewardReceipt; xpTotal: number }
-  | { type: 'boss.updated'; boss: BossProgressV1 }
+  | { type: 'boss.updated'; boss: BossProgressV1; requestId?: string; phaseEffectId?: string }
   | { type: 'world.updated'; worldId: string }
   | { type: 'save.failed'; requestId?: string; message: string };
 export interface GameSnapshotV1 {
