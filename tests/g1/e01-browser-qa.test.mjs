@@ -99,16 +99,12 @@ const newState = page => page.evaluate(k => {
 
 async function openWorldNode(page) {
   const canvas = page.locator('#game-root canvas');
-  await canvas.click({ position: { x: 15, y: 15 } });
-  await page.keyboard.down('ArrowUp');
-  try {
-    await page.waitForFunction(() => window.__cqG1Stage.state().near, null, { timeout: 8000 });
-  } finally { await page.keyboard.up('ArrowUp'); }
-  assert.equal((await stage(page)).near, true);
-  // Issue #59: passive E-key/focus/status trace on the ACTUAL ORIGINAL repro,
+  // Issue #59: install passive listeners BEFORE movement; NO added awaits
+  // between ArrowUp release and E press, preserving the original frame race.
+  // Passive E-key/focus/status trace on the ACTUAL ORIGINAL repro,
   // not a parallel helper whose timing may happen to avoid the intermittent bug.
   const qaName = inputCaseByPage.get(page) ?? 'unknown';
-  const beforeE = await page.evaluate(() => {
+  const beforeMovement = await page.evaluate(() => {
     const trace = [];
     const elementInfo = node => node ? { tag: node.tagName, id: node.id } : null;
     const record = (kind, event) => trace.push({
@@ -118,10 +114,10 @@ async function openWorldNode(page) {
       stage: window.__cqG1Stage?.state() ?? null
     });
     document.addEventListener('keydown', event => {
-      if (event.key === 'e' || event.key === 'E') record('keydown', event);
+      if (event.key === 'e' || event.key === 'E' || event.key === 'ArrowUp') record('keydown', event);
     }, true);
     document.addEventListener('keyup', event => {
-      if (event.key === 'e' || event.key === 'E') record('keyup', event);
+      if (event.key === 'e' || event.key === 'E' || event.key === 'ArrowUp') record('keyup', event);
     }, true);
     document.addEventListener('focusin', event => record('focusin', event), true);
     const status = document.getElementById('status');
@@ -132,6 +128,12 @@ async function openWorldNode(page) {
       active: elementInfo(document.activeElement), hasFocus: document.hasFocus(),
       sceneReady: document.documentElement.dataset.g1Play ?? null };
   });
+  await canvas.click({ position: { x: 15, y: 15 } });
+  await page.keyboard.down('ArrowUp');
+  try {
+    await page.waitForFunction(() => window.__cqG1Stage.state().near, null, { timeout: 8000 });
+  } finally { await page.keyboard.up('ArrowUp'); }
+  assert.equal((await stage(page)).near, true);
   await page.keyboard.press('e'); // unchanged original one-frame key pulse
   let openFailure = null;
   try {
@@ -151,7 +153,9 @@ async function openWorldNode(page) {
   // diagnostic-tap, increase timeout, call openLevel, or change focus.
   try {
     await writeFile(join(inputEvidence, qaName + '-original-e.json'),
-      JSON.stringify({ case: qaName, beforeE, afterE,
+      JSON.stringify({ case: qaName, beforeMovement,
+        preEFromArrowUpKeyup: [...afterE.keyTrace].reverse().find(e =>
+          e.kind === 'keyup' && e.key === 'ArrowUp') ?? null, afterE,
         error: openFailure ? String(openFailure) : null,
         sourceSha: process.env.GITHUB_SHA ?? 'LOCAL_SHA_UNPINNED',
         browser: browser.version(), viewport: page.viewportSize()
