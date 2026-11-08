@@ -105,7 +105,7 @@ verify(unique(specs.flatMap(s=>[s.id,s.scenarioId,s.slotId])), 'duplicate spec i
 verify(unique(specs.map(s=>s.novelty.cognitiveSignature)), 'duplicate cognitive signature');
 verify(unique(specs.flatMap(s=>s.evidence.map(x=>x.id))), 'global evidence duplicate');
 verify(unique(specs.flatMap(s=>s.options.map(x=>x.id))), 'global option duplicate');
-verify(!/Mahmoud-creative-library|adsoftheworld\\.com|EGF-\\d|EGC-\\d/i.test(JSON.stringify(specs)),
+verify(!/Mahmoud-creative-library|adsoftheworld\.com|EGF-\d|EGC-\d/i.test(JSON.stringify(specs)),
   'private library provenance leaked');
 const legacy = read('docs/learning/LEGACY-100-INVENTORY.md');
 verify(legacy.split('\n').filter(s=>/^\|\s*\d+\s*\|/.test(s)).length === 100,
