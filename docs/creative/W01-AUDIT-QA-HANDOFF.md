@@ -23,7 +23,7 @@
 - Source review, project docs and reference-image inspection completed.
 - **No in-engine 360px or desktop playtest occurred in this review.** Neither actual frame-time, route collision nor game interaction was independently measured.
 - **No authentic v0.4 screenshots were captured or annotated.** Do not invent screenshot evidence, fabricate test results or mark the game visually approved. Annotated capture requests appear below.
-- **No approved hero master sheet is committed** to this change. The uploaded “MING” example is a turnaround/style study, not the playable hero identity.
+- **Post-audit update (2026-11-08):** owner identified the teal-clad RPG hero original as **canonical**; personal Library holds the approved source and an **unapproved production** concept turnaround. Exact references, visual corrections and limitations are in `docs/creative/HERO-01-CANONICAL-LOCK.md`. No approved production sprite sheet is committed or tested.
 - **No finalized Learning Architect taxonomy / rubric artifact was found in the audited root/docs paths**; proposals must be reconciled with that role before authored challenges are signed off.
 
 ## Creative quality gate
@@ -82,7 +82,7 @@ QA/UX or HQ should attach **genuine game captures** at `360 × 800 CSS px portra
 - Make each level's misleading interpretation *plausible* enough to teach a valuable distinction, not an obviously silly straw man.
 
 **For Character / World Artists**
-- First deliver a **single hero master sheet** and a **single W01 start-path visual frame** for owner approval. Use only properly shared/approved style attachments. No full-world batch assets yet.
+- First deliver a **corrected technical hero master turnaround** from the user-approved image and a **single W01 start-path visual frame**. Use exact personal Library references in `HERO-01-CANONICAL-LOCK.md` (or explicitly attach canonical PNG) rather than the unrelated MING sample. No full-world batch assets yet.
 - After signoff, create layered navigable environment and tested animations, not a standalone illustration.
 
 **For Boss/UI/Engine/QA**
@@ -90,7 +90,7 @@ QA/UX or HQ should attach **genuine game captures** at `360 × 800 CSS px portra
 - Verify 360px portrait and desktop captures and the fairness of retries before asking for final creative go/no-go.
 
 ## Explicit rejection and creative risks
-- **Blocker:** final hero likeness and sprite identity not yet approved in current repo.
+- **Resolved for concept identity only:** user selected the teal-clad hero and original costume. **Still blocked:** corrected production turnaround, reliable 4-direction animation, engine-scale/camera agreement and in-engine QA evidence.
 - **Blocker:** no locked camera / rendering, collision and performance agreement from HQ.
 - **Blocker:** no actual mobile/desktop in-engine QA evidence or annotated captures.
 - **Risk:** forcing all ten worlds into the same green forest + recolor violates visual differentiation.
@@ -101,7 +101,7 @@ QA/UX or HQ should attach **genuine game captures** at `360 × 800 CSS px portra
 **W01 WORLD DIRECTION: CREATIVE APPROVE (prototype stage)**  
 **W01 9-ENCOUNTER / 10-LEVEL JOURNEY: CREATIVE APPROVE (curriculum review pending)**  
 **BOSS 3-STAGE DESIGN: CREATIVE APPROVE (contracts/implementation pending)**  
-**HERO FINAL IDENTITY: NOT APPROVED / AWAITING OWNER REFERENCE LOCK**  
+**HERO IDENTITY AND ORIGINAL COSTUME: USER-APPROVED (2026-11-08); PRODUCTION MASTER TURNAROUND / SPRITES STILL UNVERIFIED**  
 **ACTUAL GAMEPLAY, UX, ART PRODUCTION & RELEASE: UNVERIFIED, NO IMPLEMENTATION SIGNOFF**
 
 **Next decision:** HQ reviews contract-impacting requests and merges docs PR if accepted; Learning Architect validates transfer rubric; then create *one* playable horizontal slice before any asset mass production.
