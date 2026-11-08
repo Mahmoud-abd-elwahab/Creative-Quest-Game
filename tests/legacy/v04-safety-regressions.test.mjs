@@ -55,3 +55,15 @@ test('QA-P1-002: game SW activation must NOT delete other same-origin project ca
   assert.deepEqual(deleted, [],
     'P1: activating Creative Quest must not delete unrelated CacheStorage entries');
 });
+
+
+test('QA-P2-004: mobile viewport must not forbid user pinch zoom', () => {
+  assert.doesNotMatch(read('index.html'), /<meta[^>]+name="viewport"[^>]+user-scalable=no/i,
+    'Viewport forbids pinch zoom, making long Arabic text harder to enlarge');
+});
+
+test('QA-P2-004: animations must include reduced-motion opt-out', () => {
+  const src = read('index.html');
+  assert.match(src, /prefers-reduced-motion\s*:\s*reduce/,
+    'Continuous visual motion has no CSS reduced-motion preference fallback');
+});
