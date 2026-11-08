@@ -3,7 +3,7 @@
 **Review:** 2026-11-08. **Exact integration HEAD:** ca2012f9bf1ddb1cefca310bfabca29691feb31e. **Production main:** original v0.4, unchanged. **Scope:** qa/ and tests/ only.
 
 ## Decision
-**G1 CHANGES REQUIRED; production NO-GO.** A single landscape 740×360 failure in CI on one SHA and PASS on a different SHA does not establish an Engine defect or prove same-SHA flakiness. Verify before coding; never relax a timeout, substitute a diagnostic opening, or mark an alternative tap as proof that E works.
+**G1 CHANGES REQUIRED; production NO-GO.** A failed first run and successful second attempt on the SAME SHA demonstrate inconsistent E interaction under repeated CI execution. This is NOT proof of an Engine fault; focus/input/harness timing remain unknown. Verify before coding; never relax a timeout, substitute a diagnostic opening, or mark an alternative tap as proof that E works.
 
 ## Reviewed governance and separate signoffs
 - Issue #59 and QA Issue #43, Producer's final PR #51 comment 6722727068 and Issue #43 comment 6722813662: QA red regressions merged as evidence, not gameplay signoff.
@@ -29,7 +29,7 @@ Inspected 06-mobile-landscape.png, plus the corresponding JSON: viewport 740x360
 - tests/g1/landscape-input-59.test.mjs boots real G1 Phaser staging page, moves normally to the actual WorldNode, and runs **six fresh-context scenarios**: 3 landscape quick E presses, 1 portrait quick E control, 1 held-E timing contrast, 1 landscape touch inspect control.
 - Passive keydown/up, focusin, status MutationObserver, approved window.__cqG1Stage.state() snapshots, before/after document.activeElement and dialog state.
 - Original E keyboard assertion and 7000ms window preserved. Failed E stays a FAIL even if a later explicit Inspect-button diagnostic opens the dialog.
-- Screenshots+JSON per case, plus summary, saved to qa/evidence/g1/issue-59/. The script is mandatory in the QA-owned qa/run-g1-acceptance.sh.
+- Screenshots+JSON per case, plus summary, saved to qa/evidence/g1/runtime/issue-59/ so the mandatory HQ CI artifact-upload rule actually retains them. The original existing test also now captures pre/post E keydown/focus/bridge state under the same upload directory. The script is mandatory in the QA-owned qa/run-g1-acceptance.sh.
 - Success also requires paused true with the real authored E01 ID, Escape/resume/focus return and original save bytes unchanged. No fake fixture screen or direct diagnostic openLevel.
 - First source syntax inspection succeeded in isolated V8, NOT equivalent to Node/Playwright execution.
 
@@ -43,3 +43,13 @@ From an exact PR checkout: npm ci --no-audit --fund=false; npm run typecheck:g1;
 
 ## Release conclusion
 **G1 CHANGES REQUIRED / production NO-GO.** #59 may be closed only after repeatable source-pinned evidence for working E key behavior; #46/#47 remain separate red acceptance gates regardless of landscape result.
+
+
+## New QA Draft PR #63 CI evidence and artifact correction
+
+- First QA PR run: https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/actions/runs/42492196716, exact QA SHA be44ebc7719dd2c3d25232d108429b75fb15d90c (runtime identical to frozen integration; only QA files differ). G0 and G1 bootstrap CI PASS; required independent G1 QA gate correctly FAIL.
+- Original independent contract suite 5 PASS / 1 FAIL (#46). Original browser suite 6 PASS / 3 FAIL (#46, #47, and landscape #59 failed again at 7000ms).
+- New six-case test independently ran on Chromium 158.0.8127.18 in GitHub CI: all 3 landscape quick-E trials, portrait quick E, held-E contrast, touch inspect **PASS**, with no fallback used to make a failed primary pass. This demonstrates that a different scheduling/test setup can pass within the very same job while original landscape E fails; it still does NOT isolate the cause.
+- Artifact #13622550065 sha256 9b4273d47e33fb710d89594adf0abb68cbbb64e367c2d921bb7a7a33c2d5e997 revealed a QA evidence packaging gap: workflow uploads qa/evidence/g1/runtime/ but the newly generated diagnostic JSON/PNG originally lived outside that tree and were not retained in ZIP. QA corrected the evidence path and instrumented the ORIGINAL failing openWorldNode keyboard invocation, preserving its 7000ms timeout and assertions.
+- Before the corrective QA commit, raw node/test output proved the 6/6 independent diagnostic trials passed but **did not provide durable per-case key traces** in the artifact. Do not claim trace inspection for that run; only after CI on the corrected QA HEAD and actual artifact download can focus/input root-cause analysis proceed.
+- Engine owner independently commented https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/issues/59#issuecomment-6722947130 with same-SHA attempt 2 success. Engine patch still UNAUTHORIZED until the QA evidence assigns the failing stage. A green rerun does not close #59.
