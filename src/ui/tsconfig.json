@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.g1.json",
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "noEmit": true,
+    "strict": true
+  },
+  "include": ["**/*.ts", "../contracts/v1.ts"]
+}
