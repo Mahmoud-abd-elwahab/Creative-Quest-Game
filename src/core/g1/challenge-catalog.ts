@@ -30,13 +30,20 @@ export function validateChallengeSpec(spec: ChallengeSpecV1): void {
   }
 }
 /** Immutable verified catalog with no runtime fetch, private-library access or fallback to fixture. */
+function deeplyFreeze<T>(value: T): T {
+  if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+    for (const child of Object.values(value)) deeplyFreeze(child);
+    Object.freeze(value);
+  }
+  return value;
+}
 export function createChallengeCatalog(specs: readonly ChallengeSpecV1[]): ChallengeLookup {
   const map = new Map<string, ChallengeSpecV1>();
   for (const candidate of specs) {
     validateChallengeSpec(candidate);
     if (map.has(candidate.id)) throw new Error('Duplicate authored challenge ID: ' + candidate.id);
     // Freeze stable identifiers, not caller-mutated nested arrays: snapshot the JSON data once.
-    const spec = JSON.parse(JSON.stringify(candidate)) as ChallengeSpecV1;
+    const spec = deeplyFreeze(JSON.parse(JSON.stringify(candidate)) as ChallengeSpecV1);
     map.set(spec.id, spec);
   }
   return id => map.get(id);
