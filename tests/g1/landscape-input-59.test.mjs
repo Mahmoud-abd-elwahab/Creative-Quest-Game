@@ -197,7 +197,8 @@ test('Issue #59: repeat default and rapid E, held-E, portrait and touch without 
           await page.keyboard.press('e'); // MUST match current flaky baseline
         } else if (item.key === 'rapid') {
           // Intentional quick real key tap; not a shortcut or a modified Engine path.
-          // This reproduces a 0.6ms down/up pulse seen in actual CI failure.
+          // Playwright may stretch the physical press to 30-40ms: measure actual
+          // delivered keydown→keyup below; do NOT claim 0.6ms was reproduced.
           await page.keyboard.down('e');
           await page.keyboard.up('e');
         } else if (item.key === 'held') {
@@ -218,6 +219,12 @@ test('Issue #59: repeat default and rapid E, held-E, portrait and touch without 
         record.shortKeyAccepted = (item.key === 'press' || item.key === 'rapid') ? opened : null;
         if (item.key === 'touch-button') record.touchControlAccepted = opened;
         record.domTrace = await page.evaluate(() => [...window.__cqQA59Trace]);
+        const eDown = record.domTrace.find(x => x.kind === 'keydown' && x.key === 'e');
+        const eUp = record.domTrace.find(x => x.kind === 'keyup' && x.key === 'e');
+        record.observedEPressDurationMs = eDown && eUp
+          ? Math.round((eUp.at - eDown.at) * 10) / 10 : null;
+        record.observedSubFramePulse = record.observedEPressDurationMs !== null
+          && record.observedEPressDurationMs < 16;
         if (!opened && item.key !== 'touch-button') {
           // ONE diagnostic touch attempt after the failure has been captured.
           // Never clear/fix the original failure via the tap fallback.
@@ -232,6 +239,8 @@ test('Issue #59: repeat default and rapid E, held-E, portrait and touch without 
           challengeAfter: after.state?.openChallengeId,
           activeBefore: before.active, activeAfter: after.active,
           tapFallbackOpened: record.touchControlAccepted,
+          observedEPressDurationMs: record.observedEPressDurationMs,
+          observedSubFramePulse: record.observedSubFramePulse,
           domTrace: record.domTrace });
         if (!opened) {
           failed.push(item.id);
