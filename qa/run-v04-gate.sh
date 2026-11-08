@@ -4,7 +4,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p qa/evidence/runtime
-LOG="\${QA_GATE_LOG:-qa/evidence/runtime/v04-qa-gate.log}"
+LOG="${QA_GATE_LOG:-qa/evidence/runtime/v04-qa-gate.log}"
 : > "$LOG"
 printf 'Legacy QA gate UTC: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" | tee -a "$LOG"
 printf 'Git HEAD: %s\n' "$(git rev-parse HEAD 2>/dev/null || echo no-git-checkout)" | tee -a "$LOG"
@@ -14,7 +14,7 @@ run_case() {
   printf '\n===== %s =====\n' "$1" | tee -a "$LOG"
   shift
   "$@" 2>&1 | tee -a "$LOG"
-  rc=\${PIPESTATUS[0]}
+  rc=${PIPESTATUS[0]}
   printf 'EXIT_CODE=%s\n' "$rc" | tee -a "$LOG"
   if [ "$rc" -ne 0 ]; then FAILED=1; fi
 }
