@@ -54,3 +54,15 @@ Run manually on a real 360px-class Android device and desktop; capture device mo
 - Do not change .github/workflows/, package.json, src/, public/ or governance docs in this PR.
 - New tests consume HQ-approved contracts once merged; no test harness may directly mutate runtime state and then claim it followed a real player interaction.
 - Diagnostic shortcuts are permitted only for seeded Boss phase inspection; level-1 test uses the visible real action button.
+
+## Continuation addendum — executed source-level checks (not browser)
+
+| New ID | Area | Executed proof | Remaining |
+| --- | --- | --- | --- |
+| S06 | 100 IDs, 10 worlds, title/evidence/prompt exact duplicates | V8 executed 3 original data-only inline scripts: 90 non-Boss + 10 Boss, exact 1–100 coverage, zero exact duplicate normalized title/evidence/prompt | Structural Node suite created but not run; semantic duplication remains human review |
+| S07 | Option indices and authored Boss rubrics | V8 checked 63 structured non-Boss cases and 9 data Bosses with zero structural invalids | Real level progression and correct learning outcomes not proven |
+| S08 | Space on TEXTAREA in global keydown handler | Isolated execution of exact callback: preventDefault=true (P1 reproduced at source-handler level) | Real desktop/mobile browser test blocked |
+| S09 | Cache isolation across same GitHub Pages origin | Isolated execution of exact SW activate handler: deleted portfolio-cache-v1 + other-app-v2 (P1 reproduced at callback level) | Real browser SW activation blocked; do not test against personal user caches |
+| S10 | Fail-closed QA gate | qa/run-v04-gate.sh added; expected-red test suite added; browser prerequisite test now explicitly fails if Playwright missing | Full Node command not run; HQ CI wiring pending |
+
+The source-level isolated callbacks demonstrate the logic itself, but DO NOT substitute for full DOM, runtime, storage, screenshots, actual Pages or physical device checks. Evidence JSON: qa/evidence/v04-isolated-v8-2026-11-08.json. Browser attempt: Chromium 144 launched with explicit executable then localhost navigation blocked by administrator policy.
