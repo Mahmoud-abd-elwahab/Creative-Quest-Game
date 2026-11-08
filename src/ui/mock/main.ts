@@ -35,6 +35,10 @@ for (const control of [failSave, unverified, failPause, offline, locked]) contro
 trigger.addEventListener('click', () => {
   configure();
   status.textContent = 'الحالة: طلب interact.request للـMock Engine (هو اللي هيعمل Pause).';
+  if (offline.checked || locked.checked) {
+    status.textContent = 'الـHost ما سمحش بالتفاعل: العالم Offline أو التحدي Locked.';
+    return;
+  }
   if (overlay.phase !== 'idle' || bridge.snapshot().paused) {
     status.textContent = 'التفاعل مش متاح قبل ما يخلص التحدي الحالي.';
     return;
