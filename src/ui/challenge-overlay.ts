@@ -15,6 +15,12 @@ export type ChallengeOverlayPhase =
 export interface ChallengeOverlayOptions {
   mount: HTMLElement;
   bridge: UIBridgeV1;
+  /**
+   * HQ-owned lookup from a real Engine dialog.opened challengeId to a validated
+   * authored ChallengeSpec and the world interaction button. No content lookup
+   * is defined by UIBridgeV1 itself.
+   */
+  resolveOpenedChallenge?: (challengeId: string) => { challenge: ChallengeSpecV1; trigger: HTMLElement } | null;
   /** Request IDs are unique per component session, never reuse a receipt ID. */
   requestId?: () => string;
   /** How long to show a missing acknowledgment warning; no speculative state transition. */
@@ -23,6 +29,7 @@ export interface ChallengeOverlayOptions {
 
 export class FirstChallengeOverlay {
   private readonly bridge: UIBridgeV1;
+  private readonly resolveOpenedChallenge: ChallengeOverlayOptions['resolveOpenedChallenge'];
   private readonly root: HTMLElement;
   private readonly dialog: HTMLDialogElement;
   private readonly outsideStatus: HTMLElement;
@@ -60,6 +67,7 @@ export class FirstChallengeOverlay {
 
   constructor(options: ChallengeOverlayOptions) {
     this.bridge = options.bridge;
+    this.resolveOpenedChallenge = options.resolveOpenedChallenge;
     this.timeoutMs = options.acknowledgementMs ?? 8000;
     let sequence = 0;
     const session = Math.random().toString(36).slice(2);
@@ -139,7 +147,10 @@ export class FirstChallengeOverlay {
    * Host/Engine has already discovered the node and provided the corresponding
    * authored ChallengeSpec. No ChallengeSpec delivery event exists in UIBridgeV1.
    */
-  open(challenge: ChallengeSpecV1, trigger: HTMLElement): boolean {
+  open(
+    challenge: ChallengeSpecV1, trigger: HTMLElement,
+    openedEvent?: Extract<GameEvent, { type: 'dialog.opened' }>
+  ): boolean {
     if (this.destroyed || this.phaseValue !== 'idle') return false;
     if (this.availability !== 'ready') {
       this.setOutside(this.availability === 'offline'
@@ -151,8 +162,14 @@ export class FirstChallengeOverlay {
       challenge.responseMode !== 'multi-select' ||
       challenge.slotId !== 'OBS-W1-E01' ||
       !challenge.options?.length) return false;
-    // Explicit close is required for an unrelated paused interface.
-    if (this.bridge.snapshot().paused) return false;
+    // A world-triggered challenge is ALREADY paused by Engine. Require both
+    // matching authoritative snapshot and the exact dialog.opened event.
+    const snapshot = this.bridge.snapshot();
+    if (openedEvent) {
+      if (!snapshot.paused || !openedEvent.challengeId ||
+        openedEvent.challengeId !== challenge.id ||
+        snapshot.openChallengeId !== challenge.id) return false;
+    } else if (snapshot.paused) return false;
     this.current = challenge;
     this.opener = trigger;
     this.pendingSaveFailure = false;
@@ -164,6 +181,18 @@ export class FirstChallengeOverlay {
     this.hintIndex = 0;
     this.renderChallenge(challenge);
     this.setOutside('');
+    if (openedEvent) {
+      // Engine world interact.request already emitted engine.paused BEFORE
+      // dialog.opened. Another pause.request would race the authoritative node.
+      this.phaseValue = 'active';
+      this.dialog.showModal();
+      this.title.focus({ preventScroll: true });
+      this.setStatus('اختار دليلين تقدر ترجع لمصدرهم.');
+      this.updateSubmit();
+      return true;
+    }
+    // Explicit manual pause exists only for hosts that support this flow;
+    // Engine PR #37's actual world interaction MUST use dialog.opened above.
     this.phaseValue = 'waiting-pause';
     const id = this.requestId();
     this.pauseRequestId = id;
@@ -175,6 +204,15 @@ export class FirstChallengeOverlay {
   private readonly handleEvent = (event: GameEvent): void => {
     if (this.destroyed) return;
     switch (event.type) {
+      case 'dialog.opened': {
+        if (this.phaseValue !== 'idle' || !event.challengeId ||
+          !this.resolveOpenedChallenge) return;
+        const item = this.resolveOpenedChallenge(event.challengeId);
+        if (!item || !this.open(item.challenge, item.trigger, event)) {
+          this.setOutside('مش قادرين نعرض التحدي: محتواه أو حالة الـEngine مش متطابقين. اطلب مراجعة من اللعبة.');
+        }
+        return;
+      }
       case 'engine.paused':
         if (this.phaseValue !== 'waiting-pause' || event.requestId !== this.pauseRequestId) return;
         this.clearTimeout();
