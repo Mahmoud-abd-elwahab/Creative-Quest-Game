@@ -1,5 +1,5 @@
 # Learning Architect Handoff — Issue #3
-Artifact: LEARNING-WORLD-1@1.0-draft | 2026-11-08 | Learning owner review-signed; NOT a production acceptance.
+Artifact: LEARNING-WORLD-1@1.1-draft | 2026-11-08 | Learning owner review-signed; NOT a production acceptance.
 Repository: https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game
 Game baseline SHA: 40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1
 Branch: cq/learning/3. Main untouched by Learning Architect.
@@ -8,7 +8,8 @@ Issue: https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/issues/3
 ## Decision / actual delivery
 - **DONE (document design)**: legacy 100-node source-level inventory and structural audit; prerequisite DAG; five cognitive bands; error codes; rubric profiles; 9 Observation slots and 3-phase Boss; sample adjudicated strong/partial/unsupported responses; evidence trust/progression policy; independent semantic QA checklist; signed learning slot JSON manifest (12 slots, 9 encounters + 3 Boss).
 - **NOT DONE**: writing new levels, game integration, secure AI evaluation, schema-driven automated grading, mobile testing or publication. All belong to other owners and depend on approvals.
-- **BLOCKED**: Game Director learning experience signoff, HQ ChallengeSpec/event/mastery schema approval, HQ-designated PR integration branch, Scenario Writer/Boss mechanics implementation, QA independent two-reviewer judgement.
+- **CREATIVE STATUS**: Game Director approved W01 creative direction for prototyping in PR #11; current 9+Boss learning slots align with that branch. Final content/hero/release not approved.
+- **BLOCKED**: HQ ChallengeSpec/event/mastery schema approval, Scenario Writer/Boss mechanics implementation, QA independent two-reviewer judgement.
 
 ## Changed paths (only Learning Architect-owned)
 - docs/learning/LEGACY-100-AUDIT.md — source-level findings, risks and fix order.
@@ -18,16 +19,17 @@ Issue: https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/issues/3
 - docs/learning/ASSESSMENT-RUBRICS.md — stable versioned criterion IDs, weights and adjudications.
 - docs/learning/OBSERVATION-WORLD.md — 9 encounters + 3 Boss learning slots and novelty.
 - docs/learning/ERROR-TAXONOMY-AND-QA.md — mistake codes, hint ladder, semantic checklist, failure log.
-- docs/learning/LEARNING-SLOTS.v1.json — structured HANDOFF MANIFEST, NOT production ChallengeSpec.
+- docs/learning/LEARNING-SLOTS.v1.json — version OBS-W1-SLOTS@1.1-draft, structured HANDOFF MANIFEST, NOT production ChallengeSpec.
+- docs/learning/SLOT-REVIEW.md — per-slot cognitive novelty, fairness hazards and actionable rewrite conditions.
 - docs/learning/HANDOFF.md — this handoff.
 No changes to src/content/, src/contracts/, shared docs, index.html, assets, boss engine, root configs or main.
 
 ## Signoffs and interface gates
-1. **Learning Architect — SIGNED FOR CROSS-ROLE REVIEW**: slot IDs OBS-W1-E01..E09 and OBS-W1-B01..B03, primary OBS, named cognitive operation, band, criterion weights, later transfer. Version OBS-W1-SLOTS@1.0-draft is stable for discussion; changes require a new manifest version.
-2. **Game Director — PENDING**: confirm fantasy narrative, scene/journey affordances, Egyptian Arabic tone and concept integrity; can veto repetitive or un-fun encounters.
-3. **HQ — PENDING**: approval of versioned ChallengeSpec (not the provisional LevelSpec in SHARED-CONTRACTS), event/rubric semantics, integration branch, save-state trust labels and XP/provisional-completion behavior.
-4. **Challenge Generator — WAIT**: do not author/publish JSON levels until (2) and (3) pass. Afterwards consume slot IDs and rubric version, ensure at least nine distinct cognitive operations, cite each fictional E-ID in draft scripts, and provide options with multiple defensible responses where needed.
-5. **Boss Designer — WAIT**: consume EXACT R-OBS criterion IDs + weights, three phases (classification → causal repair → unfamiliar transfer); Boss HP may change with deterministic criteria only. Do not pretend free-text or self-check was verified by machine.
+1. **Learning Architect — SIGNED FOR CROSS-ROLE REVIEW**: slot IDs OBS-W1-E01..E09 and OBS-W1-B01..B03, primary OBS, named cognitive operation, band, criterion weights, later transfer. Version OBS-W1-SLOTS@1.1-draft is stable for review; changes require a new manifest version.
+2. **Game Director — CREATIVE APPROVED FOR PROTOTYPING (PR #11)**: retained library/nursery/cinema/fitting room/music/coffee/board games/gallery/coworking context and nine verbs, followed by craft-fair three-phase Boss. Learning rubric version 1.1 specifically aligned; in-game experiential signoff still PENDING.
+3. **HQ — INTEGRATION TARGET DECIDED; CONTRACT PENDING**: Issue #9 designates PR base cq/integration/vertical-slice. HQ must still approve versioned ChallengeSpec (not provisional LevelSpec), event/rubric semantics, save-state trust labels and XP/provisional-completion behavior.
+4. **Challenge Generator — WAIT**: Issue #8 must not author/publish JSON levels until HQ ChallengeSpec and learning v1.1 handoff acceptance. Afterwards consume slot IDs and rubric version, ensure all nine distinct operations, cite each fictional E-ID in draft scripts, provide multiple defensible keys where needed and preserve original nine scene contexts approved by Director.
+5. **Boss Designer — WAIT**: consume EXACT R-OBS / R-PREV criterion IDs + weights from manifest v1.1. Boss stages: (1) crafts-fair evidence collect/classify, (2) compare potential human motives and choose a discriminating test, (3) construct/defend at least two possible concrete Concepts from fictional organizer tool truth. R-OBS-TRANSFER is a critical human-review gate, not an automatic creativity judge. Boss HP may change with deterministic stages only. QA Issue #16 also notes the current old Boss manual bypass.
 6. **Engine — HANDOFF REQUIREMENT**: primary interact() routing currently ignores four OBS_VARIANTS and takes all 9 tasks through legacy check(). Required integration test: World 1 player interaction activates heterogeneous HQ-approved ChallengeSpec; no accidental downgrade to keyword scoring; old save progress non-destructively preserved. No engine files touched here.
 7. **QA — HANDOFF REQUIREMENT**: independently grade at least 2 supported, 2 plausible partial, 2 unsupported answer variants per final challenge; include paraphrases, Arabic dialects, English technical terms, contradictory evidence and wrong sample denominators; test exact source IDs, unique scenario/task signatures and Boss phase retries.
 
@@ -63,10 +65,10 @@ Do not let Learning Architect locally define runtime types or update src/contrac
 | TypeScript / unit / integration tests | NOT RUN | No runtime code changed; HQ bootstrap absent |
 | Mobile gameplay / regression / save migration / Pages deploy | NOT RUN | Other owners |
 | HQ schema signoff and production ChallengeSpec | BLOCKED | HQ review pending |
-| PR integration to designated target | BLOCKED | HQ integration branch not yet designated |
+| PR integration to designated target | BLOCKED | HQ integration branch now designated (cq/integration/vertical-slice); PR submission pending |
 
 ## Decision requested from HQ
-Approve/modify task scope, specify PR base branch and release gate, issue ADR for grading trust/schema, then invite Game Director review. Do not merge design files on the strength of an automated check alone. Learning Architect delivers drafts and corrections to this feature branch; HQ alone merges releases.
+Accept/revise learning v1.1 against creative PR #11, issue ADR for grading trust/schema and confirm the release gate. PR base is already cq/integration/vertical-slice per HQ Issue #9; no request to repick it.  Do not merge design files on the strength of an automated check alone. Learning Architect delivers drafts and corrections to this feature branch; HQ alone merges releases.
 
 ## Author / signoff
 Learning Architect: **learning slot structure signed for review**, not creative acceptance, technical acceptance or mastery certification. All dates, numbers, and student/customer data within the new world examples are deliberately fictional.
