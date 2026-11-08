@@ -239,8 +239,7 @@ textarea::placeholder { color:#95a8b4; }
 .evidence-option strong { display:block; color:#dff1db; font-size:12px; }
 .selection-counter { margin:9px 0 0; color:var(--lime); font-size:12px; font-weight:800; }
 .answer-select { display:block; width:100%; min-height:50px; padding:11px 12px; margin-bottom:16px;
-  border-radius:12px; border:1px solid #819ba6; background:#10273a; color:#f3f7f4; font:700 13px/1.8 inherit;
-  font-size:13px; line-height:1.8; }
+  border-radius:12px; border:1px solid #819ba6; background:#10273a; color:#f3f7f4; font-weight:700; font-size:13px; line-height:1.8; }
 .boss-preview-feedback { margin:8px 0 0; padding:10px 13px; border-radius:10px; border:1px solid #79968a; background:#274239; font-size:13px; line-height:1.8; }
 .boss-preview-feedback[hidden] { display:none; }
 @media(max-width:390px) { .xp-pill { display:none; } }
