@@ -1,0 +1,225 @@
+{
+  "schema": "ObservationConceptGeometryDraft/v0.2",
+  "status": "SKETCH DESIGN UNITS ONLY — NOT ENGINE COORDINATES",
+  "runtimeLoadable": false,
+  "coordinateContractApproved": false,
+  "mapSketch": {
+    "width": 1280,
+    "height": 760,
+    "unit": "SVG viewBox coordinate; not game tile or pixel",
+    "edgeBuffer": 12
+  },
+  "traversalGraphFile": "src/maps/observation/traversal.draft.json",
+  "nodePoints": {
+    "spawn": {
+      "x": 115,
+      "y": 565
+    },
+    "junction-west": {
+      "x": 285,
+      "y": 550
+    },
+    "enc-01": {
+      "x": 410,
+      "y": 400
+    },
+    "enc-02": {
+      "x": 560,
+      "y": 335
+    },
+    "enc-03": {
+      "x": 730,
+      "y": 315
+    },
+    "enc-04": {
+      "x": 420,
+      "y": 665
+    },
+    "enc-05": {
+      "x": 560,
+      "y": 565
+    },
+    "enc-06": {
+      "x": 720,
+      "y": 530
+    },
+    "junction-east": {
+      "x": 865,
+      "y": 425
+    },
+    "enc-07": {
+      "x": 965,
+      "y": 275
+    },
+    "enc-08": {
+      "x": 970,
+      "y": 565
+    },
+    "enc-09": {
+      "x": 1100,
+      "y": 420
+    },
+    "boss-entrance": {
+      "x": 1190,
+      "y": 340
+    },
+    "boss-arena": {
+      "x": 1190,
+      "y": 190
+    },
+    "exit-portal": {
+      "x": 1120,
+      "y": 100
+    }
+  },
+  "walkableRoadSketch": {
+    "centerlineEdgesSource": "traversal.draft.json",
+    "paintedWidth": 46,
+    "clearanceInsetProposal": 10,
+    "comment": "Trail paint is a navigation cue, not an exclusive walkable mask; surrounding forest floor can be walked unless it has a visible obstacle."
+  },
+  "nodeHaloDebugRadius": 37,
+  "collisionFootprints": [
+    {
+      "id": "tree-trunk-01",
+      "type": "circle",
+      "cx": 85,
+      "cy": 268,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "tree-trunk-02",
+      "type": "circle",
+      "cx": 360,
+      "cy": 174,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "tree-trunk-03",
+      "type": "circle",
+      "cx": 605,
+      "cy": 206,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "tree-trunk-04",
+      "type": "circle",
+      "cx": 850,
+      "cy": 146.5,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "tree-trunk-05",
+      "type": "circle",
+      "cx": 180,
+      "cy": 716.5,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "tree-trunk-06",
+      "type": "circle",
+      "cx": 745,
+      "cy": 706.5,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "tree-trunk-07",
+      "type": "circle",
+      "cx": 1035,
+      "cy": 695,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "tree-trunk-08",
+      "type": "circle",
+      "cx": 60,
+      "cy": 432.5,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "tree-trunk-09",
+      "type": "circle",
+      "cx": 1040,
+      "cy": 81.5,
+      "radius": 12,
+      "visualRef": "SVG props: tree canopy + base shadow",
+      "blocks": true
+    },
+    {
+      "id": "lake-01",
+      "type": "ellipse",
+      "cx": 800,
+      "cy": 165,
+      "rx": 95,
+      "ry": 54,
+      "visualRef": "SVG ground: visible dark water ellipse",
+      "blocks": true
+    }
+  ],
+  "collisionTestSamples": [
+    {
+      "id": "spawn-free",
+      "point": {
+        "x": 115,
+        "y": 565
+      },
+      "expected": "free"
+    },
+    {
+      "id": "east-hub-free",
+      "point": {
+        "x": 865,
+        "y": 425
+      },
+      "expected": "free"
+    },
+    {
+      "id": "tree-base-blocked",
+      "point": {
+        "x": 85,
+        "y": 268
+      },
+      "expected": "blocked"
+    },
+    {
+      "id": "lake-center-blocked",
+      "point": {
+        "x": 800,
+        "y": 165
+      },
+      "expected": "blocked"
+    },
+    {
+      "id": "forest-floor-free",
+      "point": {
+        "x": 200,
+        "y": 450
+      },
+      "expected": "free"
+    }
+  ],
+  "notApproved": [
+    "Game coordinate units and tile grid",
+    "Actual hero hitbox/pivot and radius",
+    "Camera limits and map loader",
+    "Final props footprint polygons",
+    "NPC/guardian trigger pads",
+    "Production material walkability"
+  ]
+}
