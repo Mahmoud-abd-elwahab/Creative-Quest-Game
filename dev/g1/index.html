@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creative Quest — G1 Engine Boot Test</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color-scheme: dark; background: #122a25; color: #f5f3e8 }
+    * { box-sizing: border-box }
+    body { margin: 0; padding: clamp(12px, 4vw, 36px); min-height: 100svh; }
+    main { max-width: 960px; margin-inline: auto }
+    h1 { font-size: clamp(1.25rem, 3vw, 1.8rem); margin-block: 0 10px }
+    p { line-height: 1.65; max-width: 70ch; }
+    #game-root { width: 100%; aspect-ratio: 16/9; max-height: 70vh; overflow: hidden; border: 2px solid #668775; border-radius: 12px; background: #1b4038 }
+    #game-root canvas { display: block; max-width: 100% }
+    #status { color: #e3d6b3; font-weight: 600; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Creative Quest — G1 Technical Bootstrap</h1>
+    <p>ده اختبار تشغيل منفصل للـEngine، مش اللعبة الجديدة. مفيش محتوى تعليمي أو تقدم محفوظ في النسخة دي.</p>
+    <div id="game-root" aria-label="Phaser engine startup proof" role="img"></div>
+    <p id="status" role="status" aria-live="polite">الـEngine لسه بيبدأ…</p>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
