@@ -336,25 +336,46 @@ export class FirstChallengeOverlay {
     const n = this.selections.size;
     const count = this.requiredCount;
     this.counter.textContent = count === null
-      ? `اتحدد ${n} اختيار` : `اتحدد ${n} من ${count}`;
-    const locked = !allowed || n === 0 || (count !== null && n !== count);
-    this.submit.disabled = locked;
+      ? `اتحدد ${n} اختيار`
+      : `اتحدد ${n} من ${count} — تقدر تراجع دليل واحد، ودليلين مطلوبين للإكمال`;
+    // E01 accepts a single supported trace as PARTIAL. Selection cardinality
+    // is a maximum, NOT the minimum for a formative submit. Engine owns grading.
+    const beyondLimit = count !== null && n > count;
+    const passed = this.previousAssessment?.status === 'PASSED';
+    const saved = passed && this.receipt !== null && !this.pendingSaveFailure;
+    const awaitingSave = passed && !this.pendingSaveFailure && !saved;
+    const editable = allowed && !awaitingSave && !saved;
+    this.submit.disabled = !editable || n === 0 || beyondLimit;
     for (const input of Array.from(this.options.querySelectorAll<HTMLInputElement>('input'))) {
-      input.disabled = !allowed || (count !== null && n >= count && !input.checked);
+      input.disabled = !editable || (count !== null && n >= count && !input.checked);
     }
-    this.hintButton.disabled = !allowed || !this.current?.hintTiers.length;
+    this.hintButton.disabled = !editable || !this.current?.hintTiers.length;
     this.closeButton.disabled = this.phaseValue === 'waiting-close';
-    this.submit.textContent = this.phaseValue === 'feedback' ? 'حاول تاني' : 'راجع اختياري';
-    if (this.previousAssessment?.status === 'PASSED') {
+    this.submit.textContent = this.phaseValue === 'feedback' ? 'راجع بعد التعديل' : 'راجع اختياري';
+    if (awaitingSave) {
       this.submit.disabled = true;
       this.submit.textContent = 'في انتظار تأكيد الحفظ';
+    } else if (saved) {
+      this.submit.disabled = this.phaseValue !== 'feedback';
+      this.submit.textContent = 'ارجع للعالم';
+    } else if (passed && this.pendingSaveFailure) {
+      this.submit.textContent = 'حاول إرسال الإجابة تاني';
     }
   }
 
   private readonly submitAnswer = (): void => {
     if (!this.current || !(this.phaseValue === 'active' || this.phaseValue === 'feedback') ||
       this.submit.disabled) return;
+    if (this.previousAssessment?.status === 'PASSED' && this.receipt && !this.pendingSaveFailure) {
+      // Confirmed commit changes CTA semantics to the existing authoritative
+      // close → resume handshake; it must NOT dispatch challenge.submit twice.
+      this.requestClose();
+      return;
+    }
     this.phaseValue = 'submitting';
+    this.pendingSaveFailure = false;
+    const saveError = this.root.querySelector<HTMLElement>('.cq-save-error');
+    if (saveError) saveError.hidden = true;
     this.previousAssessment = null;
     this.receipt = null;
     this.receiptTotal = null;
@@ -407,9 +428,21 @@ export class FirstChallengeOverlay {
     }
     if (result.criteria.length) {
       const list = document.createElement('ul');
+      list.setAttribute('aria-label', 'نتيجة معايير التقييم');
+      const labels: Record<string, string> = {
+        'R-OBS-CLASS': 'CLASS — تمييز الملاحظة عن الافتراض',
+        'R-OBS-TRACE': 'TRACE — الرجوع لمصدر الدليل'
+      };
+      // The Engine is authoritative for 0/1/2. Repeated success copy is not
+      // independent criterion-specific feedback; don't repeat or fabricate it.
+      const seen = new Set([result.feedback.trim()]);
       for (const c of result.criteria) {
         const item = document.createElement('li');
-        item.textContent = c.feedback;
+        const name = labels[c.criterionId] ?? c.criterionId;
+        const detail = c.feedback.trim();
+        item.textContent = `${name}: ${c.level}/2` +
+          (detail && !seen.has(detail) ? ` — ${detail}` : '');
+        if (detail) seen.add(detail);
         list.append(item);
       }
       this.feedback.append(list);
@@ -439,13 +472,13 @@ export class FirstChallengeOverlay {
       !this.current || this.receipt.challengeId !== this.current.id ||
       !this.dialog.open || this.phaseValue !== 'feedback') return;
     if (this.previousAssessment.status !== 'PASSED' || this.pendingSaveFailure) return;
+    if (this.feedback.querySelector('.cq-reward')) return;
     const p = document.createElement('p');
     p.className = 'cq-reward';
     p.textContent = `المكافأة اتحفظت: +${this.receipt.xp} XP · الإجمالي ${this.receiptTotal} XP`;
     this.feedback.append(p);
     this.setStatus('المكافأة مؤكدة من الـEngine. تقدر ترجع للعالم.');
-    this.updateSubmit();
-    this.submit.disabled = true; // no repeated submit or duplicate XP
+    this.updateSubmit(); // confirmed receipt => actionable close CTA, never re-submit
   }
 
   private showSaveFailure(message: string): void {
@@ -456,7 +489,8 @@ export class FirstChallengeOverlay {
       const area = this.root.querySelector<HTMLElement>('.cq-save-error')!;
       area.textContent = text;
       area.hidden = false;
-      this.setStatus('فيه مشكلة في الحفظ. اختار الرجوع لما تكون جاهز.');
+      this.setStatus('فيه مشكلة في الحفظ. تقدر تعيد إرسال الإجابة أو ترجع للعالم.');
+      this.updateSubmit();
     } else this.setOutside(text, false);
   }
 
