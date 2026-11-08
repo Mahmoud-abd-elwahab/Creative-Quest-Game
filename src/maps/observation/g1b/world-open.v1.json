@@ -25,16 +25,6 @@
       }
     },
     {
-      "id": "w01-g1b-shortcut-gate-solid",
-      "kind": "rect",
-      "rect": {
-        "x": 650,
-        "y": 390,
-        "width": 110,
-        "height": 84
-      }
-    },
-    {
       "id": "w01-g1b-east-hedge-solid",
       "kind": "rect",
       "rect": {
