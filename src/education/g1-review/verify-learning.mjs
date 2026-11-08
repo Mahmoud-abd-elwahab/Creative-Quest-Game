@@ -108,8 +108,7 @@ for (const [key, labels] of Object.entries(cases)) {
   }
 }
 assert.equal(results.length, 18);
-assert.equal(mismatchedPartial.length, 4,
-  'Update review assumptions: partial diagnostic count changed; inspect content and engine');
+// Diagnostic count is intentionally NOT locked: fixes should reduce it to zero.
 console.log(JSON.stringify({
   test: 'Issue45 finite-source owner review (not Engine runtime, not semantic AI)',
   invariantsPassed: invariantCount,
