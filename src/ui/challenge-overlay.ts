@@ -21,6 +21,8 @@ export interface ChallengeOverlayOptions {
    * is defined by UIBridgeV1 itself.
    */
   resolveOpenedChallenge?: (challengeId: string) => { challenge: ChallengeSpecV1; trigger: HTMLElement } | null;
+  /** Opt-in manual pause only for hosts with a matching challenge submit route. */
+  allowManualPause?: boolean;
   /** Request IDs are unique per component session, never reuse a receipt ID. */
   requestId?: () => string;
   /** How long to show a missing acknowledgment warning; no speculative state transition. */
@@ -30,6 +32,7 @@ export interface ChallengeOverlayOptions {
 export class FirstChallengeOverlay {
   private readonly bridge: UIBridgeV1;
   private readonly resolveOpenedChallenge: ChallengeOverlayOptions['resolveOpenedChallenge'];
+  private readonly allowManualPause: boolean;
   private readonly root: HTMLElement;
   private readonly dialog: HTMLDialogElement;
   private readonly outsideStatus: HTMLElement;
@@ -68,6 +71,7 @@ export class FirstChallengeOverlay {
   constructor(options: ChallengeOverlayOptions) {
     this.bridge = options.bridge;
     this.resolveOpenedChallenge = options.resolveOpenedChallenge;
+    this.allowManualPause = options.allowManualPause ?? false;
     this.timeoutMs = options.acknowledgementMs ?? 8000;
     let sequence = 0;
     const session = Math.random().toString(36).slice(2);
@@ -169,7 +173,7 @@ export class FirstChallengeOverlay {
       if (!snapshot.paused || !openedEvent.challengeId ||
         openedEvent.challengeId !== challenge.id ||
         snapshot.openChallengeId !== challenge.id) return false;
-    } else if (snapshot.paused) return false;
+    } else if (snapshot.paused || !this.allowManualPause) return false;
     this.current = challenge;
     this.opener = trigger;
     this.pendingSaveFailure = false;
@@ -205,8 +209,11 @@ export class FirstChallengeOverlay {
     if (this.destroyed) return;
     switch (event.type) {
       case 'dialog.opened': {
-        if (this.phaseValue !== 'idle' || !event.challengeId ||
-          !this.resolveOpenedChallenge) return;
+        if (this.phaseValue !== 'idle' || !event.challengeId) return;
+        if (!this.resolveOpenedChallenge) {
+          this.setOutside('الـEngine فتح تحدي، لكن الـHost مش موصّل ChallengeSpec المعتمد للواجهة.');
+          return;
+        }
         const item = this.resolveOpenedChallenge(event.challengeId);
         if (!item || !this.open(item.challenge, item.trigger, event)) {
           this.setOutside('مش قادرين نعرض التحدي: محتواه أو حالة الـEngine مش متطابقين. اطلب مراجعة من اللعبة.');
