@@ -47,3 +47,19 @@
 6. HQ alone approves merging to main and release/rollback.
 
 **Final gate: NO-GO** until P1s triaged/fixed, relevant automated tests pass (without skips) and live Pages + mobile journey are verified.
+
+## QA continuation — 2026-11-08, post-PR baseline extension
+
+**Data-only V8 execution of exact inline v0.4 data scripts:** 90 non-Boss challenges + 10 Boss IDs + 10 worlds; ID set exactly 1–100; zero duplicate IDs; zero exact normalized duplicate titles, evidence blocks or prompts; 63 structured non-Boss answer groups reviewed for answer-index validity with **zero structural invalids**. **This does not prove semantic uniqueness, accessibility, or correct pedagogy**. Evidence: qa/evidence/v04-isolated-v8-2026-11-08.json.
+
+**Independent V8 executions of original source with isolated stand-ins (not browser):**
+- QA-P1-001: executed actual global keydown callback with a Space event whose target was TEXTAREA, in mode dialog. preventDefault fired. The regression is **confirmed at the callback level**; full browser behavior is still not tested.
+- QA-P1-002: executed actual service-worker activation callback using CacheStorage stand-in with names portfolio-cache-v1, creative-quest-adventure-v04, other-app-v2. It deleted BOTH unrelated caches. **Confirmed at the callback level**, with no actual user data accessed or destroyed. Full browser reproduction is blocked.
+
+**Browser availability:** Python Playwright is installed and Chromium 144 is available at /usr/bin/chromium. Explicit-executable browser launched, but navigating to even an isolated loopback fixture returned net::ERR_BLOCKED_BY_ADMINISTRATOR. There was no real browser UI playtest, no screenshot, and no verified Pages response. Git clone still fails container DNS resolution. These remain **BLOCKED**.
+
+**New QA files:** tests/legacy/v04-content.test.mjs; tests/legacy/v04-safety-regressions.test.mjs (two deliberate expected-red checks while P1 issues persist); qa/run-v04-gate.sh (fail-closed runner; call with bash because connector-created file permissions are not executable). The browser suite now includes an explicit failing prerequisite check when Playwright is missing, preventing all-skip green CI.
+
+**Recommended HQ command:** bash qa/run-v04-gate.sh after installing Playwright and a browser. Full actual Node test execution is **NOT RUN** in this environment because the repository cannot be checked out. A passing content audit cannot override the expected-red safety tests.
+
+**Release decision unchanged: NO-GO**, even though data-shape checks passed.
