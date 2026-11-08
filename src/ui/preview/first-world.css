@@ -68,8 +68,10 @@ code { font-size:.91em; color:var(--lime); direction:ltr; }
 .map-placeholder-note { position:absolute; inset:auto auto 36% 20px; color:#d6e3e566; font:700 9px/1.7 system-ui; letter-spacing:.13em; writing-mode:vertical-rl; }
 .proximity-cue { position:absolute; z-index:5; right:50%; transform:translateX(50%); bottom:192px; background:#132d35f2;
   color:#f3f8e5; border:1px solid #a1bc95; box-shadow:0 6px 25px #0006; padding:9px 14px; border-radius:50px; font-size:12px; font-weight:800; white-space:nowrap; }
-.game-controls { position:absolute; z-index:5; inset:auto 22px calc(28px + var(--safe-bottom)) 22px; display:flex; align-items:flex-end; justify-content:space-between; pointer-events:none; }
+.game-controls { position:absolute; z-index:5; inset:auto 22px calc(28px + var(--safe-bottom)) 22px; display:flex; direction:ltr; align-items:flex-end; justify-content:space-between; pointer-events:none; }
 .game-controls>* { pointer-events:auto; }
+.interact-button { direction:rtl; }
+body:has(.quest-details[open]) .status-chip { visibility:hidden; }
 .movement { display:grid; place-items:center; position:relative; width:122px; height:122px; border:2px solid #a5d4b59b; border-radius:50%; background:#15313dd7;
   box-shadow:0 10px 27px #0a171bb3,inset 0 0 0 8px #aed6aa13; }
 .movement>span { position:absolute; color:#9ab9b24d; font:900 97px/1 system-ui,sans-serif; transform:translateY(-4px); }
