@@ -172,6 +172,7 @@ export class FirstChallengeOverlay {
         if (this.phaseValue !== 'waiting-pause' || event.requestId !== this.pauseRequestId) return;
         this.clearTimeout();
         this.pauseRequestId = null;
+        this.setOutside('');
         this.phaseValue = 'active';
         this.dialog.showModal(); // ONLY after authoritative pause ack.
         this.title.focus({ preventScroll: true });
@@ -179,7 +180,8 @@ export class FirstChallengeOverlay {
         this.updateSubmit();
         return;
       case 'assessment.recorded':
-        if (event.requestId !== this.submissionRequestId || !this.current ||
+        if (this.phaseValue !== 'submitting' ||
+          event.requestId !== this.submissionRequestId || !this.current ||
           event.result.challengeId !== this.current.id) return;
         this.clearTimeout();
         this.phaseValue = 'feedback';
@@ -193,7 +195,7 @@ export class FirstChallengeOverlay {
         if (this.receipt?.id === event.receipt.id) return;
         this.receipt = event.receipt;
         this.receiptTotal = event.xpTotal;
-        this.renderReceipt();
+        if (this.phaseValue === 'feedback') this.renderReceipt();
         return;
       case 'save.failed':
         // The contract may omit requestId for global persistence failure.
@@ -286,12 +288,19 @@ export class FirstChallengeOverlay {
     this.hintButton.disabled = !allowed || !this.current?.hintTiers.length;
     this.closeButton.disabled = this.phaseValue === 'waiting-close';
     this.submit.textContent = this.phaseValue === 'feedback' ? 'حاول تاني' : 'راجع اختياري';
+    if (this.previousAssessment?.status === 'PASSED') {
+      this.submit.disabled = true;
+      this.submit.textContent = 'في انتظار تأكيد الحفظ';
+    }
   }
 
   private readonly submitAnswer = (): void => {
     if (!this.current || !(this.phaseValue === 'active' || this.phaseValue === 'feedback') ||
       this.submit.disabled) return;
     this.phaseValue = 'submitting';
+    this.previousAssessment = null;
+    this.receipt = null;
+    this.receiptTotal = null;
     this.feedback.hidden = true;
     const requestId = this.requestId();
     this.submissionRequestId = requestId;
@@ -370,7 +379,8 @@ export class FirstChallengeOverlay {
 
   private renderReceipt(): void {
     if (!this.previousAssessment || !this.receipt || this.receiptTotal === null ||
-      !this.current || this.receipt.challengeId !== this.current.id) return;
+      !this.current || this.receipt.challengeId !== this.current.id ||
+      !this.dialog.open || this.phaseValue !== 'feedback') return;
     if (this.previousAssessment.status !== 'PASSED' || this.pendingSaveFailure) return;
     const p = document.createElement('p');
     p.className = 'cq-reward';
@@ -460,6 +470,7 @@ export class FirstChallengeOverlay {
     this.setOutside('');
     this.phaseValue = 'idle';
     this.current = null;
+    this.setStatus('');
     this.previousAssessment = null;
     this.pauseRequestId = null;
     this.closeRequestId = null;
