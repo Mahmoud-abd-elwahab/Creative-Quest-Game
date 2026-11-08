@@ -17,7 +17,7 @@ Open `first-world.html` directly in a browser or through a local static server. 
 
 ## Interaction demonstration
 
-The HUD **تفاعل** button opens the Challenge fixture; Submit opens a **sample** weak-feedback card (without reading or evaluating the answer); Hint expands one explanatory hint; Escape / × closes the native dialog; feedback buttons return to the HUD or other previews. No save, grading, unlock, XP or Boss state changes occur.
+The HUD **افحص** button opens Level 01 Evidence Lens inspection. Select **exactly two** witnessed-behavior cards; an unsupported assumption card is a plausible distractor. The demo uses a **local, hard-coded fixture branch** to show success/weak Feedback examples and is **NOT real grading**. Hint reveals explanation; Escape / × closes the native dialog and restores focus. Boss phase 2 has proposed hypothesis/evidence selects and a feedback-only fixture; phase 3 remains locked. No save, unlock, XP or authoritative Boss state changes occur.
 
 ## Suggested QA screenshots (pending actual browser run)
 
@@ -37,7 +37,11 @@ chromium --headless --no-sandbox --disable-gpu --hide-scrollbars \
   "file://$(pwd)/first-world.html?screen=hud"
 ```
 
-Do **not** call the above a completed test until a screenshot has been captured and inspected. For a focus check: open `?screen=hud`, Tab to **تفاعل**, press Enter, check that focus is inside the dialog; type Arabic + English into the textarea and verify Arrow/Space behavior; press Escape and ensure focus returns to **تفاعل**. Verify read order with keyboard and assistive technology. Test on real Android after integration.
+Do **not** call the above a completed test until a screenshot has been captured and inspected. For a focus check: open `?screen=hud`, Tab to **تفاعل**, press Enter, check that focus is inside the dialog; select evidence using Space, Tab through the two-choice counter and inspect the disabled third card; press Escape and ensure focus returns to **افحص**. In Boss preview, keyboard-select both fields and confirm that phase 3 stays locked. Verify read order with keyboard and assistive technology. Test on real Android after integration.
+
+## Creative direction linkage
+
+The UI fixture was reconciled against Game Director PR #11 (`cq/director/w01-creative-signoff-20261108`): W01 L01 = **inspect two witnessed behaviors**; W01 Boss phase 2 = **tentative interpretation + evidence to test**; XP is secondary on narrow phones. PR #11 approves prototyping direction, not canonical UI colors or Engine/Boss events. This preview deliberately contains **no canonical hero sprite**, world collision data, or authored environment artwork.
 
 ## Non-goals
 
