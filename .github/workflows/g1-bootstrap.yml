@@ -1,0 +1,54 @@
+name: G1 isolated Phaser bootstrap (not production)
+on:
+  push:
+    branches: [cq/hq/g1-bootstrap]
+  pull_request:
+    branches: [cq/integration/vertical-slice]
+  workflow_dispatch:
+
+# Write is used only to commit the freshly generated package-lock.json
+# back to the HQ-owned feature branch; never push to main or integration.
+permissions:
+  contents: write
+
+jobs:
+  g1-bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node LTS 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate pinned dependency lock if missing
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/cq/hq/g1-bootstrap' }}
+        run: npm install --package-lock-only --ignore-scripts --no-audit --fund=false
+      - name: Require committed lock for normal PR/dispatch checks
+        if: ${{ github.event_name != 'push' || github.ref != 'refs/heads/cq/hq/g1-bootstrap' }}
+        run: test -s package-lock.json
+      - name: Reproducible install
+        run: npm ci --no-audit --fund=false
+      - name: Strict TypeScript smoke
+        run: npm run typecheck:g1
+      - name: Separate Phaser/Vite build
+        run: npm run build:g1
+      - name: Verify output path and bundled JavaScript
+        run: |
+          test -f dist/g1/index.html
+          grep -q '/Creative-Quest-Game/g1/assets/' dist/g1/index.html
+          test -n "$(find dist/g1/assets -name '*.js' -print -quit)"
+          echo 'PASS: isolated output generated under dist/g1 with Pages-safe asset links'
+      - name: Commit generated lock only to HQ bootstrap branch
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/cq/hq/g1-bootstrap' }}
+        run: |
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'G1 HQ: pin resolved npm dependency lock'
+            git push origin HEAD:refs/heads/cq/hq/g1-bootstrap
+          fi
+      - name: Status boundary
+        run: |
+          echo "G1 bootstrap only: no authored challenges, Boss runtime, save migration or Android gameplay verified."
