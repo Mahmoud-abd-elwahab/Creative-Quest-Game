@@ -1,9 +1,10 @@
 import type {
   GameCommand, GameEvent, GameSnapshotV1, UIBridgeV1, Point, WorldSpecV1,
-  AssessmentResultV1,
+  AssessmentResultV1, ChallengeSpecV1,
 } from '../../contracts/v1.js';
 import { commitStructuredReceipt, loadSave, type SaveStorage, type LoadOutcome } from '../../adapters/g1/save-state.js';
 import { DIAGNOSTIC_CHALLENGE_ID, DIAGNOSTIC_HINTS, evaluateTechnicalFixture } from './technical-fixture.js';
+import { evaluateAuthoredChallenge, type ChallengeLookup } from './challenge-catalog.js';
 
 type Listener = (event: GameEvent) => void;
 const distance = (a: Point, b: Point): number => Math.hypot(a.x - b.x, a.y - b.y);
@@ -14,13 +15,25 @@ export class G1EngineBridge implements UIBridgeV1 {
   private readonly load: LoadOutcome;
   private positionGetter: (() => Point) | null = null;
   private paused = false;
+  /** True after dialog.closed, until a separate engine.resume.request ACK. */
+  private waitingForResume = false;
   private openChallengeId: string | undefined;
   private hintCount = 0;
   private destroyed = false;
   readonly world: WorldSpecV1;
-  constructor(world: WorldSpecV1, private readonly storage: SaveStorage, now?: () => string) {
+  constructor(
+    world: WorldSpecV1,
+    private readonly storage: SaveStorage,
+    now?: () => string,
+    private readonly findChallenge: ChallengeLookup = () => undefined,
+  ) {
     this.world = world;
     this.load = loadSave(storage, now);
+  }
+  /** HQ supplies approved content from Content-owned JSON, never via Engine hardcoding. */
+  getChallengeSpec(id: string): Readonly<ChallengeSpecV1> | undefined {
+    const spec = this.findChallenge(id);
+    return spec?.worldId === this.world.id ? spec : undefined;
   }
   get saveHealth(): Readonly<Pick<LoadOutcome, 'origin' | 'warning' | 'writable'>> {
     return { origin: this.load.origin, warning: this.load.warning, writable: this.load.writable };
@@ -72,8 +85,13 @@ export class G1EngineBridge implements UIBridgeV1 {
         if (this.paused || !this.canInteract(command.nodeId)) return;
         const node = this.world.nodes.find(n => n.id === command.nodeId);
         if (!node || !node.challengeId || (node.kind !== 'clue' && node.kind !== 'challenge')) return;
+        if (node.challengeId !== DIAGNOSTIC_CHALLENGE_ID && !this.getChallengeSpec(node.challengeId)) {
+          // Never route players to synthetic fixture when real ChallengeSpec is missing.
+          return;
+        }
         // No diagnostic shortcut: actual player proximity and real interaction call this exact route.
         this.paused = true;
+        this.waitingForResume = false;
         this.openChallengeId = node.challengeId;
         this.hintCount = 0;
         this.emit({ type: 'engine.paused', requestId: command.requestId });
@@ -86,23 +104,32 @@ export class G1EngineBridge implements UIBridgeV1 {
         break;
       }
       case 'engine.resume.request': {
-        // Never resume movement beneath an open dialog.
-        if (this.openChallengeId) this.emit({ type: 'engine.paused', requestId: command.requestId });
-        else { this.paused = false; this.emit({ type: 'engine.resumed', requestId: command.requestId }); }
+        // Distinct command and acknowledgment. Never resume under a live challenge.
+        if (this.openChallengeId) {
+          this.emit({ type: 'engine.paused', requestId: command.requestId });
+          return;
+        }
+        this.waitingForResume = false;
+        this.paused = false;
+        this.emit({ type: 'engine.resumed', requestId: command.requestId });
         break;
       }
       case 'dialog.close.request': {
+        if (!this.openChallengeId) return;
         this.openChallengeId = undefined;
         this.hintCount = 0;
+        this.waitingForResume = true;
+        // UI closes its DOM modal, completes focus preparation, THEN sends resume.request.
+        // The world MUST remain paused after this ack; no early engine.resumed event.
+        this.paused = true;
         this.emit({ type: 'dialog.closed', requestId: command.requestId });
-        this.paused = false;
-        this.emit({ type: 'engine.resumed', requestId: command.requestId });
         break;
       }
       case 'challenge.hint': {
         if (!this.paused || this.openChallengeId !== command.challengeId) return;
         this.hintCount += 1;
-        const hint = DIAGNOSTIC_HINTS[Math.min(this.hintCount - 1, DIAGNOSTIC_HINTS.length - 1)];
+        const hints = this.getChallengeSpec(command.challengeId)?.hintTiers ?? DIAGNOSTIC_HINTS;
+        const hint = hints[Math.min(this.hintCount - 1, hints.length - 1)] ?? 'راجع الأدلة قبل ما تختار.';
         // No dedicated hint event in G0; NOT_ASSESSED distinguishes this from an evaluated attempt.
         const result: AssessmentResultV1 = {
           schemaVersion: 1, challengeId: command.challengeId, attemptId: command.requestId,
@@ -115,7 +142,10 @@ export class G1EngineBridge implements UIBridgeV1 {
       }
       case 'challenge.submit': {
         if (!this.paused || this.openChallengeId !== command.challengeId) return;
-        const result = evaluateTechnicalFixture(command.challengeId, command.requestId, command.answer, this.hintCount);
+        const authored = this.getChallengeSpec(command.challengeId);
+        const result = authored
+          ? evaluateAuthoredChallenge(authored, command.requestId, command.answer, this.hintCount)
+          : evaluateTechnicalFixture(command.challengeId, command.requestId, command.answer, this.hintCount);
         this.emit({ type: 'assessment.recorded', requestId: command.requestId, result });
         if (result.status !== 'PASSED' || !result.narrativeCleared) return;
         if (!this.load.state || !this.load.writable) {
