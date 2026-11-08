@@ -1,6 +1,6 @@
-# Creative Quest — Learning Map (v1.0-draft)
+# Creative Quest — Learning Map (v1.1-draft)
 Issue #3 | Owner: Learning Architect | Baseline: 40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1
-Design status: learning slots proposed; Creative Director vision and HQ schema signoff PENDING.
+Design status: aligned to Game Director's World-1 creative GDD (PR #11) APPROVED FOR PROTOTYPING; HQ schema approval PENDING.
 
 ## North star
 The player can examine a new advertising brief, distinguish evidence from assumptions, formulate a conditional human insight, connect it to a demonstrated product truth, invent genuinely different concepts, direct a persuasive static visual and defend decisions with evidence. Success is **transfer to an unfamiliar case**, not recall of the right English label. Explanation language: Egyptian Arabic + standard agency terminology.
@@ -34,7 +34,7 @@ At every arrow, the player must explain *what changed in their decision*, not me
 See DIFFICULTY-PROGRESSION.md. Recognition → Diagnosis → Reconstruction → Constrained Creation → Transfer & Critique. Higher bands add comparison, contradictory/insufficient evidence, constraints, alternative hypotheses, brand facts and unfamiliar contexts—not a smaller timer or more text.
 
 ## Retrieval and interleaving
-- Initial OBS course: 9 encounters + 3-stage Boss with minimum 8 distinct task signatures, one unfamiliar transfer.
+- First OBS course: 9 encounters using Inspect / Connect / Arrange / Compare / Deflect / Route / Interview / Test / Forge, then a 3-stage crafts-fair Boss (retrieval → hypothesis test → concept transfer). Game Director approved this direction **for prototyping only** in PR #11; actual engine/UI integration and learned capability are unverified. L08/L09/Boss preview Insight and Concept; only Observation can be assessed as first-world mastery.
 - Before each later world Boss, retrieve one **earlier** skill in a different brief/industry. Example: World 5 Tension Boss asks which two observations actually support its barrier; World 8 Concept Boss rejects an invented product truth.
 - Interleave old/new skills: after introducing a new skill, use one 2-step item drawing from OBS or PT within next 2–4 encounters, then another in a later world. This interval is a design heuristic, not an empirically calibrated optimal spacing claim.
 - Do not turn every level into an identical 3-part chain. Maintain one primary scored skill with explicit secondary retrieval targets.
@@ -46,4 +46,4 @@ docs/learning/OBSERVATION-WORLD.md defines the first 9 signed **slot proposals**
 Private creative library source grounding consulted read-only: cross-book development workflow and consumer insight, social static, brief/pitch and mechanism syntheses on private main (2026-11-08). They inform *principles* and uncertainty labels only. Source synthesis ≠ scientific proof or audience research; private campaign assets are NOT embedded in this public repo.
 
 ## Approval boundaries
-Game Director: decide player fantasy / narrative fit and creative goal. HQ: approve versioned ChallengeSpec/event schema, skill names shared with runtime, progression integration and target PR branch. Writer: author varied scenarios after learning slot signoff. Boss: consume rubric IDs verbatim. QA: independently judge each question's answer space. No schema/interface should be silently declared production-ready from this document.
+Game Director: prototype-approved World-1 fantasy and nine verbs in PR #11; final learning experience needs integrated playtest. HQ: approve versioned ChallengeSpec/event schema, skill names shared with runtime, progression integration and target PR branch. Writer: author varied scenarios after learning slot signoff. Boss: consume rubric IDs verbatim. QA: independently judge each question's answer space. No schema/interface should be silently declared production-ready from this document.
