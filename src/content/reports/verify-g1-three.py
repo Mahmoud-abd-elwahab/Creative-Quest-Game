@@ -73,7 +73,7 @@ def check():
     )
 
     legacy = INVENTORY.read_text(encoding="utf-8")
-    legacy_ids = [int(i) for i in re.findall(r"^\\|\\s*(\\d+)\\s*\\|", legacy, re.MULTILINE)]
+    legacy_ids = [int(i) for i in re.findall(r"^\|\s*(\d+)\s*\|", legacy, re.MULTILINE)]
     assert len(legacy_ids) == 100 and set(legacy_ids) == set(range(1, 101)), (
         "Legacy inventory isn't the expected 100 IDs"
     )
@@ -151,7 +151,7 @@ def check():
     all_oids = [o["id"] for c in challenges for o in c["options"]]
     assert len(all_eids) == len(set(all_eids)) and len(all_oids) == len(set(all_oids))
     public_content = json.dumps(challenges, ensure_ascii=False)
-    assert not re.search(r"\\b(?:EGC|EGF)-\\d|Mahmoud-creative-library|adsoftheworld\\.com", public_content, re.IGNORECASE), (
+    assert not re.search(r"\b(?:EGC|EGF)-\d|Mahmoud-creative-library|adsoftheworld\.com", public_content, re.IGNORECASE), (
         "Private source provenance must not leak into public content"
     )
     assert not any("reward" in c for c in challenges), "Only Engine owns reward receipts"
