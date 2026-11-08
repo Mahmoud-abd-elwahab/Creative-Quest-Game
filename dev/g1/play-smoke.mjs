@@ -118,6 +118,30 @@ try {
       'real move -> WorldNode -> authored E01 -> wrong/hint/correct -> receipt -> resume/focus -> reload');
     await context.close();
   }
+  // QA #48: even reading window.localStorage can throw. Scene must still boot,
+  // visibly warn and prohibit progress persistence; never write fake XP.
+  {
+    const restricted = await browser.newContext({ viewport: { width: 360, height: 740 } });
+    await restricted.addInitScript(() => {
+      Object.defineProperty(window, 'localStorage', {
+        configurable: true,
+        get() { throw new DOMException('Storage blocked', 'SecurityError'); }
+      });
+    });
+    const page = await restricted.newPage();
+    const errors = [];
+    page.on('pageerror', e => errors.push(e.message));
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => document.documentElement.dataset.g1Play === 'ready', null, { timeout: 18000 });
+    const status = await page.locator('#status').innerText();
+    assert.match(status, /الحفظ|غير متاح|Save/i, 'restricted storage must show save warning');
+    const state = await page.evaluate(() => window.__cqG1Stage.state());
+    assert.equal(state.xp, 0, 'inaccessible storage may not invent XP');
+    assert.deepEqual(errors, [], 'blocked localStorage getter must not crash stage boot');
+    await page.screenshot({ path: `${evidence}/restricted-storage-boot.png`, fullPage: true });
+    console.log('PASS: blocked localStorage getter -> safe scene boot + save warning + zero invented XP');
+    await restricted.close();
+  }
   console.log('G1 staged first-challenge E2E browser smoke PASS — no physical Android or pedagogical signoff.');
 } finally {
   if (browser) await browser.close();
