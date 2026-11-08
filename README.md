@@ -4,6 +4,8 @@ The 2D Creative Thinking adventure has moved from the portfolio repository into 
 
 - **Source:** previously `Mahmoud-abd-elwahab/portfolio/creative-quest-2d/`; migrated to this repository's root.
 - **Development specs:** `docs/PROJECT-BIBLE.md`, `docs/AGENT-ROLES.md`, `docs/SHARED-CONTRACTS.md`.
+- **Owner-approved product direction:** [Personal Creative Training RPG](docs/PRODUCT-DIRECTION-PERSONAL-LEARNING.md): 15–20 minute practice; 70/30 learning/play effort guideline; 30 reviewed, varied challenges as near-term goal, not 500 bulk-authored items. Current G1 is a one-challenge staging proof, not a release.
+
 - **Play (once GitHub Pages is enabled):** https://mahmoud-abd-elwahab.github.io/Creative-Quest-Game/
 - **Important:** GitHub Pages deployment must be enabled in Settings → Pages → Deploy from a branch → main → /(root). Until Pages is confirmed, the above address is only the expected URL.
 - **Save data:** localStorage key `creative-quest-2d-v02` is retained in code. Old/new GitHub Pages use the same `mahmoud-abd-elwahab.github.io` origin and can share localStorage in the same browser/profile. Installed PWA or different browsing contexts may vary. Do NOT delete the original game yet.
