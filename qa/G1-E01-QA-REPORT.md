@@ -60,6 +60,7 @@ The single staged E01 WorldNode-to-authoring-to-receipt experience is supported 
 ## QA-owned deliverables and execution instructions
 
 Files: tests/g1/e01-contract-qa.test.mjs, tests/g1/e01-browser-qa.test.mjs,
+qa/run-g1-acceptance.sh,
 qa/G1-E01-TEST-MATRIX.md, qa/G1-E01-QA-REPORT.md,
 qa/evidence/g1/issue-43-independent-probes.json.
 
@@ -78,3 +79,6 @@ The last two commands must be wired by HQ as a **non-optional** QA gate (test re
 ## Release escalation / next acceptance
 
 HQ must fix #46, re-run new QA test suite on its updated exact integration SHA, and attach independent screenshots that show PARTIAL without XP; fix #47 and verify persisted receipt/CTA clarity; triage #48 and corrupt/blocked storage; run real Android mobile touch and landscape; get Game Director #44 and Learning Architect #45 signoff. Publish W01 9+Boss only after its independent full game test. Merge/release remains HQ-only.
+
+## HQ QA command entrypoint (added after initial report)
+Run bash qa/run-g1-acceptance.sh on checked-out exact PR commit. It calls all seven mandatory HQ and QA commands, retains qa/evidence/g1/runtime/g1-qa-commands.log, and exits nonzero on ANY failure. This is QA-owned script only; HQ owns workflow wiring and artifact upload. Script itself was not run locally due blocked checkout.
