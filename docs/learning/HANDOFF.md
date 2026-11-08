@@ -4,6 +4,8 @@ Repository: https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game
 Game baseline SHA: 40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1
 Branch: cq/learning/3. Main untouched by Learning Architect.
 Issue: https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/issues/3
+PR: https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/pull/20 (OPEN DRAFT; base cq/integration/vertical-slice, NOT MERGED)
+Head commit: inspect branch HEAD at review; updates to this handoff itself advance the commit.
 
 ## Decision / actual delivery
 - **DONE (document design)**: legacy 100-node source-level inventory and structural audit; prerequisite DAG; five cognitive bands; error codes; rubric profiles; 9 Observation slots and 3-phase Boss; sample adjudicated strong/partial/unsupported responses; evidence trust/progression policy; independent semantic QA checklist; signed learning slot JSON manifest (12 slots, 9 encounters + 3 Boss).
@@ -65,10 +67,10 @@ Do not let Learning Architect locally define runtime types or update src/contrac
 | TypeScript / unit / integration tests | NOT RUN | No runtime code changed; HQ bootstrap absent |
 | Mobile gameplay / regression / save migration / Pages deploy | NOT RUN | Other owners |
 | HQ schema signoff and production ChallengeSpec | BLOCKED | HQ review pending |
-| PR integration to designated target | BLOCKED | HQ integration branch now designated (cq/integration/vertical-slice); PR submission pending |
+| PR integration to designated target | BLOCKED | HQ integration branch now designated (cq/integration/vertical-slice); draft PR #20 opened against HQ base cq/integration/vertical-slice |
 
 ## Decision requested from HQ
-Accept/revise learning v1.1 against creative PR #11, issue ADR for grading trust/schema and confirm the release gate. PR base is already cq/integration/vertical-slice per HQ Issue #9; no request to repick it.  Do not merge design files on the strength of an automated check alone. Learning Architect delivers drafts and corrections to this feature branch; HQ alone merges releases.
+Accept/revise learning v1.1 against creative PR #11, issue ADR for grading trust/schema and confirm the release gate. Draft PR #20 now targets cq/integration/vertical-slice per HQ Issue #9; no request to repick it.  Do not merge design files on the strength of an automated check alone. Learning Architect delivers drafts and corrections to this feature branch; HQ alone merges releases.
 
 ## Author / signoff
 Learning Architect: **learning slot structure signed for review**, not creative acceptance, technical acceptance or mastery certification. All dates, numbers, and student/customer data within the new world examples are deliberately fictional.
