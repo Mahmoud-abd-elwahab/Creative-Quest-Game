@@ -39,6 +39,18 @@ jobs:
           grep -q '/Creative-Quest-Game/g1/assets/' dist/g1/index.html
           test -n "$(find dist/g1/assets -name '*.js' -print -quit)"
           echo 'PASS: isolated output generated under dist/g1 with Pages-safe asset links'
+      - name: Install browser for genuine runtime smoke
+        run: npx playwright install --with-deps chromium
+      - name: Desktop and mobile Chromium boot smoke
+        run: npm run smoke:g1
+      - name: Keep screenshots as review artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-bootstrap-screenshots-${{ github.run_attempt }}
+          path: dev/g1/evidence/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Commit generated lock only to HQ bootstrap branch
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/cq/hq/g1-bootstrap' }}
         run: |
