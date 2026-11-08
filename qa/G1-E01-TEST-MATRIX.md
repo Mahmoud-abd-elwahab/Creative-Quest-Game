@@ -63,3 +63,6 @@ Tests #6 and #7 are new and intentionally expose P1/P2 expected failures. HQ own
 ## Verdict
 **G1 technical acceptance: CHANGES REQUIRED** (#46 must be resolved and retested).
 **Production: NO-GO**, until full W01, Boss, creative/learning approval, real Android, live Pages and legacy hotfix regressions pass.
+
+## HQ QA command entrypoint (added after initial report)
+Run bash qa/run-g1-acceptance.sh on checked-out exact PR commit. It calls all seven mandatory HQ and QA commands, retains qa/evidence/g1/runtime/g1-qa-commands.log, and exits nonzero on ANY failure. This is QA-owned script only; HQ owns workflow wiring and artifact upload. Script itself was not run locally due blocked checkout.
