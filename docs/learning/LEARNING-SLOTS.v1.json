@@ -1,0 +1,166 @@
+{
+  "schema": "learning-slots-manifest",
+  "version": "OBS-W1-SLOTS@1.0-draft",
+  "status": "learning-owner-signed-for-review; creative/HQ ChallengeSpec approval pending",
+  "issue": 3,
+  "baselineSha": "40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1",
+  "warning": "NOT a ChallengeSpec, cannot be published as game level data, cannot automatically evaluate free text",
+  "slots": [
+    {
+      "slotId": "OBS-W1-E01",
+      "primarySkill": "OBS",
+      "difficultyBand": 1,
+      "cognitiveOperation": "classify-direct-evidence",
+      "assessmentMode": "structured",
+      "weights": {
+        "R-OBS-CLASS": 60,
+        "R-OBS-TRACE": 40
+      },
+      "laterTransfer": "World 2 tension brief"
+    },
+    {
+      "slotId": "OBS-W1-E02",
+      "primarySkill": "OBS",
+      "difficultyBand": 1,
+      "cognitiveOperation": "limit-numerical-claim",
+      "assessmentMode": "structured",
+      "weights": {
+        "R-OBS-TRACE": 55,
+        "R-OBS-SCOPE": 45
+      },
+      "laterTransfer": "Campaign metrics"
+    },
+    {
+      "slotId": "OBS-W1-E03",
+      "primarySkill": "OBS",
+      "difficultyBand": 2,
+      "cognitiveOperation": "triangulate-mixed-sources",
+      "assessmentMode": "structured",
+      "weights": {
+        "R-OBS-TRACE": 45,
+        "R-OBS-CLASS": 35,
+        "R-OBS-SCOPE": 20
+      },
+      "laterTransfer": "World 3 Insight evidence"
+    },
+    {
+      "slotId": "OBS-W1-E04",
+      "primarySkill": "OBS",
+      "difficultyBand": 2,
+      "cognitiveOperation": "identify-unmeasured-conversion",
+      "assessmentMode": "structured",
+      "weights": {
+        "R-OBS-SCOPE": 50,
+        "R-OBS-CLASS": 30,
+        "R-OBS-TRACE": 20
+      },
+      "laterTransfer": "Paid social performance"
+    },
+    {
+      "slotId": "OBS-W1-E05",
+      "primarySkill": "OBS",
+      "difficultyBand": 3,
+      "cognitiveOperation": "repair-causal-overclaim",
+      "assessmentMode": "structured",
+      "weights": {
+        "R-OBS-REPAIR": 45,
+        "R-OBS-TRACE": 35,
+        "R-OBS-SCOPE": 20
+      },
+      "laterTransfer": "Creative brief repair"
+    },
+    {
+      "slotId": "OBS-W1-E06",
+      "primarySkill": "OBS",
+      "difficultyBand": 3,
+      "cognitiveOperation": "segment-counterexample",
+      "assessmentMode": "structured",
+      "weights": {
+        "R-OBS-TRACE": 50,
+        "R-OBS-SCOPE": 30,
+        "R-OBS-CLASS": 20
+      },
+      "laterTransfer": "Audience segmentation"
+    },
+    {
+      "slotId": "OBS-W1-E07",
+      "primarySkill": "OBS",
+      "difficultyBand": 4,
+      "cognitiveOperation": "write-bounded-observation",
+      "assessmentMode": "rubric_review",
+      "weights": {
+        "R-OBS-TRACE": 40,
+        "R-OBS-SCOPE": 30,
+        "R-OBS-CLEAR": 30
+      },
+      "laterTransfer": "KV evidence support"
+    },
+    {
+      "slotId": "OBS-W1-E08",
+      "primarySkill": "OBS",
+      "difficultyBand": 4,
+      "cognitiveOperation": "choose-discriminating-test",
+      "assessmentMode": "mixed",
+      "weights": {
+        "R-OBS-ALT": 45,
+        "R-OBS-SCOPE": 30,
+        "R-OBS-TRACE": 25
+      },
+      "laterTransfer": "World 3 insight hypothesis"
+    },
+    {
+      "slotId": "OBS-W1-E09",
+      "primarySkill": "OBS",
+      "difficultyBand": 5,
+      "cognitiveOperation": "transfer-brief-critique",
+      "assessmentMode": "mixed",
+      "weights": {
+        "R-OBS-TRANSFER": 35,
+        "R-OBS-TRACE": 25,
+        "R-OBS-SCOPE": 20,
+        "R-OBS-ALT": 20
+      },
+      "laterTransfer": "Brand role/product truth"
+    },
+    {
+      "slotId": "OBS-W1-B01",
+      "primarySkill": "OBS",
+      "difficultyBand": 5,
+      "cognitiveOperation": "boss-structured-retrieval",
+      "assessmentMode": "structured",
+      "weights": {
+        "R-OBS-CLASS": 40,
+        "R-OBS-TRACE": 40,
+        "R-OBS-SCOPE": 20
+      },
+      "laterTransfer": "Later boss evidence retrieval"
+    },
+    {
+      "slotId": "OBS-W1-B02",
+      "primarySkill": "OBS",
+      "difficultyBand": 5,
+      "cognitiveOperation": "boss-repair-causality",
+      "assessmentMode": "mixed",
+      "weights": {
+        "R-OBS-REPAIR": 50,
+        "R-OBS-SCOPE": 30,
+        "R-OBS-TRACE": 20
+      },
+      "laterTransfer": "Campaign claim review"
+    },
+    {
+      "slotId": "OBS-W1-B03",
+      "primarySkill": "OBS",
+      "difficultyBand": 5,
+      "cognitiveOperation": "boss-new-sector-transfer",
+      "assessmentMode": "rubric_review",
+      "weights": {
+        "R-OBS-TRANSFER": 40,
+        "R-OBS-ALT": 25,
+        "R-OBS-TRACE": 20,
+        "R-OBS-SCOPE": 15
+      },
+      "laterTransfer": "Creative direction critique"
+    }
+  ]
+}
