@@ -294,7 +294,7 @@ export class FirstChallengeOverlay {
       ? `اتحدد ${n} اختيار` : `اتحدد ${n} من ${count}`;
     const locked = !allowed || n === 0 || (count !== null && n !== count);
     this.submit.disabled = locked;
-    for (const input of this.options.querySelectorAll<HTMLInputElement>('input')) {
+    for (const input of Array.from(this.options.querySelectorAll<HTMLInputElement>('input'))) {
       input.disabled = !allowed || (count !== null && n >= count && !input.checked);
     }
     this.hintButton.disabled = !allowed || !this.current?.hintTiers.length;
