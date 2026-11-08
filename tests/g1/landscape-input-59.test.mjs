@@ -7,7 +7,7 @@
  * key press as an acceptance gate. An Inspect tap is used ONLY to diagnose a
  * failed key; it NEVER converts a failed keyboard trial into PASS.
  * No Engine hooks, GameEvent monkeypatches, source modifications or sleeps to
- * conceal an intermittent input bug. Evidence under qa/evidence/g1/issue-59/.
+ * conceal an intermittent input bug. Evidence under qa/evidence/g1/runtime/issue-59/.
  */
 import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -19,7 +19,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { chromium } from 'playwright';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const evidence = resolve(root, 'qa/evidence/g1/issue-59');
+const evidence = resolve(root, 'qa/evidence/g1/runtime/issue-59');
 const localUrl = 'http://127.0.0.1:4193/Creative-Quest-Game/g1/play.html';
 const oldKey = 'creative-quest-2d-v02';
 const legacy = JSON.stringify({ done: [2], unlocked: 10, xp: 35,
@@ -232,7 +232,7 @@ test('Issue #59: repeat direct E, held E, portrait and touch inspect without mas
             'Near before=' + before.state?.near + ', paused after=' + after.state?.paused +
             ', dialog id after=' + after.state?.openChallengeId +
             ', touch recovery=' + record.touchControlAccepted +
-            '. See qa/evidence/g1/issue-59/' + item.id + '.json');
+            '. See qa/evidence/g1/runtime/issue-59/' + item.id + '.json');
         }
         assert.equal(after.state?.paused, true, 'Open dialog must hold Engine paused');
         assert.equal(after.state?.openChallengeId, 'cq_obs_w01_e01_inspect_v1');
