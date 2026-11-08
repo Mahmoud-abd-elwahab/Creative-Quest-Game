@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Creative Quest — Observation Graybox Design Review</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,Segoe UI,sans-serif;color:#eef4e9;background:#0c1b1b}
+*{box-sizing:border-box}body{margin:0;min-width:280px}
+header{max-width:1100px;margin:auto;padding:12px 16px}
+h1{margin:0 0 4px;font-size:clamp(16px,3.4vw,22px)}
+p{margin:0;color:#b9cabd;font-size:13px;line-height:1.45}
+code{color:#d6ca96}
+#stage{position:relative;margin:auto;max-width:1100px;height:min(71dvh,700px);min-height:360px;overflow:hidden;border:2px solid #608f7c;background:#1a352d;touch-action:none;outline:none}
+#world{position:absolute;left:0;top:0;width:1280px;height:760px;transform-origin:top left;will-change:transform}
+#world svg{position:absolute;inset:0}
+#player{position:absolute;width:21px;height:21px;border:3px solid #f9f3dc;border-radius:50%;background:#597fc9;box-shadow:0 0 0 4px #16353b99,0 0 12px #8fcaf7;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
+#player:after{content:"";position:absolute;left:7px;top:-10px;border-left:2px solid transparent;border-right:2px solid transparent;border-bottom:8px solid #f9f3dc}
+#debug{position:absolute;right:8px;top:8px;max-width:min(65%,275px);padding:8px 10px;background:#102a28e8;border:1px solid #7ea88d;border-radius:10px;font-size:12px;line-height:1.5;pointer-events:none;z-index:3}
+#pad{position:absolute;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,55px);grid-template-rows:repeat(3,55px);gap:4px;z-index:5;user-select:none;-webkit-user-select:none}
+#pad button{border-radius:14px;border:1px solid #b5d2bc;background:#173d3be5;color:#f5f7e8;font-size:26px;touch-action:none;cursor:pointer}
+#pad button:active,#pad button[data-pressed="true"]{background:#518d74}
+#pad button[data-dir="up"]{grid-column:2;grid-row:1}
+#pad button[data-dir="left"]{grid-column:1;grid-row:2}
+#pad button[data-dir="down"]{grid-column:2;grid-row:3}
+#pad button[data-dir="right"]{grid-column:3;grid-row:2}
+#pad button:focus-visible,button:focus-visible{outline:3px solid #efd784;outline-offset:2px}
+#tools{max-width:1100px;margin:auto;padding:12px 16px 24px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#tools button{min-height:44px;padding:8px 12px;border:1px solid #9bc3af;border-radius:10px;background:#244c44;color:white;cursor:pointer}
+#tools strong{font-size:13px;color:#e7cd91}
+#notice{flex-basis:100%;color:#f0cf9e;font-size:12px;line-height:1.5}
+@media(max-width:480px){#stage{height:65dvh;min-height:420px;border-left:0;border-right:0}#debug{font-size:11px;max-width:53%;}#pad{grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px)}}
+@media(prefers-reduced-motion:reduce){#world{will-change:auto}}
+</style>
+</head>
+<body>
+<header>
+<h1>Observation Realm — Traversal Graybox</h1>
+<p>Design-review sandbox only. Keyboard: WASD / arrows. Touch: D-pad. Blue ring = <code>placeholder player footprint</code>, NOT the approved hero.</p>
+</header>
+<main id="stage" role="region" aria-label="Navigable graybox for Observation Realm" tabindex="0">
+<div id="world"><div id="player" aria-hidden="true"></div></div>
+<div id="debug" role="status" aria-live="polite">Loading draft geometry…</div>
+<div id="pad" aria-label="Touch movement controls">
+<button type="button" data-dir="up" aria-label="Move up">↑</button>
+<button type="button" data-dir="left" aria-label="Move left">←</button>
+<button type="button" data-dir="down" aria-label="Move down">↓</button>
+<button type="button" data-dir="right" aria-label="Move right">→</button>
+</div>
+</main>
+<div id="tools">
+<button type="button" id="reset">Reset position</button>
+<button type="button" id="collision" aria-pressed="true">Collision overlay: ON</button>
+<button type="button" id="interactions" aria-pressed="true">Interaction nodes: ON</button>
+<button type="button" id="pathcheck">Check sampled paths</button>
+<strong id="checkresult">No path check yet</strong>
+<p id="notice">This is a standalone spatial design aid, not Phaser, not a production tilemap, not an Android test, and not a substitute for HQ-approved movement or collider contracts. The forest floor is freely walkable except for visibly owned demo colliders and bounds. Challenge and Boss interactions are not implemented.</p>
+</div>
+<script type="module">
+const base = "../../../";
+const paths = [
+  base + "src/maps/observation/traversal.draft.json",
+  base + "src/maps/observation/geometry.draft.json",
+  base + "public/assets/worlds/observation/graybox-layer-proof.svg"
+];
+const stage = document.getElementById("stage");
+const world = document.getElementById("world");
+const playerElement = document.getElementById("player");
+const debug = document.getElementById("debug");
+const checkresult = document.getElementById("checkresult");
+const pressed = new Set(), padPressed = new Set();
+let graph, geometry, player, started = false, last = performance.now(), zoom = 1;
+const avatarRadius = 10; // Design aid ONLY; never import this as the real character hitbox.
+const speed = 145;       // Design-space units/second ONLY.
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+function isBlocked(x, y) {
+  if (!geometry) return true;
+  const { width, height } = geometry.mapSketch;
+  if (x - avatarRadius < 0 || y - avatarRadius < 0 || x + avatarRadius > width || y + avatarRadius > height) return true;
+  return geometry.collisionFootprints.some(f => {
+    if (f.type === "circle") return Math.hypot(x - f.cx, y - f.cy) < f.radius + avatarRadius;
+    if (f.type === "ellipse") return Math.pow((x-f.cx)/(f.rx+avatarRadius),2) + Math.pow((y-f.cy)/(f.ry+avatarRadius),2) < 1;
+    return false;
+  });
+}
+function move(dx, dy) {
+  const steps = Math.max(1,Math.ceil(Math.hypot(dx,dy)/5));
+  for (let i=0;i<steps;i++) {
+    const vx=dx/steps,vy=dy/steps;
+    if (!isBlocked(player.x+vx,player.y)) player.x+=vx;
+    if (!isBlocked(player.x,player.y+vy)) player.y+=vy;
+  }
+}
+function pos(id){return geometry.nodePoints[id];}
+function pathCheck(){
+  if (!started) return;
+  let failed = [];
+  for(const [a,b] of graph.topology.edges){
+    const p=pos(a),q=pos(b),length=Math.hypot(q.x-p.x,q.y-p.y);
+    for(let j=0;j<=Math.ceil(length/3);j++){
+      const t=j/Math.ceil(length/3);
+      if(isBlocked(p.x+(q.x-p.x)*t,p.y+(q.y-p.y)*t)){ failed.push(a+"-"+b); break; }
+    }
+  }
+  checkresult.textContent=failed.length?"BLOCKED: "+failed.join(", "):"PASS: "+graph.topology.edges.length+" sampled trail edges, avatar radius "+avatarRadius+" sketch units";
+  checkresult.style.color=failed.length?"#f7aaaa":"#bde8b7";
+}
+function draw(now){
+  if(!started)return;
+  const delta=Math.min(.05,(now-last)/1000);last=now;
+  const k=(...items)=>items.some(item=>pressed.has(item)||padPressed.has(item));
+  const dx=(k("right","arrowright","d")?1:0)-(k("left","arrowleft","a")?1:0);
+  const dy=(k("down","arrowdown","s")?1:0)-(k("up","arrowup","w")?1:0);
+  const mag=Math.hypot(dx,dy);
+  if(mag)move(dx/mag*speed*delta,dy/mag*speed*delta);
+  const W=stage.clientWidth,H=stage.clientHeight;
+  zoom=W<=480?1.38:Math.max(.86,Math.min(1.3,W/1000));
+  const tx=clamp(W/2-player.x*zoom,Math.min(0,W-geometry.mapSketch.width*zoom),0);
+  const ty=clamp(H/2-player.y*zoom,Math.min(0,H-geometry.mapSketch.height*zoom),0);
+  world.style.transform="translate("+tx+"px,"+ty+"px) scale("+zoom+")";
+  playerElement.style.left=player.x+"px"; playerElement.style.top=player.y+"px";
+  const nearest=[...graph.topology.nodes].map(n=>({id:n.id,d:Math.hypot(pos(n.id).x-player.x,pos(n.id).y-player.y)})).sort((a,b)=>a.d-b.d)[0];
+  debug.textContent="Prototype only • "+Math.round(player.x)+", "+Math.round(player.y)+" sketch units\n"+
+    "Nearest: "+nearest.id+" ("+Math.round(nearest.d)+"u)\n"+
+    "Zoom: "+zoom.toFixed(2)+" | "+W+"×"+H+" px";
+  debug.style.whiteSpace="pre-line";
+  requestAnimationFrame(draw);
+}
+function toggle(id,buttonId){
+  const group=world.querySelector("#"+id),b=document.getElementById(buttonId);
+  if(!group)return;
+  const wasOn=group.style.display!=="none";group.style.display=wasOn?"none":"";
+  b.setAttribute("aria-pressed",String(!wasOn));
+  b.textContent=(id==="collision-debug"?"Collision overlay":"Interaction nodes")+": "+(wasOn?"OFF":"ON");
+}
+document.getElementById("reset").addEventListener("click",()=>{
+  if(!started)return;player={...pos("spawn")};checkresult.textContent="No path check yet";stage.focus({preventScroll:true});
+});
+document.getElementById("collision").addEventListener("click",()=>toggle("collision-debug","collision"));
+document.getElementById("interactions").addEventListener("click",()=>toggle("interactions-debug","interactions"));
+document.getElementById("pathcheck").addEventListener("click",pathCheck);
+const translateKey={arrowup:"up",arrowdown:"down",arrowleft:"left",arrowright:"right"};
+window.addEventListener("keydown",event=>{
+  const key=event.key.toLowerCase(),k=translateKey[key]||key;
+  if(["up","down","left","right","w","a","s","d"].includes(k)){
+    event.preventDefault();pressed.add(k);
+  }
+});
+window.addEventListener("keyup",event=>{const key=event.key.toLowerCase();pressed.delete(translateKey[key]||key)});
+window.addEventListener("blur",()=>{pressed.clear();padPressed.clear()});
+document.querySelectorAll("#pad button").forEach(button=>{
+ const key=button.dataset.dir;
+ button.addEventListener("pointerdown",e=>{e.preventDefault();button.setPointerCapture(e.pointerId);padPressed.add(key);button.dataset.pressed="true"});
+ const release=()=>{padPressed.delete(key);button.dataset.pressed="false"};
+ for(const evt of ["pointerup","pointercancel","lostpointercapture"])button.addEventListener(evt,release);
+});
+async function boot(){
+  try{
+    const [a,b,c]=await Promise.all(paths.map(p=>fetch(p).then(r=>{if(!r.ok)throw Error(p+" returned "+r.status);return r.text()})));
+    graph=JSON.parse(a);geometry=JSON.parse(b);
+    if(graph.topology.nodes.filter(n=>n.role==="encounter-slot").length!==9)throw Error("Incorrect encounter count");
+    const parsed=new DOMParser().parseFromString(c,"image/svg+xml");
+    if(parsed.querySelector("parsererror"))throw Error("Invalid graybox SVG");
+    world.insertBefore(document.importNode(parsed.documentElement,true),playerElement);
+    player={...pos("spawn")};started=true;requestAnimationFrame(draw);pathCheck();
+  }catch(error){debug.textContent="PREVIEW ERROR: "+error.message;checkresult.textContent="Host the repository root with a static HTTP server (not file://).";console.error(error)}
+}
+boot();
+</script>
+</body>
+</html>

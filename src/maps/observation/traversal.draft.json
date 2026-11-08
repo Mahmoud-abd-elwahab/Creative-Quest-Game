@@ -1,0 +1,261 @@
+{
+  "title": "Observation Realm — topological map draft",
+  "status": "GRAYBOX / PROPOSAL ONLY — NOT ENGINE-LOADABLE",
+  "version": "concept-0.1",
+  "baselineMainSha": "40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1",
+  "worldIdProvisional": "observation-01",
+  "currentPrototypeName": "غابة الملاحظة",
+  "hasApprovedCoordinates": false,
+  "runtimeLoadable": false,
+  "production": {
+    "coordinateSystem": null,
+    "tileSize": null,
+    "mapWidth": null,
+    "mapHeight": null,
+    "cameraContract": null,
+    "collisionContract": null,
+    "loaderFormat": null,
+    "heroPivot": null
+  },
+  "topology": {
+    "edgeSemantics": "undirected walkable corridors; all links physically open in the sketch",
+    "spawnNodeId": "spawn",
+    "encounterSlots": 9,
+    "bossEntranceNodeId": "boss-entrance",
+    "bossArenaNodeId": "boss-arena",
+    "exitPortalNodeId": "exit-portal",
+    "nodes": [
+      {
+        "id": "spawn",
+        "role": "spawn",
+        "zone": "Starting Clearing",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "junction-west",
+        "role": "junction",
+        "zone": "Fork of Attention",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-01",
+        "role": "encounter-slot",
+        "zone": "Footprint Verge",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-02",
+        "role": "encounter-slot",
+        "zone": "Time Marker Ridge",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-03",
+        "role": "encounter-slot",
+        "zone": "Source Split",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-04",
+        "role": "encounter-slot",
+        "zone": "Witness Grove",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-05",
+        "role": "encounter-slot",
+        "zone": "Pattern Clearing",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-06",
+        "role": "encounter-slot",
+        "zone": "Context Pool",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "junction-east",
+        "role": "junction",
+        "zone": "Evidence Confluence",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-07",
+        "role": "encounter-slot",
+        "zone": "Disagreement Bend",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-08",
+        "role": "encounter-slot",
+        "zone": "Quiet Comparison",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "enc-09",
+        "role": "encounter-slot",
+        "zone": "Final Check",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "boss-entrance",
+        "role": "boss-entrance",
+        "zone": "Assumption Threshold",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "boss-arena",
+        "role": "boss-arena",
+        "zone": "Assumption Hall",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      },
+      {
+        "id": "exit-portal",
+        "role": "exit-portal",
+        "zone": "Future Realm Portal",
+        "canonicalEncounterId": null,
+        "canonicalBossId": null,
+        "canonicalPortalId": null
+      }
+    ],
+    "edges": [
+      [
+        "spawn",
+        "junction-west"
+      ],
+      [
+        "junction-west",
+        "enc-01"
+      ],
+      [
+        "junction-west",
+        "enc-04"
+      ],
+      [
+        "enc-01",
+        "enc-02"
+      ],
+      [
+        "enc-02",
+        "enc-03"
+      ],
+      [
+        "enc-03",
+        "junction-east"
+      ],
+      [
+        "enc-04",
+        "enc-05"
+      ],
+      [
+        "enc-05",
+        "enc-06"
+      ],
+      [
+        "enc-06",
+        "junction-east"
+      ],
+      [
+        "enc-02",
+        "enc-05"
+      ],
+      [
+        "junction-east",
+        "enc-07"
+      ],
+      [
+        "junction-east",
+        "enc-08"
+      ],
+      [
+        "enc-07",
+        "enc-09"
+      ],
+      [
+        "enc-08",
+        "enc-09"
+      ],
+      [
+        "enc-09",
+        "boss-entrance"
+      ],
+      [
+        "boss-entrance",
+        "boss-arena"
+      ],
+      [
+        "boss-arena",
+        "exit-portal"
+      ]
+    ]
+  },
+  "progression": "Physical reachability is separate from learning unlocks: interaction states may be locked, but world paths must remain visible and traversable. Boss challenge starts only after pedagogical requirements supplied by Learning/Boss. Exit portal unlock is separate from navigation.",
+  "layers": [
+    {
+      "id": "background",
+      "function": "Non-colliding distant underlay; no required clue hidden"
+    },
+    {
+      "id": "ground",
+      "function": "Clear walkable materials and topographic transitions"
+    },
+    {
+      "id": "props",
+      "function": "Scene objects with collision-footprint classification; use depth sort"
+    },
+    {
+      "id": "foreground",
+      "function": "Partial occluders above hero, optional fade on overlap; never under HUD"
+    },
+    {
+      "id": "collision",
+      "function": "Authoritative solid shapes after HQ contract approval; DEBUG SKETCH ONLY now"
+    },
+    {
+      "id": "interactions",
+      "function": "NPC, encounter, boss door, portal trigger zones; canonical IDs pending"
+    }
+  ],
+  "evidence": {
+    "conceptGraphReachableNodeCount": 15,
+    "encounterSlotsCount": 9,
+    "bossEntranceReachable": true,
+    "unitTests": "BFS graph validation run when writing file; no runtime/Android integration performed"
+  },
+  "dependencies": [
+    "HQ coordinate/tile/collision/camera/map-loader approval",
+    "Game Director moodboard and environment approval",
+    "Character Lead scale/foot pivot",
+    "Learning/Scenario canonical encounter IDs",
+    "Boss team canonical boss ID",
+    "Portal identifiers and unlock contract"
+  ]
+}

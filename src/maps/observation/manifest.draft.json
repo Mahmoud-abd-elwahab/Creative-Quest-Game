@@ -1,0 +1,59 @@
+{
+  "schema": "CreativeQuestWorldManifest/DRAFT-0.2",
+  "worldId": "observation-01",
+  "canonicalWorldIdApproved": false,
+  "nameDraft": "غابة الملاحظة — Forest of Evidence",
+  "status": "CONCEPT ONLY; NOT AN ENGINE-LOADABLE MAP",
+  "contentSkill": "observation",
+  "runtimeAssetReady": false,
+  "inputContractStatus": {
+    "coordinateSystem": "awaiting-HQ",
+    "tileSize": "awaiting-HQ",
+    "collisionFormat": "awaiting-HQ",
+    "cameraBounds": "awaiting-HQ",
+    "heroScaleAndPivot": "awaiting-HQ",
+    "loaderFormat": "awaiting-HQ",
+    "encounterAndBossAndPortalIDs": "awaiting-Learning-and-Boss"
+  },
+  "sources": {
+    "layoutSpec": "src/maps/observation/README.md",
+    "traversalGraph": "src/maps/observation/traversal.draft.json",
+    "geometrySketch": "src/maps/observation/geometry.draft.json",
+    "validator": "src/maps/observation/validate-graybox.mjs",
+    "reviewPreview": "art-source/worlds/observation/interactive-graybox-review.html",
+    "sourceGraybox": "public/assets/worlds/observation/graybox-layer-proof.svg"
+  },
+  "layerIds": [
+    "background",
+    "ground",
+    "props",
+    "foreground",
+    "collision-debug",
+    "interactions-debug",
+    "annotations"
+  ],
+  "exportPolicy": "Original SVG editable vector groups now. Production tilemap, image formats, sizes, atlases and collision masks cannot be exported until HQ signs contracts and Game Director approves visual direction.",
+  "paletteDraft": {
+    "canopy": "#25483D",
+    "understory": "#2B4E41",
+    "ground": "#C3AE91",
+    "shadow": "#1B352F",
+    "observation": "#B9E6BE",
+    "boss": "#D5B979"
+  },
+  "rights": {
+    "origin": "Original geometry and SVG primitive shapes generated for project; no external source imagery in draft",
+    "thirdPartyAssets": [],
+    "productionAssetLicense": "Owner/HQ must decide; no license asserted by this manifest"
+  },
+  "quality": {
+    "graphNodes": 15,
+    "encounterPlaceholders": 9,
+    "edgeCount": 17,
+    "collisionFootprints": 10,
+    "designCollisionSamples": 5,
+    "mobileRuntimeTest": "NOT RUN",
+    "approvedWorldVisual": "PENDING"
+  },
+  "warning": "Never import this manifest as runtime asset spec. SVG viewBox positions are sketch units, not approved game coordinates. Encounter/Boss/portal IDs placeholders."
+}
