@@ -1,0 +1,171 @@
+{
+  "report": "G1 Issue 43 QA independent data source/CI review",
+  "reviewedAt": "2026-11-08",
+  "issue": 43,
+  "sourceSha": "c976f084243a018a96595b88aaf7b5bbcf733b2f",
+  "mainSha": "40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1",
+  "previousProducerComment": "https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/pull/13#issuecomment-6722085763",
+  "reviewedCIRun": {
+    "id": 42484888738,
+    "url": "https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/actions/runs/42484888738",
+    "jobId": 128744497992,
+    "conclusion": "success",
+    "conditions": "GitHub-hosted ubuntu-latest, Node 22, Playwright browser Chromium 158.0.8127.18",
+    "stepsReviewed": [
+      "npm ci (success)",
+      "npm run typecheck:g1 (success)",
+      "npm run build:g1 (success)",
+      "npm run smoke:g1 (desktop + mobile360 success)",
+      "npm run smoke:play:g1 (desktop1280 + mobile360 emulation success)"
+    ],
+    "independentRerun": false,
+    "screenshotArtifact": {
+      "id": 13618843676,
+      "link": "https://github.com/Mahmoud-abd-elwahab/Creative-Quest-Game/actions/runs/42484888738/artifacts/13618843676",
+      "sha256": "9555c6580d4740c84a4c2e720fa6ed847c08983e160fd666e6d8ac952e9d9a66",
+      "verifiedDownloadDigest": true,
+      "reviewedFiles": [
+        "actual-interaction/real-e01-desktop1280.png",
+        "actual-interaction/real-e01-mobile360.png",
+        "g1-desktop.png",
+        "g1-mobile360.png"
+      ],
+      "visualFindings": [
+        "Success rubric contains two identical bullet paragraphs",
+        "Confirmed +20 XP receipt coexists with disabled button 'في انتظار تأكيد الحفظ'",
+        "Mobile screenshot captured at 720x1480 image size from 360x740 emulation (deviceScaleFactor=2)",
+        "Graybox character/world, not final hero/art"
+      ]
+    }
+  },
+  "independentIsolatedEvaluator": {
+    "source": "src/core/g1/challenge-catalog.ts, exact function and helpers with TypeScript annotations removed for V8 execution",
+    "authoredSpec": "src/content/levels/obs-w1-e01-inspect-library.json",
+    "method": "Executed real evaluator body inside isolated JavaScript V8 via GitHub connector; NOT Node tsc, NOT Chromium",
+    "cases": [
+      {
+        "id": "good-AB",
+        "answerIds": [
+          "W1E01_ACT_A",
+          "W1E01_ACT_B"
+        ],
+        "actual": "PASSED",
+        "trust": "STRUCTURED_VERIFIED",
+        "narrativeCleared": true,
+        "masteryAwarded": false
+      },
+      {
+        "id": "good-AC",
+        "answerIds": [
+          "W1E01_ACT_A",
+          "W1E01_ACT_C"
+        ],
+        "actual": "PASSED",
+        "trust": "STRUCTURED_VERIFIED",
+        "narrativeCleared": true,
+        "masteryAwarded": false
+      },
+      {
+        "id": "partial-A",
+        "answerIds": [
+          "W1E01_ACT_A"
+        ],
+        "actual": "PARTIAL",
+        "narrativeCleared": false
+      },
+      {
+        "id": "partial-B",
+        "answerIds": [
+          "W1E01_ACT_B"
+        ],
+        "actual": "PARTIAL",
+        "narrativeCleared": false
+      },
+      {
+        "id": "unsupported-motive",
+        "answerIds": [
+          "W1E01_ACT_A",
+          "W1E01_ACT_E"
+        ],
+        "actual": "TRY_AGAIN",
+        "code": "OBS-E01"
+      },
+      {
+        "id": "unsupported-overgeneralization",
+        "answerIds": [
+          "W1E01_ACT_B",
+          "W1E01_ACT_D"
+        ],
+        "actual": "TRY_AGAIN",
+        "code": "OBS-E03"
+      },
+      {
+        "id": "unknown-option",
+        "answerIds": [
+          "W1E01_ACT_A",
+          "ZZZ"
+        ],
+        "actual": "TRY_AGAIN",
+        "code": "INVALID_CHOICE"
+      },
+      {
+        "id": "duplicate-id",
+        "answerIds": [
+          "W1E01_ACT_A",
+          "W1E01_ACT_A"
+        ],
+        "actual": "TRY_AGAIN",
+        "code": "INVALID_CHOICE"
+      }
+    ],
+    "resultCounts": {
+      "executed": 8,
+      "passToExpectedStatus": 8
+    },
+    "acceptanceGap": "UI disables submit unless n exactly 2; thus one-selection PARTIAL unreachable via ordinary UI"
+  },
+  "localEnvironment": {
+    "node": "v22.16.0",
+    "npm": "10.9.2",
+    "tscGlobal": "5.8.3",
+    "chromium": "144.0.7559.96",
+    "browserSetContent": "PASS: simple isolated in-memory Arabic page rendered",
+    "browserLocalhostNavigation": "BLOCKED: net::ERR_BLOCKED_BY_ADMINISTRATOR",
+    "gitClone": "BLOCKED: Could not resolve host github.com",
+    "npmCi": "NOT RUN locally: full integration checkout unavailable",
+    "npmTypecheckG1": "NOT RUN locally",
+    "npmBuildG1": "NOT RUN locally",
+    "npmSmokeG1": "NOT RUN locally",
+    "npmSmokePlayG1": "NOT RUN locally",
+    "independentNewNodeAndBrowserTestFiles": "AUTHORED, NOT EXECUTED against full repo"
+  },
+  "openG1Findings": [
+    {
+      "issue": 46,
+      "priority": "P1",
+      "status": "source-confirmed",
+      "summary": "PARTIAL response path cannot be submitted"
+    },
+    {
+      "issue": 47,
+      "priority": "P2",
+      "status": "screenshot+source-confirmed",
+      "summary": "Duplicate criterion copy; stale save-confirmation button"
+    },
+    {
+      "issue": 48,
+      "priority": "P2",
+      "status": "source-risk",
+      "summary": "window.localStorage getter can throw before graceful blocked port"
+    }
+  ],
+  "legacyIssuesStillOpen": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "releaseGate": "G1 CHANGES REQUIRED / production NO-GO",
+  "physicalAndroid": "BLOCKED",
+  "productionPages": "NOT VERIFIED"
+}
