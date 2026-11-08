@@ -18,6 +18,7 @@ from playwright.sync_api import sync_playwright
 
 
 MATRIX = [
+    ("zoom-equivalent-180", 180, 400),  # CSS-width stress proxy; NOT a real 200% zoom test
     ("android-360", 360, 800),
     ("android-390", 390, 844),
     ("landscape-740", 740, 360),
