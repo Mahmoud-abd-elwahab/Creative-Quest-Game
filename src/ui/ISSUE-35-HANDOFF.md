@@ -30,22 +30,39 @@
 
 **Trust:** `STRUCTURED_VERIFIED` applies to the **finite authored options** only. `SELF_REVIEWED_UNVERIFIED`, `EXTERNAL_DISCUSSION_UNVERIFIED`, `NOT_ASSESSED` and `HUMAN_REVIEWED` all have explicit wording. Narrative completion and mastery are not inferred from a button click. `save.failed` supersedes optimistic success copy. The UI owns no XP counter, rewards, game progression, Phaser scene or save storage.
 
-## Exact host integration boundary
+## PR #38 / Engine PR #37 handshake reconciliation (Issue #39)
+
+Technical Producer review: 2026-11-08 12:42/12:43 UTC. Engine PR #37 changed its close flow after coordination, verified source at `c33d4e4c2cc871e8cccf858597868d746c0e78e9` (review timestamp). UI code was then updated to use the **Engine-owned world interaction** route. No shared contract or Engine files edited here.
+
+**Normal world path (supported):** actual world node → Engine `interact.request` → `engine.paused` → `dialog.opened(requestId,challengeId)` → UI resolves a schema-validated authored ChallengeSpec and the source trigger from **HQ host** → checks `snapshot.paused === true && snapshot.openChallengeId === challengeId` → opens native dialog. UI **does not dispatch a second pause.request**.
+
+**Close path:** UI `dialog.close.request` → Engine emits `dialog.closed` but keeps `paused=true` → UI closes native dialog and focuses a waiting-status element → UI `engine.resume.request` → Engine emits matching `engine.resumed` → UI restores original trigger focus. Mock tests assert the paused state at close and resume events. Actual integrated Phaser G1 entry remains HQ-owned, and authored production E01 evaluation is not assumed.
+
+**Manual path:** `open(spec,trigger)` without `dialog.opened` is rejected by default. Only hosts with an explicit separate interaction route may opt in to `allowManualPause:true` (not supported by current Engine G1 world flow). This prevents UI initiating a challenge that the Engine cannot submit.
+
+## Exact host integration boundary (HQ-owned wiring)
 
 ```ts
 import { FirstChallengeOverlay } from '../../src/ui/challenge-overlay';
-import type { UIBridgeV1, ChallengeSpecV1 } from '../../src/contracts/v1';
+import type { ChallengeSpecV1, UIBridgeV1 } from '../../src/contracts/v1';
 
-// HQ/Engine owns both the concrete UIBridge and the schema-validated ChallengeSpec.
-// Construct once after Engine has mounted an accessible DOM root and actual trigger.
-const overlay = new FirstChallengeOverlay({ mount: document.getElementById('ui-layer')!, bridge });
-// AFTER a real world interaction has mapped a node to the authored E01 spec:
-overlay.open(authoredE01 as ChallengeSpecV1, interactButton);
-// UI sends pause; Engine replies engine.paused; only then DOM dialog opens.
-// On closing, UI requests dialog.close and engine.resume; focus returns after resumed.
+declare const mount: HTMLElement;
+declare const bridge: UIBridgeV1;
+declare const interactButton: HTMLButtonElement;
+declare const authoredE01: ChallengeSpecV1; // validated, content-team-owned; NOT mock
+
+const overlay = new FirstChallengeOverlay({
+  mount, bridge,
+  resolveOpenedChallenge(challengeId) {
+    return challengeId === authoredE01.id
+      ? { challenge: authoredE01, trigger: interactButton } : null;
+  }
+});
+// Engine scene, not UI, dispatches interact.request when player is nearby.
+// When Engine emits dialog.opened, UI verifies snapshot and shows modal.
 ```
 
-Example only — **NOT** a claim this is wired into `dev/g1/main.ts`. UI component imports its own CSS; Vite includes it in the consuming bundle. Only HQ can connect the actual G1 root entry after accepting PR.
+*Integration proof remains blocked until HQ wires this callback and real authored challenge evaluator into `dev/g1/main.ts`; mock Chromium PASS alone is not that proof.*
 
 ## Known UIBridge v1 gaps for HQ decision
 
