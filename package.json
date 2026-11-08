@@ -11,7 +11,8 @@
     "typecheck:g1": "tsc --noEmit -p tsconfig.g1.json",
     "build:g1": "vite build --config vite.g1.config.mjs",
     "check:contracts": "python src/contracts/verify-v1.py",
-    "smoke:g1": "node dev/g1/smoke.mjs"
+    "smoke:g1": "node dev/g1/smoke.mjs",
+    "smoke:play:g1": "node dev/g1/play-smoke.mjs"
   },
   "dependencies": {
     "phaser": "3.90.0"

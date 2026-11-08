@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022", "DOM"],
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
@@ -10,7 +13,13 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "useDefineForClassFields": true,
-    "types": ["vite/client"]
+    "types": [
+      "vite/client"
+    ],
+    "resolveJsonModule": true
   },
-  "include": ["dev/g1/**/*.ts", "src/contracts/**/*.ts"]
+  "include": [
+    "dev/g1/**/*.ts",
+    "src/contracts/**/*.ts"
+  ]
 }
