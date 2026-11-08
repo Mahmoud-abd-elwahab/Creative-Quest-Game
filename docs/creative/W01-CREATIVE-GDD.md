@@ -88,4 +88,4 @@ In W01, interaction verbs should not repeat in adjacent levels: inspect, connect
 - **REJECT:** drawing beautiful forest panoramas as a single unwalkable background.
 
 ## Design signoff
-**CREATIVE DIRECTION: APPROVE for one-world vertical-slice prototyping.** This does **not** approve final art identity, data contracts, completed levels, integrated game feel, performance or release. Those remain UNVERIFIED and must pass HQ/owner/QA gates.
+**CREATIVE DIRECTION: APPROVE for one-world vertical-slice prototyping.** **Post-signoff update:** owner supplied and selected a canonical teal-clad hero image; see `HERO-01-CANONICAL-LOCK.md`. This decision approves **that original hero identity** but does **not** approve the generated turnaround as production art, final sprites, data contracts, completed levels, integrated game feel, performance or release. Those remain UNVERIFIED and must pass HQ/owner/QA gates.
