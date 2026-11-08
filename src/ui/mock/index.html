@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Creative Quest — G1 UIBridge Harness</title>
+  <style>
+    :root { color-scheme:dark; font-family:Cairo,Tahoma,system-ui,sans-serif; background:#132a30; color:#f4f5ed; }
+    * {box-sizing:border-box;}
+    body {margin:0; min-height:100dvh; padding:clamp(10px,3vw,35px);}
+    .wrap {max-width:750px;margin:0 auto;}
+    h1 {font-size:clamp(19px,4vw,27px);line-height:1.5;}
+    p {line-height:1.85;}
+    .mock-flag {border-inline-start:5px solid #f4d28f; background:#3c3933; border-radius:9px;padding:10px 13px;}
+    .mock-world {min-height:255px;display:grid;place-items:center;border:1px solid #96b5a4;border-radius:20px;
+      background:radial-gradient(circle at 50% 55%,#387365,#183c40 68%,#172a35); margin:18px 0;}
+    .mock-world button {min-width:128px;min-height:64px;border:3px solid #e6d4a5;background:#f6dda5;color:#193d33;
+      border-radius:15px;font-size:16px;font-weight:900;}
+    .toggles {display:flex;flex-wrap:wrap;gap:16px;padding:12px;background:#213e45;border-radius:12px;}
+    .toggles label {min-height:44px;display:flex;gap:7px;align-items:center;font-size:13px;}
+    input {accent-color:#c5f49c;width:20px;height:20px;}
+    #mock-status {font-size:12px;}
+    button:focus-visible,input:focus-visible {outline:3px solid #ffe8a8;outline-offset:3px;}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>غابة الملاحظة — أول Challenge</h1>
+    <p class="mock-flag">Mock UIBridge Harness فقط. مفيش Engine متصل ولا Progress محفوظ ولا AI Grading. كل النتائج التجريبية عشان نختبر الـUI.</p>
+    <div class="mock-world"><button id="open-challenge" type="button">افحص دليل المكتبة</button></div>
+    <div class="toggles" aria-label="اختيارات اختبار حالات الخطأ">
+      <label><input id="simulate-save-failure" type="checkbox"> اختبر فشل الحفظ</label>
+      <label><input id="simulate-unverified" type="checkbox"> مراجعة ذاتية غير موثوقة</label>
+      <label><input id="simulate-pause-failure" type="checkbox"> اختبر غياب Pause Ack</label>
+      <label><input id="simulate-offline" type="checkbox"> حالة Offline من الـHost</label>
+      <label><input id="simulate-locked" type="checkbox"> حالة Locked من الـHost</label>
+    </div>
+    <p id="mock-status" role="status" aria-live="polite">الحالة: جاهز للاختبار.</p>
+  </main>
+  <div id="ui-layer"></div>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
