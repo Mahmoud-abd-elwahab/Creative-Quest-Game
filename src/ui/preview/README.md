@@ -43,6 +43,18 @@ Do **not** call the above a completed test until a screenshot has been captured 
 
 The UI fixture was reconciled against Game Director PR #11 (`cq/director/w01-creative-signoff-20261108`): W01 L01 = **inspect two witnessed behaviors**; W01 Boss phase 2 = **tentative interpretation + evidence to test**; XP is secondary on narrow phones. PR #11 approves prototyping direction, not canonical UI colors or Engine/Boss events. This preview deliberately contains **no canonical hero sprite**, world collision data, or authored environment artwork.
 
+## Automated screenshot/focus smoke (available, **NOT RUN**)
+
+The self-contained runner `qa_capture.py` uses Python Playwright + Chromium; it does not require an Engine, access saves, or change GitHub files. It creates preview screenshots and checks horizontal overflow, modal bounds/focus, two-evidence interaction, Boss phase lock and Escape focus return.
+
+```bash
+python -m pip install playwright
+python -m playwright install chromium
+python src/ui/preview/qa_capture.py --output /tmp/cq-ui-captures
+```
+
+It captures `180×400` CSS-width stress (rough zoom proxy, **not actual browser zoom**), `360×800`, `390×844`, `740×360`, and `1280×800` for the eight states, targeting 40 preview screenshots. Screenshot results, physical Android, screen reader and integrated Engine outcomes are **pending execution**. No screenshot filenames in this document are claims they exist.
+
 ## Non-goals
 
 No Engine imports, no `window` event bridge, no localStorage access, no world/character assets, no progression logic, no hidden state. UI values (`120 XP`, `+20 XP`, `2/3`) are clearly marked visual fixtures.
