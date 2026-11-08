@@ -33,7 +33,7 @@ This is NOT a second bootstrap or a replacement for HQ-owned `dev/g1/main.ts`. N
 - `challenge.hint` returns `assessment.recorded` with `NOT_ASSESSED`, `NEEDS_REVIEW`, and `HINT_ONLY` for lack of `hint.presented` in G0. This is not graded assessment.
 - `challenge.submit` uses synthetic two-clue multi-select fixture; selecting a motive fails, one observation is PARTIAL, two accepted sources PASSED with `STRUCTURED_VERIFIED`. `masteryAwarded=false` always, because this is NOT authored learning content.
 - `reward.committed` emitted **only after successful new-key save**, one deterministic receipt `challenge:g1-tech-fixture-clue-01`. Repeat commands can produce assessment feedback but cannot duplicate rewards.
-- `dialog.close.request` clears challenge, emits `dialog.closed` and `engine.resumed`. Explicit `engine.resume.request` during an open challenge stays paused. `engine.pause.request` acknowledges pause; all responses carry request IDs.
+- `dialog.close.request` clears challenge and emits **ONLY `dialog.closed`** while keeping `snapshot().paused === true`. UI closes native modal and prepares focus, then dispatches a **separate** `engine.resume.request` with its own `requestId`; only that command emits `engine.resumed` and enables movement. An early resume while the dialog is open is denied. `engine.pause.request` acknowledges pause; all responses carry request IDs.
 - `boss.action`/`boss.retry` intentionally not implemented; Boss owner controls that. No fake HP/fake mastery.
 - `window.localStorage` access must be guarded in HQ bootstrap: `new G1EngineBridge(world, window.localStorage)` can throw if the *property accessor itself* is blocked; wrap in `try/catch` and pass an unavailable storage port to report an actionable `save.failed`.
 
@@ -69,3 +69,74 @@ The Engine-owned verification script compiles real `src/core`, `src/adapters`, `
 
 - HQ integration-wired real Phaser map/HUD, physical Android 360px/desktop keyboard, pointer movement and modal focus smoke, real-origin localStorage reload, screen captures and 10-minute FPS profile **NOT yet independently verified** in this Engine PR.
 - Boss guard, authored E01 challenge, World art/character assets and sprite animation require separate owner PRs. Draft until HQ validation.
+
+
+## Issue #39 — precise two-owner handshake (reviewed after PR #37)
+
+**Engine is the only owner of pause, openChallengeId and XP. UI owns DOM and focus.** The previous implementation incorrectly sent `engine.resumed` from `dialog.close.request`, before UI's real resume request. Corrected in Engine now.
+
+```text
+player actually reaches clue node
+  → interact.request {requestId: I, nodeId}
+  ← engine.paused {requestId: I}        [movement locked]
+  ← dialog.opened {requestId: I, challengeId}
+  → HQ maps node.challengeId → approved ChallengeSpecV1; passes spec to UI
+  → UI opens native DOM dialog on ALREADY-PAUSED Engine (NO second pause request)
+  → challenge.hint / challenge.submit {requestId: S, challengeId, answer}
+  ← assessment.recorded {requestId: S, result}
+  ← reward.committed {requestId: S, receipt, xpTotal} only after saved
+  → dialog.close.request {requestId: C}
+  ← dialog.closed {requestId: C}        [STILL PAUSED]
+  → UI closes native dialog and prepares focus / pending resume status
+  → engine.resume.request {requestId: R}      [R != C]
+  ← engine.resumed {requestId: R}       [movement unlocked; UI restores focus]
+```
+
+**Critical UI blocker outside Engine ownership:** UI PR #38 `FirstChallengeOverlay.open(spec, trigger)` currently rejects `bridge.snapshot().paused === true` and unconditionally sends `engine.pause.request`. UI owner/HQ must add a pre-paused open flow, e.g. `openFromEngine(spec, trigger, interactionRequestId)`, which accepts the matching `dialog.opened` after Engine pause, does not dispatch another pause, and opens the modal without creating duplicate challenge state. This patch changes ONLY Engine files; do not claim end-to-end UI/Engine gameplay until UI fix is integrated and real browser smoke passes.
+
+A second `dialog.close.request` after closing produces no early resume. `interact.request` while closed-but-paused cannot re-open. `engine.resume.request` is the ONLY unblock transition following close. Engine scene `ObservationG1Scene.update()` checks `bridge.snapshot().paused` each frame.
+
+## ChallengeSpecV1 integration (Content PR #36, Issue #39)
+
+Engine now exposes **`createChallengeCatalog(specs)`** from `src/core/g1/challenge-catalog.ts` and `bridge.getChallengeSpec(challengeId)`; constructor's fourth argument is the catalog lookup. HQ owns JSON import, validation, and UI handoff, e.g.:
+
+```ts
+import type { ChallengeSpecV1, WorldSpecV1 } from '../../src/contracts/v1';
+import e01 from '../../src/content/levels/obs-w1-e01-inspect-library.json';
+import e02 from '../../src/content/levels/obs-w1-e02-connect-nursery.json';
+import e03 from '../../src/content/levels/obs-w1-e03-arrange-cinema.json';
+import { createChallengeCatalog } from '../../src/core/g1/challenge-catalog';
+import { G1EngineBridge } from '../../src/core/g1/engine-bridge';
+const catalog = createChallengeCatalog([e01, e02, e03] as ChallengeSpecV1[]);
+const realWorld: WorldSpecV1 = {
+  // HQ must use approved World-owned map dimensions/collision/spawn, not Engine fixture values.
+  ...approvedWorldSpec,
+  nodes: [
+    // World/Content owners need to provide final positioned node IDs:
+    { id: 'w01-library-inspect', kind: 'clue', position: approvedE01CluePosition,
+      radius: approvedInteractRadius, challengeId: e01.id },
+    // Add E02/E03 nodes only after corresponding interaction/UX acceptance.
+  ],
+};
+const engine = new G1EngineBridge(realWorld, safeStoragePort, undefined, catalog);
+const unsub = engine.subscribe(event => {
+  if (event.type === 'dialog.opened' && event.challengeId) {
+    const spec = engine.getChallengeSpec(event.challengeId);
+    if (!spec) { /* HQ shows missing approved content; do NOT route to technical fixture */ return; }
+    // UI owner implements pre-paused openFromEngine; never call legacy open() here:
+    overlay.openFromEngine(spec, interactionTrigger, event.requestId);
+  }
+});
+```
+
+This is a **wiring sketch**, not copy-paste runnable until World supplies `approvedWorldSpec/approvedE01CluePosition/approvedInteractRadius` and UI exposes pre-paused flow. `as ChallengeSpecV1[]` is a compile-time cast only; HQ must run existing JSON Schema + content semantic validator before passing published files.
+
+**Finite assessment supported now:** E01 multi-select with three defensible two-evidence routes (order-independent, extra/duplicate IDs rejected), E02 single-select with two valid corroborating sources, E03 five-step `order` with two allowed pair-order sequences (wrong before/after and unsupported motive rejected); matches finite `validAnswerSets`, uses option `errorCode` and `feedbackByErrorCode`, `PARTIAL` for valid incomplete routes. Non-supported response modes/text are `NOT_ASSESSED`, never fake AI grading or `masteryAwarded`. A challenge missing from the injected catalog will not open, and **never falls back to the diagnostic evaluator** except for its explicit diagnostic ID. The previous diagnostic fixture remains for isolated Engine tests, not authored W01.
+
+**Reward XP** remains provisional 20 per challenge pending Learning/HQ tuning; `RewardReceipt` is deterministic per challenge ID; duplicate submissions/reload grant no second XP. The v0.4 localStorage key remains byte-for-byte read-only.
+
+**Tests updated:** `node src/core/g1/verify.mjs` now asserts `dialog.closed` cannot unblock movement, requires a distinct resume request and corresponding ack, blocks interaction while paused, tests authored E01/E02/E03 answer patterns (test mirrors of PR #36 IDs, not copied actual JSON), unknown content fallback refusal, trust flags, idempotent receipt and reload. Actual PR #36 JSON+UI #38+real Phaser scene browser integration remains HQ/QA acceptance work.
+
+### Execution/evidence boundary (Nov 8, 2026)
+
+Previous HQ independent suite PASS was on PR #37 SHA `45471137a372d18e3cd110cadaa99745aafd0378`, **not** this new commit. Re-run on updated branch SHA. G0/G1 bootstrap CI is insufficient because it checks only HQ bootstrap. Real Android screenshots / 10-minute Phaser gameplay profile remain NOT RUN; HQ integration is intentionally not modified here.
