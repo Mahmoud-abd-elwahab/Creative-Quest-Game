@@ -1,0 +1,72 @@
+name: G1 independent evidence gate (QA + Learning, NOT release)
+on:
+  push:
+    branches: [cq/hq/g1-qa-evidence-ci]
+  pull_request:
+    branches: [cq/integration/vertical-slice]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa-acceptance:
+    name: QA #51 - independent real G1 browser and save regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 4a6abedf6cfaa5ffe1ca9a1386e0795f4b7b6cd8
+          persist-credentials: false
+      - name: Verify tested QA HEAD
+        run: test "$(git rev-parse HEAD)" = "4a6abedf6cfaa5ffe1ca9a1386e0795f4b7b6cd8"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install real Chromium with OS dependencies
+        run: npx playwright install --with-deps chromium
+      - name: Run every required QA acceptance step (expected red on P1 #46)
+        run: bash qa/run-g1-acceptance.sh
+      - name: Preserve even failing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-qa-independent-red-regressions
+          path: |
+            qa/evidence/g1/runtime/
+            dev/g1/evidence/
+          if-no-files-found: warn
+          retention-days: 21
+  learning-review:
+    name: Learning #49 - source rules and diagnostics
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 70a688d3ee1fac7ca83d712cc7e1c1e1c6b81ff9
+          persist-credentials: false
+      - name: Verify tested Learning HEAD
+        run: test "$(git rev-parse HEAD)" = "70a688d3ee1fac7ca83d712cc7e1c1e1c6b81ff9"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Execute source/assessment invariant analysis
+        run: node src/education/g1-review/verify-learning.mjs
+      - name: Verify strict diagnostic intentionally flags partial mismatches
+        run: |
+          set +e
+          node src/education/g1-review/verify-learning.mjs --strict-diagnostic > learning-strict.log 2>&1
+          rc=$?
+          cat learning-strict.log
+          test "$rc" -ne 0
+      - name: Retain learning diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-learning-discrepancy-evidence
+          path: learning-strict.log
+          if-no-files-found: warn
+          retention-days: 21
