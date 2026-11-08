@@ -35,7 +35,7 @@ A fabricated measurement, a false quote, an invented product capability, or an u
 Substitute long names via R-OBS- prefix. “Structured” means only the authored finite answers can be checked deterministically; open reasoning for the same step is formative and must not be deemed automatically verified. Stage success can drive Boss mechanics only through HQ-approved versioned ChallengeSpec.
 
 ## Three contrastive answer adjudications (fictional E07 exemplar)
-Evidence: E1 records 6/10 parcel pickup visits after 18:00 on two observed days. E2 records 2/10 visits before 10:00 in the same local sample. E3 says staff reported one visitor asked for longer hours. These numbers are **simulated**, not market research.
+Evidence: E1 records 6 of the same 20 parcel pickup visits after 18:00 across two observed days. E2 records 2 of those 20 visits before 10:00. E3 says staff reported one visitor asked for longer hours. These numbers are **simulated**, not market research.
 
 **Supported — independently defensible (2/2 trace and scope):** “في الـ20 زيارة اللي اتسجلت على اليومين دول، 6 كانت بعد الساعة 6، و2 قبل الساعة 10. بياناتنا ما بتقولش ليه الناس اختارت المواعيد.” Quotes the right sample and refuses a motive.
 
