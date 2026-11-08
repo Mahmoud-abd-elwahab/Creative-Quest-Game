@@ -1,5 +1,5 @@
 # Error Taxonomy, Hint Sequences and Independent Semantic QA
-Version: LEARN-QA@1.0-draft | Issue #3 | No claim of in-engine execution.
+Version: LEARN-QA@1.1-draft | Issue #3 | No claim of in-engine execution.
 
 ## Diagnostic error taxonomy (error ≠ player identity)
 | Code | Error pattern | Evidence to detect | Coaching action / later transfer |
@@ -58,30 +58,38 @@ For each authored item register:
 primary skill | cognitive verb | evidence shape | uncertainty/contradiction | constraint | player output | likely misconception | later transfer | sector.
 Two levels are **semantic near-duplicates** when at least the cognitive verb, evidence shape, uncertainty type, required decision and misconception are effectively the same. Different products, proper nouns, pictures, score positions or reordered choices do NOT rescue a duplicate. Revisit is permitted when explicitly tagged RETRIEVAL and at least one context and evidence constraint changes. Record intentional reprise plus timing. Count “unique cognitive operations” using signatures, not JSON kind labels.
 
-## Desk-based sample answer trials (not AI grading)
-E07 fictional evidence (same 20 recorded visits over two days): E1 six after 18:00; E2 two before 10:00. Staff member mentioned one request for later hours.
-- S1 SUPPORTED: “من الـ20 زيارة اللي اتسجلت في اليومين، 6 كانت بعد 6 مساءً و2 قبل 10 الصبح، ومفيش معلومات عن السبب.” TRACE=2, SCOPE=2.
-- S2 SUPPORTED: “في العينة المحدودة، عدد الزيارات المسجلة بعد 6 أكبر من اللي قبل 10؛ السبب مش ظاهر من أوقات الدخول.” TRACE=2, SCOPE=2.
-- P1 PARTIAL: “الناس بتيجي متأخر أكتر.” Omits sample/context; scope=1. Corrective: “مين؟ كام؟ وإمتى؟”
-- P2 PARTIAL: “أكيد الشغل ممكن يأثر، والزيارات المسائية كانت 6.” Accurately cites one count but turns possible motive too close to fact; scope=1 / classify caution.
-- U1 UNSUPPORTED: “جميع السكان بيكرهوا الصبح وعشان كده لازم نفتح طول الليل.” scope=0, false population/causal leap.
-- U2 UNSUPPORTED: “سجلنا 60 زيارة ليلية، والناس طلبت ده.” trace=0, fabricated count.
-For two defensible supported formulations, do NOT insist on one reference sentence.
+## Desk-based contrasting answer trials (not AI grading)
+These are **fictional W01 cases** aligned to Game Director's approved-for-prototype creative GDD. Answer trials are hand-authored rubric examples and NOT independent learner tests. All final authored items require two QA reviewers and 2 supported/2 partial/2 unsupported samples each.
 
-E09 marketing transfer (140 QR scans, 18 completed registrations, one quote “جربت أشوف المواعيد”):
-- S1: “فيه 140 scan و18 registration مسجلين، لكن البيانات وحدها مش بتثبت إن نفس الأشخاص عملوا الخطوتين.” SUPPORTED.
-- S2: “ناس تفاعلت مع QR، وفيه تسجيلات مؤكدة، إنما سبب عدم التسجيل مش متقاس. نراجع الربط بين الأحداث.” SUPPORTED.
-- P1: “الـQR كويس، بس الجمهور خايف من الزحمة.” PARTIAL: first fact imprecise, motive unsupported; ask for proof.
-- P2: “لازم نستهدف شباب أكتر؛ عندنا 18 تسجيل.” PARTIAL: count true, targeting recommendation ungrounded.
-- U1: “122 شخص رفضوا التسجيل بسبب الزحمة.” UNSUPPORTED: subtracting unmatched counts and inventing motive.
-- U2: “كل الـ140 سجلوا فعليًا.” UNSUPPORTED: contradicts records.
-A source bundle alone should not make the preferred marketing plan unique; credit warranted conservative decisions.
+### L07 / Board-game shop (Interview)
+Given E1: customer reads board-game rules, E2: some leave without purchase; reasons unmeasured.
+- S1 **SUPPORTED**: “احكيلي عن آخر لعبة قريت قواعدها في المحل ومشتريتهاش، حصل إيه بعدها؟” Non-leading episodic interview; ALT=2.
+- S2 **SUPPORTED**: “كنت بتدور على إيه في طريقة اللعب، وإيه اللي خلاك تختار اللعبة أو تسيبها؟” Contrasts goals/decision, no assumed reason; ALT=2.
+- P1 **PARTIAL**: “هل القواعد صعبة؟” Anchors one possibility but leading; ALT=1.
+- P2 **PARTIAL**: “ليه مش بتشتري؟” Relevant but misses incident/other explanations; ALT=1.
+- U1 **UNSUPPORTED**: “فهمنا إزاي صعوبة القواعد منعتك من الشراء.” Presupposes unverified causal claim; ALT=0.
+- U2 **UNSUPPORTED**: “الناس الغبية مبتفهمش الألعاب” Invents audience psychology, broadens sample, demeaning; ALT=0, SCOPE=0.
+Any neutral, relevant question that distinguishes explanations can pass even if words differ.
 
-Boss B02 example:
-- Supported: “الـ12 QR scans والـ4 registrations اتقاسوا بشكل منفصل؛ مش عارفين مين منهم كمل أو ليه.” 
-- Partial: “الناس بتجرب QR ومش كلها بتسجل.” Can be acceptable if event linkage is clarified; currently requires qualification.
-- Unsupported: “26 ناس رافضة المتحف لأن الـQR مش شغال.” Unsupported arithmetic/linkage/cause.
-If this phase admits two defensible answers under available data, write explicit multi-key logic or accept human-reviewed response instead of forcing one keyword.
+### L09 / Coworking (guided brand/Concept preview)
+Given E1/E2: some monthly subscribers visit only a few days; fictional Product Truth: per-day access pass exists (only for this practice brief).
+- S1 **SUPPORTED**: “في العينات دي فيه ناس بتستخدم الاشتراك أيام قليلة؛ احتمال الاشتراك المرن يناسبهم. فكرة KV: التقويم بيظهر الأيام اللي بتدفعها بالفعل بفضل الـDay Pass.” Evidence bounded, mechanism visible, true task product fact.
+- S2 **SUPPORTED**: “بعض المشتركين بيزوروا المكان بشكل متقطع؛ مش متأكدين السبب. Concept: مكتب بيتكوّن فقط يوم استخدامه، والـDay Pass هو اللي يسمح بده.” Alternative tangible visual premise; question if claim implies unsupported additional features before approving.
+- P1 **PARTIAL**: “ممكن المرونة تكون مهمة. نعمل بوست شكله Premium.” Hypothesis caveat but no mechanism/product contribution.
+- P2 **PARTIAL**: “نجرب KV لشخص مبسوط مع شعار يومك في إيدك.” Sensible mood but generic brand integration.
+- U1 **UNSUPPORTED**: “الـDay Pass مجاني ومتاح في أي مدينة.” Fabricated offer.
+- U2 **UNSUPPORTED**: “كل أصحاب الاشتراكات كسالى ولازم نكسفهم.” Unsupported motive, universal claim, unfit concept.
+No R-PREV positive score certifies actual Concept or Brand Role mastery.
+
+### Boss B02 / B03 — Craft fair
+Given E1 some visitors photographed objects; E2 some recorded item numbers; E3 some moved on and later returned. A **fictional** organizer confirms an actual booth map and item-reference tool. Neither comparison nor memorializing is established as true.
+- S1 **SUPPORTED**: Possible Insight “يمكن بيقارنوا قطع مختلفة” + non-leading “إيه اللي كنت بتدور عليه لما صورت القطعة؟” + Concept “Compare Craft Trail” records item code and verified map. Subject to mechanism feasibility; supports B02 and B03.
+- S2 **SUPPORTED**: Potential Insight “ممكن بيحاولوا يفتكروا القطعة ويرجعولها” + inspect consented revisit behavior or interview + “Bookmark the Craft” item-code/map return action. Independent defensible route.
+- P1 **PARTIAL**: “الزوار محتارين، نعمل كارت جميل.” Plausible hypothesis asserted too firmly; no coherent brand-action or test.
+- P2 **PARTIAL**: “نشرح إن الناس بتحب الصور؛ عشان كده نعمل Booth Map.” Real tool but no traceable route from specific evidence to motive or idea.
+- U1 **UNSUPPORTED**: “كل الزوار بيصوروا عشان الأسعار غالية، فنضمن لهم خصم 70%.” Unsupported psychology and fabricated discount.
+- U2 **UNSUPPORTED**: “نعمل Poster بالأسود والدهبي ونعتبره Concept.” Cosmetic direction only, no evidence/method/product role.
+B02 MUST accept both hypotheses when caveated with discriminating evidence. B03 MUST accept two truly independent justified concepts after human/rubric review, not a single magic correct phrase. Directly rating creative originality through keyword spotting is forbidden.
 
 ## Failure log — authored-item QA findings
 | ID | Source | Failure | Severity | Reproduction / rewrite required | Status |
@@ -91,7 +99,7 @@ If this phase admits two defensible answers under available data, write explicit
 | QA-003 | Legacy normal interact() | All 9 world-1 tasks route to old free-text version | BLOCKER | Engine normal flow must use approved slot map; test direct and walking paths | CONFIRMED SOURCE-LEVEL |
 | QA-004 | Worlds 5–10 | Six worlds share nine-slot kind sequence | IMPORTANT | Require cognitive-operation novelty beyond kind variation | CONFIRMED STRUCTURAL |
 | QA-005 | Boss / write mode | Manual completion may be represented as mastery | BLOCKER | Separate narrative completion from verified evidence status | CONFIRMED SOURCE-LEVEL |
-| QA-006 | First-world curriculum proposal | Evidence dates and denominator could be read ambiguously | IMPORTANT | QA approve one shared 20-visit sample and exact E-IDs before Writer authors task | DESIGN-RISK OPEN |
+| QA-006 | Creative-aligned L09 / Boss preview | Invented product truth might be mistaken for real brand capability | IMPORTANT | Clearly flag Day Pass, booth map/item reference as fictional exercise facts; require separate product proof in real work | DESIGN-RISK OPEN |
 | QA-007 | Legacy content all 90 encounters | Full pairwise semantic equivalence not individually double-reviewed | IMPORTANT | Independent audit with full text + second reviewer before migration | NOT RUN |
 | QA-008 | Next ChallengeSpec interface | Versioned rubric ID serialization and event handling absent | BLOCKER | HQ approves schema + QA adds contract tests | BLOCKED ON HQ |
 
