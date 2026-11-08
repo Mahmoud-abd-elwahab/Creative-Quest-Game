@@ -19,7 +19,7 @@
     challenge: { heading:'قبل ما تفسّر، لاحظ', tag:'OBSERVATION · LEVEL 01',
       template:'challengeBody', footer:[
         {text:'ورّيني تلميح',kind:'secondary',hint:true},
-        {text:'راجع إجابتي',kind:'primary',screen:'weak'}
+        {text:'شوف مثال Feedback',kind:'primary',sampleChallenge:true}
       ] },
     weak: { heading:'راجع طريقة تفكيرك', tag:'OBSERVATION · FEEDBACK',
       template:'weakBody', footer:[
@@ -31,7 +31,7 @@
     boss: { heading:'مواجهة الـBoss', tag:'WORLD 01 · BOSS · PHASE 02',
       template:'bossBody', footer:[
         {text:'ارجع للخريطة',kind:'secondary',screen:'hud'},
-        {text:'راجع المرحلة',kind:'primary',screen:'weak'}
+        {text:'راجع الفرضية',kind:'primary',sampleBoss:true}
       ] },
     loading: { heading:'تحميل العالم',tag:'CREATIVE QUEST · LOADING',
       template:'loadingBody',footer:[{text:'رجوع',kind:'secondary',screen:'hud'}] },
@@ -71,13 +71,47 @@
       button.textContent=action.text;
       if (action.screen) button.dataset.previewTo=action.screen;
       if (action.hint) button.dataset.previewHint='true';
+      if (action.sampleChallenge) { button.dataset.previewChallenge='true'; button.disabled=true; }
+      if (action.sampleBoss) { button.dataset.previewBoss='true'; }
       footer.append(button);
     }
     if (!dialog.open) dialog.showModal();
+    if (screen==='challenge') setupEvidenceFixture();
     content.scrollTop=0;
     title.tabIndex=-1;
     title.focus({preventScroll:true});
     setQuery(screen);
+  }
+
+
+  function setupEvidenceFixture() {
+    const checks=Array.from(content.querySelectorAll('.evidence-choice'));
+    const counter=content.querySelector('#selectionCounter');
+    const submit=footer.querySelector('[data-preview-challenge]');
+    const update=()=>{
+      const selected=checks.filter(input=>input.checked);
+      for(const input of checks) input.disabled=selected.length===2&&!input.checked;
+      counter.textContent='اتحدد '+selected.length+' من 2';
+      submit.disabled=selected.length!==2;
+    };
+    for(const input of checks) input.addEventListener('change',update);
+    update();
+  }
+
+  function showBossFixtureFeedback() {
+    const hypothesis=content.querySelector('#bossHypothesis')?.value;
+    const evidence=content.querySelector('#bossEvidence')?.value;
+    const output=content.querySelector('#bossPreviewFeedback');
+    if(!output)return;
+    output.hidden=false;
+    if(!hypothesis||!evidence) {
+      output.textContent='اختار فرضية ودليل تختبرها بيه الأول. ده Preview مش تقييم حقيقي.';
+    } else if(hypothesis==='tentative' && evidence==='follow-up') {
+      output.textContent='مثال Feedback: كويس إنك وصفت احتمال واخترت سؤال يكشف الدافع بدل ما تفترضه. المرحلة التالتة مش هتتفتح هنا؛ محتاجة Boss Engine.';
+    } else {
+      output.textContent='مثال Feedback: الاختيار فيه تعميم أو دليل مش مرتبط بالفرضية. جرّب تراجع علاقة السؤال بالادعاء.';
+    }
+    output.focus({preventScroll:false});
   }
 
   document.addEventListener('click',(e)=>{
@@ -88,6 +122,14 @@
       render(target.dataset.previewTo,target);
       return;
     }
+    if (e.target.closest('[data-preview-challenge]')) {
+      const chosen=Array.from(content.querySelectorAll('.evidence-choice:checked')).map(node=>node.value);
+      if(chosen.length!==2)return;
+      // Deterministic demonstration on fictitious fixture cards, NOT Engine grading.
+      render(chosen.includes('assumption')?'weak':'success');
+      return;
+    }
+    if (e.target.closest('[data-preview-boss]')) { showBossFixtureFeedback(); return; }
     if (e.target.closest('[data-preview-hint]')) {
       const hint=document.getElementById('hintText');
       if(hint) { hint.hidden=false; hint.tabIndex=-1; hint.focus(); }
