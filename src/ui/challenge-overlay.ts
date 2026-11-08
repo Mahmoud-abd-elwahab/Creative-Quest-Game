@@ -56,6 +56,7 @@ export class FirstChallengeOverlay {
   private hintIndex = 0;
   private pendingSaveFailure = false;
   private destroyed = false;
+  private availability: 'ready' | 'offline' | 'locked' = 'ready';
 
   constructor(options: ChallengeOverlayOptions) {
     this.bridge = options.bridge;
@@ -140,6 +141,12 @@ export class FirstChallengeOverlay {
    */
   open(challenge: ChallengeSpecV1, trigger: HTMLElement): boolean {
     if (this.destroyed || this.phaseValue !== 'idle') return false;
+    if (this.availability !== 'ready') {
+      this.setOutside(this.availability === 'offline'
+        ? 'إنت Offline حاليًا. تشغيل التحدي محتاج تأكيد إن ملفات اللعبة متاحة محليًا.'
+        : 'التحدي مقفول في الحالة الحالية. لازم الـEngine يأكد إنه مفتوح.');
+      return false;
+    }
     if (challenge.schemaVersion !== 1 ||
       challenge.responseMode !== 'multi-select' ||
       challenge.slotId !== 'OBS-W1-E01' ||
@@ -487,6 +494,25 @@ export class FirstChallengeOverlay {
     this.clearTimeout();
     this.unsubscribe();
     this.root.remove();
+  }
+
+  /**
+   * Optional external shell signal until HQ adds availability/capabilities to
+   * UIBridgeV1. The UI does NOT independently infer whether cached play is safe.
+   * Host must call this only from a trusted runtime/availability decision.
+   */
+  setAvailability(value: 'ready' | 'offline' | 'locked'): void {
+    this.availability = value;
+    if (this.phaseValue === 'idle') {
+      if (value === 'ready') this.setOutside('');
+      else this.setOutside(value === 'offline'
+        ? 'إنت Offline. مش هنفترض إن العالم محفوظ على الجهاز أو إنه اتزامن.'
+        : 'التحدي مقفول؛ مفيش تأكيد من اللعبة إنه متاح.');
+    } else if (this.dialog.open && value !== 'ready') {
+      this.setStatus(value === 'offline'
+        ? 'الاتصال غير متاح. مش هنوعدك بحفظ التقدم من غير تأكيد.'
+        : 'التحدي أصبح غير متاح. الرجوع للعالم من الزر ×.');
+    }
   }
 
   /** Read-only authoritative snapshot, for host HUD integration; never changes state. */
