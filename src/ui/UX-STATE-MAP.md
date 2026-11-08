@@ -5,6 +5,37 @@
 **Owners:** UI owns only `src/ui/` and `public/assets/ui/`. HQ owns `src/contracts/` and engine agreement.
 **Approval blockers:** Game Director's world/hero/HUD direction; HQ UIBridge state/events; Engine pause/resume acknowledgment; Learning feedback and Boss event payloads.
 
+## 2026-11-08 creative-direction reconciliation (Game Director PR #11)
+
+**Source:** `docs/creative/W01-CREATIVE-GDD.md` and `docs/creative/W01-ART-HERO-BIBLE.md` from branch `cq/director/w01-creative-signoff-20261108`, PR #11. **Creative direction approved for prototype**, not merged into `main` and not a signed UIBridge schema.
+
+**Correction to initial concept:** Level 01 is **Inspect two witnessed behaviors via Evidence Lens**, not primarily a free-text textbox. Our earlier text-first prototype would feel like the same old quiz, so the preview has been revised to evidence cards and explicit selection feedback. A separate text-reflection field may be required by Learning Architect later but must not gate the first interaction without learning signoff.
+
+### W01 UI action sequence (creative intent, not runtime event names)
+
+| Story moment | Player interface | Desired world consequence (Engine/World-owned, NOT implemented in UI) | HQ input needed |
+| --- | --- | --- | --- |
+| Entry to library clearing | Compact quest + grounded nearby clue, Inspect action | Lens and one reachable piece of evidence become interactable | Target IDs, proximity, Camera/ground bounds |
+| L01 Inspect | DOM evidence cards representing discovered physical slips; two observed items vs one unsupported conclusion | Correctly recognized witnessed behavior illuminates first trail; unsupported assumption gets explain-why retry | evidence asset identifiers, inspection provenance, accepted pair/rubric result |
+| L01 Feedback | 'إيه اللي اتشاف؟ / إيه اللي اتفسر؟ / إيه الدليل الناقص؟' | Revealed route **only if** Engine confirms encounter resolved | World effect and commit event; UI reads state |
+| L02–03 | NPC evidence match / ticket order strip | Different cognitive verbs in adjacent encounters | ChallengeKind extensions/keyboard-equivalent API |
+| L04–06 | Compare / deflect / route with clear uncertainty labels | Branches change in environment, not XP-only | UI choices and 3-state claim classifications |
+| L07–09 | Interview / test / forge with at least two viable outcomes | Equal defensible routes and concept seed previews | Learning multiple-valid rubric, Engine navigation |
+| Boss stage 1 — Fog | inspect environmental clues then select two observed details | false fog collapses, first anchor revealed | Boss phase events and clue IDs |
+| Boss stage 2 — Mirror | choose **tentative hypothesis + differentiating evidence to test** | reflection/route changes; qualified alternative approaches accepted | Boss accepted pair/outcome structure |
+| Boss stage 3 — Forge | combine observed behavior + caveated hypothesis + Brand role + concrete action | playable bridge repaired; no tagline-only victory | Learning rubric + Boss authoritatively commits victory |
+
+### Visual hierarchy reconciliation
+
+Game Director approved provisional W01 art grammar: pine/jade/turquoise forest, amber evidence light, violet-grey for unsupported reflections, organic route vs angular illusion, painterly art (no UI-authored fake hero sprite). HUD: **hero+path first**, near action second, prompt third, XP fourth. The preview uses a neutral route placeholder only; the real world scene comes from World/Engine after contract freeze. On 360px, XP is collapsed, long quest objective uses a native expandable `details` element, current task should remain at most two lines before expanding. Visual mockup still needs Game Director signoff; the approved art DNA is not final CSS palette approval.
+
+### Accessibility / QA delta
+
+- Evidence cards use real checkbox controls and a spoken `0/2 → 2/2` selection counter; inline wording calls out observational certainty.
+- During inspection, two choices may be selected. The preview's branching between **example** weak/success feedback is *deliberately local fixture simulation*. Never import it into production or score user progress with it.
+- Boss 'Mirror' fields use labeled native `select` controls. The preview only explains sample feedback; stage 3 stays locked until an authoritative Boss state transition exists.
+- Native dialog open/close returns focus; IQ and XP values are never mutated by the preview. Legacy runtime focus/Space issues in QA #17 / #14 remain separate integration defects.
+
 ## Product goal / visual direction to review
 
 The first realm teaches **Observation vs unverified interpretation**. UI should expose environmental evidence before asking for a conclusion; never treat guessing a word as a Creative Thinking achievement. In exploration, keep most of the canvas unobscured. When a challenge begins, switch to a DOM form with enough reading space for three evidence quotes, user input and reasoned feedback.
