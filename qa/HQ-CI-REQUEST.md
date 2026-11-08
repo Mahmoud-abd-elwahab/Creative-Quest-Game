@@ -9,7 +9,7 @@
 
 Create a separate PR validation job or add a QA dependency before deployment. Keep the existing Pages deployment on main only. Do **not** deploy this QA branch to production.
 
-For pull requests to the HQ integration branch / main, run:
+For pull requests to the HQ integration branch / main, run the fail-closed QA-owned script via bash: `bash qa/run-v04-gate.sh` (and upload `qa/evidence/runtime/` even on failure). If HQ prefers discrete steps:
 
 1. Checkout, setup Node >=20.
 2. 'node --test tests/legacy/v04-source.test.mjs' (static source contracts).
@@ -33,3 +33,5 @@ For pull requests to the HQ integration branch / main, run:
 ## Acceptance / handoff to HQ
 
 HQ must post links to CI run + artifacts; actual commands, device and browser versions; per-test PASS/FAIL/SKIP; defects triaged by severity, screenshots or JS logs, and live Pages navigation confirmation. QA reserves the right to recommend NO-GO. No merging/releasing by QA.
+### Updated 2026-11-08
+QA authored two explicit red source regressions (keyboard Space and cross-project cache deletion). Source/content checks pass structurally, but the gate is intentionally **FAIL** on v0.4 until the underlying P1s are fixed. Browser suite now fails its prerequisite when Playwright is missing. CI must not suppress or quarantine these failures. Evidence in qa/evidence/v04-isolated-v8-2026-11-08.json. The CI script has not yet been executed against a local checkout.
