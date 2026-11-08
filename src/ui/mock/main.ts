@@ -14,7 +14,15 @@ if (!mount || !trigger || !status || !failSave || !unverified || !failPause || !
   throw new Error('Mock harness missing required elements');
 }
 const bridge = new MockUIBridge();
-const overlay = new FirstChallengeOverlay({ mount, bridge, acknowledgementMs: 450 });
+const overlay = new FirstChallengeOverlay({
+  mount, bridge, acknowledgementMs: 450,
+  resolveOpenedChallenge(challengeId) {
+    return challengeId === firstChallengeFixture.id
+      ? { challenge: firstChallengeFixture, trigger: trigger! } : null;
+  }
+});
+let requestCounter = 0;
+const eventTrace: string[] = [];
 function configure(): void {
   bridge.configure({
     saveFailure: failSave!.checked,
@@ -26,12 +34,18 @@ function configure(): void {
 for (const control of [failSave, unverified, failPause, offline, locked]) control.addEventListener('change', configure);
 trigger.addEventListener('click', () => {
   configure();
-  status.textContent = 'الحالة: طلب Pause للـMock Bridge.';
-  if (!overlay.open(firstChallengeFixture, trigger)) {
-    status.textContent = 'التحدي مش متاح: فيه نافذة مفتوحة أو الـMock paused.';
+  status.textContent = 'الحالة: طلب interact.request للـMock Engine (هو اللي هيعمل Pause).';
+  if (overlay.phase !== 'idle' || !bridge.snapshot().paused) {
+    if (overlay.phase !== 'idle') return;
+    bridge.dispatch({ type: 'interact.request', requestId: 'mock-world-' + (++requestCounter),
+      nodeId: 'mock-library-clue' });
   }
 });
 bridge.subscribe(event => {
+  eventTrace.push(event.type);
+  document.documentElement.dataset.mockEventTrace = eventTrace.join('>');
+  document.documentElement.dataset.mockPaused = String(bridge.snapshot().paused);
+  document.documentElement.dataset.mockChallengeId = bridge.snapshot().openChallengeId ?? '';
   status.textContent = 'آخر Mock Event: ' + event.type;
 });
 document.documentElement.dataset.cqUiMock = 'ready';
