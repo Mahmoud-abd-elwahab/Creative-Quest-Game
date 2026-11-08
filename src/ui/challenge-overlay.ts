@@ -399,6 +399,8 @@ export class FirstChallengeOverlay {
   }
 
   private showSaveFailure(message: string): void {
+    // A later save.failed supersedes any previously shown optimistic receipt claim.
+    this.feedback.querySelectorAll('.cq-reward').forEach(node => node.remove());
     const text = 'فشل حفظ التقدم. متعتبرش المكافأة محفوظة. ' + message;
     if (this.dialog.open) {
       const area = this.root.querySelector<HTMLElement>('.cq-save-error')!;
