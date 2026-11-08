@@ -51,6 +51,11 @@ try {
     assert.equal(await page.locator('.cq-dialog').evaluate(node => node.open), false,
       'Dialog must NOT open before engine.paused ack');
     await page.locator('.cq-dialog[open]').waitFor({ state: 'visible' });
+    assert.equal(await page.locator('html').getAttribute('data-mock-event-trace'),
+      'engine.paused>dialog.opened',
+      'Engine interact owns pause/open; UI must NOT emit second pause');
+    assert.equal(await page.locator('html').getAttribute('data-mock-challenge-id'),
+      'cq-mock-obs-w1-e01', 'Engine snapshot must carry matching challenge ID');
     assert.equal(await page.locator('#cq-title').evaluate(node => node === document.activeElement),
       true, 'On open, heading takes focus');
     const choices = page.locator('.cq-option input');
@@ -80,6 +85,12 @@ try {
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => !document.querySelector('.cq-dialog')?.open);
     await page.waitForFunction(() => document.activeElement?.id === 'open-challenge');
+    assert.equal(await page.locator('html').getAttribute('data-mock-paused-at-close'),
+      'true', 'Engine must remain paused until explicit resume.request');
+    assert.equal(await page.locator('html').getAttribute('data-mock-paused-at-resume'),
+      'false', 'Engine may resume movement only on explicit resume.request');
+    assert.match(await page.locator('html').getAttribute('data-mock-event-trace') ?? '',
+      /dialog.closed>engine.resumed$/, 'Close and resume ack order must be exact');
     assert.deepEqual(errors, [], 'No runtime browser errors');
     await context.close();
     console.log('PASS:', test.id, 'paused before open; keyboard; partial; hint; receipt; focus returned; no horizontal overflow');
@@ -97,6 +108,16 @@ try {
     'Failed save must never display committed XP');
   console.log('PASS: mock save failure surfaced, no reward claim');
   await page.close();
+
+  const locked = await browser.newPage({ viewport: { width: 360, height: 800 } });
+  await locked.goto(url);
+  await locked.locator('#simulate-locked').check();
+  await locked.locator('#open-challenge').click();
+  assert.equal(await locked.locator('.cq-dialog').evaluate(node => node.open),
+    false, 'Locked host availability must never open challenge');
+  assert.match(await locked.locator('.cq-global').innerText(), /مقفول/);
+  await locked.close();
+  console.log('PASS: locked state blocks a new challenge');
   console.log('Mock UI browser tests PASS. This is not a Phaser integration/Android device acceptance.');
 } finally {
   if (browser) await browser.close();
