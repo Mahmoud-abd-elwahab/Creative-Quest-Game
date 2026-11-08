@@ -1,0 +1,40 @@
+name: G1 independent QA acceptance (red blocks staging)
+on:
+  push:
+    branches: [cq/hq/g1-qa-required-gate, cq/integration/vertical-slice]
+  pull_request:
+    branches: [cq/integration/vertical-slice]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  independent-g1-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print exact tested SHA
+        run: git rev-parse HEAD
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Browser dependencies for real Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Run QA-owned mandatory G1 acceptance
+        run: bash qa/run-g1-acceptance.sh
+      - name: Retain screenshots and logs even if acceptance fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-independent-qa-${{ github.run_attempt }}
+          path: |
+            qa/evidence/g1/runtime/
+            dev/g1/evidence/
+          if-no-files-found: warn
+          retention-days: 21
+      - name: Release gate warning
+        if: always()
+        run: echo "PASS of these checks is necessary but never sufficient for Game Director/Learning/Android/production acceptance."
