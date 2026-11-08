@@ -63,3 +63,9 @@
 **Recommended HQ command:** bash qa/run-v04-gate.sh after installing Playwright and a browser. Full actual Node test execution is **NOT RUN** in this environment because the repository cannot be checked out. A passing content audit cannot override the expected-red safety tests.
 
 **Release decision unchanged: NO-GO**, even though data-shape checks passed.
+
+
+### Post-baseline fixture and learning-variation audit
+- New synthetic fixture bank: tests/fixtures/legacy-v04-save-cases.json, with 5 valid states (fresh, after level one, Boss ready, Boss mid-phase, second world unlocked) plus 2 malformed raw saves. These are version-pinned fixtures, not backed-up personal saves. Browser suite now uses the bank, checks valid progress survives boot/reload without rewriting the raw legacy object, and checks malformed saves safely fallback. Browser execution remains BLOCKED.
+- First nine ACTUAL player-route levels use free-text Observation behavior summaries from three fictional notes each. Scenarios differ, but the cognitive operation and format do not. The extra select/evidence/classify/pair alternatives exist behind diagnostic access, not real interact(). This is an education/variety **P2**, not an exact-copy defect. Issues: #22 (real/diagnostic route mismatch) and #23 (repeated first-world learning mechanic).
+- QA-P1-001 and QA-P1-002 have isolated-V8 direct-handler reproduction, but no browser reproduction. QA-P1-003/004 and P2s are source-inspected only. Do not upgrade evidence status without a browser run.
