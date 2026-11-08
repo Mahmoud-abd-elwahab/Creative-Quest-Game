@@ -55,15 +55,20 @@ trigger.addEventListener('click', () => {
     requestId: 'hud-inspect-' + Date.now() + '-' + Math.random().toString(36).slice(2) });
 });
 const scene = new ObservationG1Scene(bridge, world);
-scene.events.once(Phaser.Scenes.Events.CREATE, () => {
-  status!.textContent = 'عالم الملاحظة جاهز. قرّب من الدليل واضغط E أو زر الفحص.';
-  document.documentElement.dataset.g1Play = 'ready';
-});
 const game = new Phaser.Game({
   type: Phaser.AUTO, parent: root, backgroundColor: '#1b4038',
   width: 640, height: 360, scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   scene: [scene]
 });
+// Phaser.Scene events are injected only during boot; never subscribe to
+// scene.events on an unbooted Scene instance. Mark readiness when truly active.
+const confirmStarted = (): void => {
+  if (scene.sys?.isActive()) {
+    status!.textContent = 'عالم الملاحظة جاهز. قرّب من الدليل واضغط E أو زر الفحص.';
+    document.documentElement.dataset.g1Play = 'ready';
+  } else requestAnimationFrame(confirmStarted);
+};
+requestAnimationFrame(confirmStarted);
 
 bridge.announceSaveHealth();
 // Read-only staging browser diagnostic: reports real Bridge proximity/paused/saved XP.
