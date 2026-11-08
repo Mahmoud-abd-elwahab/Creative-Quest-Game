@@ -1,0 +1,78 @@
+{
+  "report_type": "source_inspection_not_browser_test",
+  "date": "2026-11-08",
+  "source_head_sha": "40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1",
+  "repo": "Mahmoud-abd-elwahab/Creative-Quest-Game",
+  "tool": "connected GitHub fetch_file; static JavaScript V8 source assertions",
+  "inspected_paths": [
+    "index.html",
+    "manifest.webmanifest",
+    "service-worker.js",
+    ".github/workflows/deploy-pages.yml",
+    "README.md",
+    "docs/PROJECT-BIBLE.md",
+    "docs/AGENT-ROLES.md",
+    "docs/SHARED-CONTRACTS.md"
+  ],
+  "checks": [
+    [
+      "HTML Arabic RTL",
+      true
+    ],
+    [
+      "HUD, canvas, overlay and controls in HTML",
+      true
+    ],
+    [
+      "Inline scripts parse in V8",
+      true
+    ],
+    [
+      "Legacy save key and get/set code",
+      true
+    ],
+    [
+      "Pages relative assets",
+      true
+    ],
+    [
+      "SW precache expected assets",
+      true
+    ],
+    [
+      "Pages workflow main & root",
+      true
+    ],
+    [
+      "Risk pattern detected: global Space preventDefault",
+      true
+    ],
+    [
+      "Risk pattern detected: Boss phase bypass fallback",
+      true
+    ],
+    [
+      "Risk pattern detected: SW deletes all foreign cache names",
+      true
+    ],
+    [
+      "Risk pattern detected: dialog focus unmanaged",
+      true
+    ]
+  ],
+  "structural_checks_passed": 7,
+  "risk_patterns_found": 4,
+  "checks_failed": 0,
+  "browser_tests_run": 0,
+  "browser_tests_passed": 0,
+  "live_pages_verified": false,
+  "local_runtime": {
+    "node_version": "v22.16.0",
+    "npm_version": "10.9.2",
+    "playwright_module_installed": false,
+    "playwright_test_module_installed": false,
+    "git_clone_attempt": "failed: Could not resolve host github.com",
+    "live_site_web_fetch": "unavailable (no HTTP status verified)"
+  },
+  "note": "Positive risk-detection assertions are findings, NOT PASS claims for the underlying behaviors. Screenshots were not produced."
+}
