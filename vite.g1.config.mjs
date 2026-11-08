@@ -13,7 +13,13 @@ export default defineConfig({
   build: {
     outDir: resolve(projectRoot, 'dist/g1'),
     emptyOutDir: true,
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      input: {
+        boot: resolve(projectRoot, 'dev/g1/index.html'),
+        play: resolve(projectRoot, 'dev/g1/play.html')
+      }
+    }
   },
   server: {
     host: '0.0.0.0',
