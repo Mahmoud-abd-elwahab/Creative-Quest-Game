@@ -1,4 +1,4 @@
-name: G1 independent specialist PR acceptance (NOT release)
+name: G1 frozen-head specialist review (NOT release)
 on:
   push:
     branches: [cq/hq/g1-specialist-ci]
@@ -16,10 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: cq/content/g1-three-observation
+          ref: fea11e776776c0bb4f6491f8ecd9c2e12871b2c4
           persist-credentials: false
       - name: Record exact Content branch SHA
-        run: git rev-parse HEAD
+        run: test "$(git rev-parse HEAD)" = "fea11e776776c0bb4f6491f8ecd9c2e12871b2c4"
       - name: Python 3.12
         uses: actions/setup-python@v5
         with:
@@ -39,10 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: cq/engine/g1-interaction
+          ref: 24b970400bdc84d281bd06f148fd566738718197
           persist-credentials: false
       - name: Record exact Engine branch SHA
-        run: git rev-parse HEAD
+        run: test "$(git rev-parse HEAD)" = "24b970400bdc84d281bd06f148fd566738718197"
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -63,10 +63,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: cq/ui/g1-bridge
+          ref: 4e7f6e645665e7420c7e5f557f7283940d7f5a18
           persist-credentials: false
       - name: Record exact UI branch SHA
-        run: git rev-parse HEAD
+        run: test "$(git rev-parse HEAD)" = "4e7f6e645665e7420c7e5f557f7283940d7f5a18"
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
