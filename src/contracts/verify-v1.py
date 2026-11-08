@@ -89,7 +89,7 @@ else:
     raise AssertionError('Unknown answer ID must fail')
 
 # Production authored JSON does not exist at G0. When it appears, check it fail-closed.
-folder = HERE.parents[1] / 'content' / 'levels'
+folder = HERE.parent / 'content' / 'levels'
 count = 0
 if folder.exists():
     for f in sorted(folder.rglob('*.json')):
