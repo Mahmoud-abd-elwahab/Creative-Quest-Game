@@ -42,6 +42,32 @@
         "id": 13621007654,
         "sha256": "dac277b0017cec9196df7650361fc9a3b0487382e320c8e2e119629063dc1f2d"
       }
+    },
+    {
+      "id": "same-sha-attempt2",
+      "run": 42490398268,
+      "attempt": 2,
+      "head_sha": "ca2012f9bf1ddb1cefca310bfabca29691feb31e",
+      "job_id": 128765069316,
+      "landscape": "PASS",
+      "browser": "7 pass/2 fail",
+      "conclusion": "This is identical runtime source to attempt 1 FAIL; cause remains undetermined"
+    },
+    {
+      "id": "qa-pr63-first-ci",
+      "run": 42492196716,
+      "head_sha": "be44ebc7719dd2c3d25232d108429b75fb15d90c",
+      "job_id": 128766792141,
+      "landscape": "FAIL in original browser suite",
+      "repeatInputTest": "6 / 6 scenarios PASS in separate QA forensic test, no fallback counted as PASS",
+      "contract": "5 pass/1 fail",
+      "browser": "6 pass/3 fail",
+      "artifact": {
+        "id": 13622550065,
+        "sha256": "9b4273d47e33fb710d89594adf0abb68cbbb64e367c2d921bb7a7a33c2d5e997",
+        "issue59TracesIncluded": false
+      },
+      "note": "New test screenshots/JSON not archived because initial output was outside QA CI upload path; corrected in subsequent branch commit"
     }
   ],
   "sourceReview": {
@@ -69,10 +95,13 @@
       "L740-held-key-diagnostic",
       "L740-inspect-button-control"
     ],
-    "outcome": "NOT RUN pending actual CI checkout",
+    "outcome": "EXECUTED: 6/6 scenarios passed on PR63 first CI but original landscape failed in same job; must diagnose at original test invocation",
     "failurePolicy": "A missed primary E request remains FAIL even if later diagnostic touch opens",
-    "instrumentation": "read-only DOM keydown/up/focusin, status MutationObserver, approved bridge state snapshots, screenshots, evidence JSON, no gameplay source changes"
+    "instrumentation": "read-only DOM keydown/up/focusin, status MutationObserver, approved bridge state snapshots, screenshots, evidence JSON, no gameplay source changes",
+    "artifactPath": "qa/evidence/g1/runtime/issue-59/",
+    "originalTestInstrumentation": "The existing e01-browser-qa.test.mjs now captures passive keyboard/focus/bridge status exactly around original 7000ms E attempt. Re-run on final SHA required for accepted trace evidence."
   },
   "localRerun": "BLOCKED: git clone DNS for github.com and Playwright local navigation blocked policy; running browser on GitHub CI via new QA PR",
-  "release": "G1 CHANGES REQUIRED; production NO-GO; physical Android BLOCKED"
+  "release": "G1 CHANGES REQUIRED; production NO-GO; physical Android BLOCKED",
+  "replaySourceDiscrepancy": "Original integration CI attempt1 FAIL and attempt2 PASS at same SHA. Flaky behavior observed under CI, ownership still UNTRIAGED."
 }
