@@ -167,8 +167,8 @@ export class FirstChallengeOverlay {
     this.phaseValue = 'waiting-pause';
     const id = this.requestId();
     this.pauseRequestId = id;
-    this.bridge.dispatch({ type: 'engine.pause.request', requestId: id, reason: 'dialog' });
     this.watchAck('pause');
+    this.bridge.dispatch({ type: 'engine.pause.request', requestId: id, reason: 'dialog' });
     return true;
   }
 
@@ -220,8 +220,8 @@ export class FirstChallengeOverlay {
         this.dialog.close();
         this.phaseValue = 'waiting-resume';
         this.resumeRequestId = this.requestId();
-        this.bridge.dispatch({ type: 'engine.resume.request', requestId: this.resumeRequestId });
         this.watchAck('resume');
+        this.bridge.dispatch({ type: 'engine.resume.request', requestId: this.resumeRequestId });
         return;
       case 'engine.resumed':
         if (this.phaseValue !== 'waiting-resume' || event.requestId !== this.resumeRequestId) return;
@@ -311,13 +311,13 @@ export class FirstChallengeOverlay {
     this.feedback.hidden = true;
     const requestId = this.requestId();
     this.submissionRequestId = requestId;
+    this.setStatus('بنراجع الاختيارات…');
+    this.updateSubmit();
+    this.watchAck('assessment');
     this.bridge.dispatch({
       type: 'challenge.submit', requestId, challengeId: this.current.id,
       answer: { mode: 'options', selectedIds: [...this.selections] }
     });
-    this.setStatus('بنراجع الاختيارات…');
-    this.updateSubmit();
-    this.watchAck('assessment');
   };
 
   private readonly showHint = (): void => {
@@ -422,10 +422,10 @@ export class FirstChallengeOverlay {
     this.phaseValue = 'waiting-close';
     const id = this.requestId();
     this.closeRequestId = id;
-    this.bridge.dispatch({ type: 'dialog.close.request', requestId: id });
     this.setStatus('بنقفل التحدي ونرجع للعالم…');
     this.updateSubmit();
     this.watchAck('close');
+    this.bridge.dispatch({ type: 'dialog.close.request', requestId: id });
   };
 
   private watchAck(what: 'pause' | 'close' | 'resume' | 'assessment'): void {
@@ -456,12 +456,12 @@ export class FirstChallengeOverlay {
     this.setOutside('');
     if (this.phaseValue === 'waiting-pause' && this.current) {
       this.pauseRequestId = this.requestId();
-      this.bridge.dispatch({ type: 'engine.pause.request', requestId: this.pauseRequestId, reason: 'dialog' });
       this.watchAck('pause');
+      this.bridge.dispatch({ type: 'engine.pause.request', requestId: this.pauseRequestId, reason: 'dialog' });
     } else if (this.phaseValue === 'waiting-resume') {
       this.resumeRequestId = this.requestId();
-      this.bridge.dispatch({ type: 'engine.resume.request', requestId: this.resumeRequestId });
       this.watchAck('resume');
+      this.bridge.dispatch({ type: 'engine.resume.request', requestId: this.resumeRequestId });
     }
   };
 
