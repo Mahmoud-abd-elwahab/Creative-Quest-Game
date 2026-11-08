@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "audit-probe/0.1.0",
+  "purpose": "Non-production reference extracted from Creative Quest v0.4; NOT HQ-approved SpriteManifest",
+  "status": "legacy-only-unapproved",
+  "source": {
+    "path": "index.html",
+    "variable": "SPRITE_HERO",
+    "commit": "40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1"
+  },
+  "extractedPng": {
+    "file": "legacy-hero.png",
+    "format": "PNG_RGBA8",
+    "width": 1536,
+    "height": 256,
+    "frames": 8,
+    "frameWidth": 192,
+    "frameHeight": 256,
+    "padding": 0
+  },
+  "observedRuntime": {
+    "idle": {
+      "frameIndices": [
+        0,
+        1
+      ],
+      "fps": 2
+    },
+    "walk": {
+      "frameIndices": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "fps": 10
+    },
+    "unmappedFrameIndices": [
+      6,
+      7
+    ],
+    "visualDirections": [
+      "one drawn view",
+      "horizontal mirror"
+    ],
+    "dedicatedUpDownDirections": false,
+    "canvasDrawRect": {
+      "offsetX": -42,
+      "offsetY": -77,
+      "width": 84,
+      "height": 112
+    },
+    "certifiedPivot": null,
+    "certifiedHitbox": null
+  },
+  "productionBlockers": [
+    "Owner+Game Director approval for submitted teal-clad hero reference",
+    "Four-direction character sheet and motion frames",
+    "HQ locked scale, frame grid, pivot, FPS and manifest v1",
+    "Android actual runtime test"
+  ],
+  "productionAllowed": false
+}

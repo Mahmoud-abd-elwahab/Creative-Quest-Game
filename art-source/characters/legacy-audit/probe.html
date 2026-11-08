@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Creative Quest — Legacy Hero Sprite QA Probe (not approved)</title>
+<style>
+  :root { color-scheme: dark; font-family: system-ui, sans-serif; background:#101827; color:#e6f2fd; }
+  body { max-width:950px; margin:24px auto; padding:0 16px; }
+  h1 { font-size:1.45rem; }
+  small,p { color:#b9c9d8; }
+  .warning { border:1px solid #aa8351; background:#3c3128; padding:12px; border-radius:8px; }
+  .controls { display:flex;gap:12px; flex-wrap:wrap;align-items:center;margin:20px 0;}
+  button { background:#294a6a; color:#fff; border:1px solid #93b6d0; border-radius:8px; padding:10px 16px;cursor:pointer; }
+  button:focus-visible { outline:3px solid #ffff7e; outline-offset:2px; }
+  .checker { background-color:#4b5360;background-image:linear-gradient(45deg,#667180 25%, transparent 25%),linear-gradient(-45deg,#667180 25%, transparent 25%),linear-gradient(45deg, transparent 75%,#667180 75%),linear-gradient(-45deg,transparent 75%,#667180 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0; }
+  canvas { image-rendering:pixelated; image-rendering:crisp-edges; }
+  .stage { display:flex;gap:25px;align-items:end;justify-content:center;min-height:275px;padding:16px;border:1px solid #788391;border-radius:8px;}
+  .cell { display:flex;flex-direction:column;align-items:center;gap:5px;}
+  #current { width:192px; height:256px; }
+  .grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;}
+  .frame { border:1px solid #586578;border-radius:7px;padding:8px;text-align:center;}
+  .frame canvas { width:96px; height:128px; }
+  .frame b { display:block;font-size:.8rem;}
+  pre { white-space:pre-wrap;background:#19243a;border:1px solid #52627a;padding:14px;max-height:320px;overflow:auto;}
+</style>
+</head>
+<body>
+<h1>Legacy hero sprite — extracted comparison probe</h1>
+<p class="warning"><strong>NOT the approved hero.</strong> This page inspects the exact PNG embedded in legacy v0.4. Only a front/side-derived view is present. Mirroring horizontally does not create genuine four-direction animation. Do not integrate as a replacement character.</p>
+<p>Source: <code>index.html</code> v0.4 · 1536×256 RGBA PNG · 8 cells, each 192×256 · no engine integration.</p>
+<div class="controls">
+  <button id="idle">▶ Idle · 2 fps</button>
+  <button id="walk">▶ Walk · 10 fps</button>
+  <button id="pause">❚❚ Pause</button>
+  <label><input type="checkbox" id="flip"> Mirror only (legacy facing)</label>
+  <span id="playing" aria-live="polite">Loading image…</span>
+</div>
+<div class="stage checker"><div class="cell"><canvas id="current" width="192" height="256" aria-label="Legacy hero animation"></canvas><small id="now">Frame —</small></div></div>
+<h2>All eight source frames</h2><div id="contact" class="grid"></div>
+<h2>Pixel QC (browser-computed, raw source PNG)</h2><pre id="report">Waiting for PNG decoding…</pre>
+<p>Alpha and bounding boxes are measured by the browser from <code>getImageData()</code>. This is a <strong>manual visual probe</strong>; actual Android gameplay verification is still required. There is no official SpriteManifest here.</p>
+<script>
+'use strict';
+const png = new Image();
+const frameWidth=192, frameHeight=256, count=8;
+const animation={idle:{sequence:[0,1],fps:2},walk:{sequence:[2,3,4,5],fps:10}};
+let mode='walk',paused=false,start=0,selectedFrame=0;
+const main=document.getElementById('current'), display=main.getContext('2d',{willReadFrequently:false});
+display.imageSmoothingEnabled=false;
+function paint(ctx,frame,flipped=false){
+  ctx.clearRect(0,0,192,256);ctx.save();
+  if(flipped){ctx.translate(192,0);ctx.scale(-1,1);}
+  ctx.drawImage(png,frame*192,0,192,256,0,0,192,256);ctx.restore();
+}
+function render(time){
+  if(png.complete && png.naturalWidth){
+    if(!paused){const a=animation[mode];selectedFrame=a.sequence[Math.floor((time-start)*a.fps/1000)%a.sequence.length];}
+    paint(display,selectedFrame,document.getElementById('flip').checked);
+    document.getElementById('now').textContent=mode+' frame '+selectedFrame;
+  }
+  requestAnimationFrame(render);
+}
+function select(name){mode=name;paused=false;start=performance.now();document.getElementById('playing').textContent=name+' playing';}
+document.getElementById('idle').onclick=()=>select('idle');
+document.getElementById('walk').onclick=()=>select('walk');
+document.getElementById('pause').onclick=()=>{paused=!paused;document.getElementById('playing').textContent=paused?'Paused':mode+' playing';start=performance.now();};
+png.onload=()=>{
+  if(png.width!==1536 || png.height!==256){document.getElementById('report').textContent='FAIL: Unexpected dimensions '+png.width+'×'+png.height;return;}
+  for(let i=0;i<count;i++){
+    const item=document.createElement('div');item.className='frame checker';
+    const name=document.createElement('b');name.textContent='Frame '+i+(i<2?' · idle':i<6?' · walk':' · unmapped');
+    const canvas=document.createElement('canvas');canvas.width=192;canvas.height=256;
+    paint(canvas.getContext('2d'),i);
+    item.append(canvas,name);document.getElementById('contact').append(item);
+  }
+  const src=document.createElement('canvas');src.width=png.width;src.height=png.height;
+  const ctx=src.getContext('2d',{willReadFrequently:true});ctx.drawImage(png,0,0);
+  const rgba=ctx.getImageData(0,0,src.width,src.height).data;
+  const lines=['Decoded: '+src.width+'x'+src.height+' / 8 cells',
+               'Source PNG rendering: PASS','Frame rect bounds: PASS (8 × 192 px = 1536 px)'];
+  for(let f=0;f<8;f++){
+    let minx=192,miny=256,maxx=-1,maxy=-1,opaque=0,translucent=0;
+    for(let y=0;y<256;y++)for(let x=0;x<192;x++){
+      const a=rgba[(y*1536+f*192+x)*4+3];
+      if(a>0){opaque++; if(a<255)translucent++;if(x<minx)minx=x;if(y<miny)miny=y;if(x>maxx)maxx=x;if(y>maxy)maxy=y;}
+    }
+    const nonempty=maxx>=0;
+    const touches=nonempty&&(minx===0||maxx===191||miny===0||maxy===255);
+    lines.push('f'+f+': '+(nonempty?'NONEMPTY':'EMPTY/FAIL')+
+      ', bbox '+(nonempty?'('+minx+','+miny+')-('+maxx+','+maxy+')':'NONE')+
+      ', visible pixels '+opaque+', partial-alpha '+translucent+
+      ', cell edge touched '+(touches?'YES / REVIEW':'NO'));
+  }
+  lines.push('Visual approval: PENDING; four directional actions: NOT IMPLEMENTED');
+  document.getElementById('report').textContent=lines.join('\n');
+  select('walk');
+};
+png.onerror=()=>{document.getElementById('report').textContent='FAIL: legacy-hero.png failed to load';};
+png.src='./legacy-hero.png';requestAnimationFrame(render);
+</script>
+</body></html>
