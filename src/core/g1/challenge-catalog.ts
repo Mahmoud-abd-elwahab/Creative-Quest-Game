@@ -10,7 +10,11 @@ export function validateChallengeSpec(spec: ChallengeSpecV1): void {
     !['single-select', 'multi-select', 'order'].includes(spec.responseMode)) {
     throw new Error('Unsupported or unversioned structured ChallengeSpec');
   }
-  if (!spec.options?.length || !spec.validAnswerSets?.length) {
+  if (!Array.isArray(spec.options) || !spec.options.length ||
+    !Array.isArray(spec.validAnswerSets) || !spec.validAnswerSets.length ||
+    !spec.validAnswerSets.every(Array.isArray) ||
+    !Array.isArray(spec.rubric) || !Array.isArray(spec.hintTiers) ||
+    !spec.feedbackByErrorCode || typeof spec.feedbackByErrorCode !== 'object') {
     throw new Error('Structured ChallengeSpec requires options and valid answer sets');
   }
   const ids = new Set(spec.options.map(option => option.id));
