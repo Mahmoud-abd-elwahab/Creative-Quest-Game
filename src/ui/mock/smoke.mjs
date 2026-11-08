@@ -78,7 +78,7 @@ try {
     assert.ok(box && box.x >= -1 && box.x + box.width <= test.size.width + 1, 'Modal clips horizontally');
     await page.screenshot({ path: `${evidence}/g1-ui-${test.id}.png`, animations: 'disabled' });
     await page.keyboard.press('Escape');
-    await page.locator('.cq-dialog:not([open])').waitFor();
+    await page.waitForFunction(() => !document.querySelector('.cq-dialog')?.open);
     await page.waitForFunction(() => document.activeElement?.id === 'open-challenge');
     assert.deepEqual(errors, [], 'No runtime browser errors');
     await context.close();
