@@ -203,6 +203,10 @@ test('Issue #59: repeat direct E, held E, portrait and touch inspect without mas
         const opened = await waitOpen(page, 7000); // same 7s as original test
         record.observations.push({ point: 'after-primary-interaction',
           snapshot: await page.evaluate(readOnlySnapshot) });
+        // Preserve primary result BEFORE diagnostic tap; final screenshot alone could be misleading.
+        await page.screenshot({ path: join(evidence, item.id + '-primary-after.png'),
+          animations: 'disabled', fullPage: true });
+        record.primaryScreenshot = item.id + '-primary-after.png';
         const after = record.observations.at(-1).snapshot;
         record.shortKeyAccepted = item.key === 'press' ? opened : null;
         if (item.key === 'touch-button') record.touchControlAccepted = opened;
