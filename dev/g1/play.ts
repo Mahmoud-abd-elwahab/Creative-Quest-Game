@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import authoredE01 from '../../src/content/levels/obs-w1-e01-inspect-library.json';
 import type { ChallengeSpecV1, WorldSpecV1 } from '../../src/contracts/v1';
 import { G1EngineBridge } from '../../src/core/g1/engine-bridge';
+import type { SaveStorage } from '../../src/adapters/g1/save-state';
 import { createChallengeCatalog } from '../../src/core/g1/challenge-catalog';
 import { ObservationG1Scene } from '../../src/game/g1/observation-scene';
 import { DIAGNOSTIC_WORLD } from '../../src/core/g1/technical-fixture';
@@ -19,7 +20,17 @@ const world: WorldSpecV1 = {
   nodes: [{ id: nodeId, kind: 'clue', challengeId: content.id,
     position: { x: 600, y: 640 }, radius: 70 }]
 };
-const bridge = new G1EngineBridge(world, window.localStorage, undefined, lookup);
+/** Some privacy modes throw on the property getter itself. Fail closed, no fallback XP. */
+function acquireStorage(): SaveStorage {
+  try { return window.localStorage; }
+  catch {
+    return {
+      getItem: (): never => { throw new Error('Save storage is blocked.'); },
+      setItem: (): never => { throw new Error('Save storage is blocked.'); },
+    };
+  }
+}
+const bridge = new G1EngineBridge(world, acquireStorage(), undefined, lookup);
 const mount = document.getElementById('ui-layer');
 const trigger = document.getElementById('inspect') as HTMLButtonElement | null;
 const status = document.getElementById('status');
