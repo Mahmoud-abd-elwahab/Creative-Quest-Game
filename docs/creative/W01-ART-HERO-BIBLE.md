@@ -1,5 +1,5 @@
 # W01 — Visual Art Bible, Hero & Realm Direction
-**Status:** WORLD STYLE DIRECTION APPROVED FOR SMALL REFERENCE TEST; HERO IDENTITY / SPRITE EXPORT NOT YET APPROVED.  
+**Status:** WORLD STYLE DIRECTION APPROVED FOR SMALL REFERENCE TEST; USER-SUPPLIED HERO IDENTITY APPROVED; CORRECTED TURNAROUND / SPRITE EXPORT STILL UNVERIFIED. See `docs/creative/HERO-01-CANONICAL-LOCK.md`.  
 **Baseline:** `40c76c3aafe6b8bd3d2db0723587e7d02ec9dcc1`  
 **Authority:** Game Director creative specification only. Camera dimensions, sprite sheet cell size, tile coordinates, render budget and hitboxes require HQ/Engine contract approval.
 
@@ -17,9 +17,9 @@
 - **ENV-06** `b64639d2876ba210c4ea74e5e9792251.jpg`: broad concept scenes; use for distinct world promise, not W01 gameplay background.
 - **ENV-07** `0c1f0d33b32e8f71e9c7033fb8ae90e2.jpg`: fantasy landscape studies; **second upload with “(1)” is a duplicate**, not a separate art direction.
 - **ENV-08** `cae69bd84f3971ea8d3b97149b1e09e7.jpg`: strong silhouette/fantasy atmosphere; use for Boss destination mood.
-- **CHAR-01** `45b93cae297c29c93b98e90de5d18dd0.jpg`: stylized street-boxer character sheet “MING,” showing front/side/back and material callouts. **Use only as an example of turnaround discipline, graphic simplification, body proportions and painterly treatment**. It is **NOT approval to copy the identity, clothes, boxing gloves, logos or body proportions**. Previous user direction asks for a playable hero with their own recognizable facial features; final hero must follow an owner-approved identity sheet.
+- **CHAR-01** `45b93cae297c29c93b98e90de5d18dd0.jpg`: stylized street-boxer character sheet “MING,” showing front/side/back and material callouts. **Use only as an example of turnaround discipline, graphic simplification, body proportions and painterly treatment**. It is **NOT approval to copy the identity, clothes, boxing gloves, logos or body proportions**. This remains a study of layout discipline only. The owner has since designated a different, teal-clad fantasy adventurer as the **canonical hero**; see `HERO-01-CANONICAL-LOCK.md`.
 
-**Reference transfer rule:** only the original image attachments, or an HQ-approved copy in a documented repository asset location, are valid visual handoff. Filename mentions alone do not make images accessible to other ChatGPT chats. **Action HQ:** request/commit/reference approved images before art agents claim to match them. No mass asset generation until a single style frame + master hero sheet are approved.
+**Reference transfer rule:** the approved canonical hero image and a **noncanonical** generated turnaround were saved to personal Library under `/Creative-Quest-Game/Hero-References/`; exact library IDs, hash and priority are in `HERO-01-CANONICAL-LOCK.md`. Other chats must locate and *actually read* them via Library Files or direct attachment; filenames alone do not prove access. For runtime art, HQ coordinates proper export into Character-owned assets. No mass asset generation until corrected turnaround + first style frame are approved.
 
 ## W01 art DNA
 - **Visual genre:** authored 2D painterly game art, readable at gameplay scale; clean silhouettes, subtle textured gradients, deliberate illustrative edges. **Not** photorealism, pixel art pasted on painted environments, or noisy generative painterly mush.
@@ -53,7 +53,7 @@ Target one coherent world with **three exploratory districts + a Boss clearing**
 - **NPCs:** functional silhouettes: a witness (carries testimony), an evidence keeper (holds artifact), a projection/assumption (angular outline). Each NPC has a reason to be in that scene.
 
 ## Hero canonical style / consistency
-**Identity lock is pending owner approval** (no auto-selection of CHAR-01 as the hero). The first art task is **ONE master hero sheet**, not mass sprites.
+**Identity locked by user (2026-11-08):** teal-clad brown-leather-armored adventurer with short curls, friendly features and maroon cape; exact original upload is canonical, see `HERO-01-CANONICAL-LOCK.md`. The generated multi-angle poster is a **draft** with proportion and costume inconsistencies, not final sprite production. The next art task is **ONE corrected master hero turnaround**, not mass sprites.
 
 **Requested hero spec (art-only):**
 1. Owner-approved unique identity, facial recognition anchors, hair shape, outfit silhouette and signature accessory **locked and documented**. No uncontrolled substitution of another character's face or costume.
@@ -89,4 +89,4 @@ Target one coherent world with **three exploratory districts + a Boss clearing**
 **E. Boss proof:** three distinct environmental changes track the thinking phases.
 
 **Approved today:** art *language*, world mood, shape system, learnable affordances and exploration principles as a proposed style direction.  
-**Not approved:** final hero appearance, exact camera/scale, asset exports, full map illustration, playable integration or release.
+**Not approved:** final corrected turnaround/proportions, exact camera/scale, animation exports, full map illustration, playable integration or release. **Approved:** the user-designated hero identity and original costume reference.
