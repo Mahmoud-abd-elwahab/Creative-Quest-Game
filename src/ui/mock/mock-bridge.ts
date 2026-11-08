@@ -44,19 +44,37 @@ export class MockUIBridge implements UIBridgeV1 {
 
   private apply(command: GameCommand): void {
     switch (command.type) {
+      case 'interact.request':
+        if (this.model.paused || command.nodeId !== 'mock-library-clue' || this.failPause) return;
+        // Mimics Engine #37's real world handshake, including synchronous
+        // paused->opened event order and authoritative openChallengeId.
+        this.model.paused = true;
+        this.model.openChallengeId = 'cq-mock-obs-w1-e01';
+        this.emit({ type: 'engine.paused', requestId: command.requestId });
+        this.emit({ type: 'dialog.opened', requestId: command.requestId,
+          challengeId: this.model.openChallengeId });
+        break;
       case 'engine.pause.request':
-        if (this.failPause) return; // to test missing-ack timeout
+        if (this.failPause) return; // mock-only manual pause test
         this.model.paused = true;
         this.emit({ type: 'engine.paused', requestId: command.requestId });
         break;
       case 'dialog.close.request':
+        this.model.openChallengeId = undefined;
+        // Required Engine #37 fix: closing the DOM is NOT permission to move.
+        // Keep paused until UI explicitly sends engine.resume.request.
         this.emit({ type: 'dialog.closed', requestId: command.requestId });
         break;
       case 'engine.resume.request':
+        if (this.model.openChallengeId) {
+          this.emit({ type: 'engine.paused', requestId: command.requestId });
+          break;
+        }
         this.model.paused = false;
         this.emit({ type: 'engine.resumed', requestId: command.requestId });
         break;
       case 'challenge.submit': {
+        if (!this.model.paused || this.model.openChallengeId !== command.challengeId) return;
         const answer = command.answer.mode === 'options' ? command.answer.selectedIds : [];
         const correct = answer.length === 2 && answer.includes('loan-return') &&
           answer.includes('reading-start');
@@ -100,7 +118,6 @@ export class MockUIBridge implements UIBridgeV1 {
       case 'challenge.hint':
         // Contract has no hint ack; hint presentation is authored locally by UI.
         break;
-      case 'interact.request':
       case 'boss.action':
       case 'boss.retry':
         // Not in Issue #35's single-challenge implementation scope.
