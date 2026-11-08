@@ -43,6 +43,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Desktop and mobile Chromium boot smoke
         run: npm run smoke:g1
+      - name: Actual Phaser + authored W01 E01 + RTL UI Chromium E2E
+        run: npm run smoke:play:g1
       - name: Keep screenshots as review artifacts
         if: always()
         uses: actions/upload-artifact@v4
