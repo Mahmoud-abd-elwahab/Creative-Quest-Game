@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Creative Quest — G1 E01 Integrated Staging Test</title>
+  <style>
+    :root { font-family: system-ui,-apple-system,"Segoe UI",sans-serif; background:#112d29; color:#f7f4e8; color-scheme:dark }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100svh; padding:clamp(12px,3vw,28px); }
+    main { max-width:920px; margin:auto }
+    h1 { font-size:clamp(1.15rem,3.6vw,1.65rem); margin:0 0 8px }
+    p { line-height:1.6; }
+    #game-root { width:100%; aspect-ratio:16/9; max-height:66vh; border:2px solid #699785; border-radius:12px; overflow:hidden; background:#1a423b; touch-action:none; }
+    #game-root canvas { display:block; max-width:100% }
+    #status { font-weight:650; min-height:1.5em; color:#e6d3a2 }
+    .controls { margin-block:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px }
+    button { cursor:pointer; min-height:48px; min-width:48px; font:inherit; border-radius:9px; border:2px solid #baebc9; padding:9px 18px; color:#122e29; background:#d5ebd0; }
+    button:focus-visible { outline:3px solid #f3d58f; outline-offset:3px }
+    #world-tip { color:#d6e0d6; font-size:.9rem; }
+    #ui-layer { position:relative; z-index:20; }
+    .notice { font-size:.85rem; color:#e5d4af; }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Creative Quest — World 01 / Integration Playtest</h1>
+  <p class="notice">نسخة تجريبية منفصلة: عالم Graybox، أول Challenge فقط. مش الـGame Release، والهيرو النهائي والـBoss لسه مش متصلين.</p>
+  <div id="game-root" aria-label="منطقة الحركة والاستكشاف في عالم الملاحظة"></div>
+  <div class="controls">
+    <button type="button" id="inspect">افحص الدليل القريب</button>
+    <span id="world-tip">التحرك: الأسهم / WASD أو اضغط على الخريطة، ثم E أو زر الفحص عند العلامة.</span>
+  </div>
+  <p id="status" role="status" aria-live="polite">بيتم تحميل عالم الملاحظة…</p>
+  <p id="xp-label" aria-live="polite">XP: …</p>
+  <div id="ui-layer"></div>
+</main>
+<script type="module" src="./play.ts"></script>
+</body>
+</html>
