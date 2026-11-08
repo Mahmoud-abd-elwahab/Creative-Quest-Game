@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="topbar-actions">
-        <div class="xp-pill" aria-label="نقاط الخبرة التجريبية"><span aria-hidden="true">✦</span> <bdi dir="ltr">120 XP</bdi></div>
+        <div class="xp-pill" aria-label="نقاط خبرة توضيحية وليست تقدّم حقيقي"><span aria-hidden="true">✦</span> <bdi dir="ltr">XP —</bdi></div>
         <button class="icon-button" id="menuTrigger" data-preview-to="locked" type="button" aria-label="افتح القائمة">☰</button>
       </div>
     </header>
@@ -51,19 +51,19 @@
       <section class="quest-card" aria-label="المهمة الحالية">
         <div class="quest-icon" aria-hidden="true">◈</div>
         <div class="quest-copy"><small><bdi dir="ltr">LEVEL 01 · OBSERVATION</bdi></small>
-          <h1>لاحظ الأول، وبعدين فسّر</h1>
-          <p>قرب من حارس الملاحظة وابدأ أول تحدي.</p>
+          <h1>شاف ولا افترض؟</h1>
+          <details class="quest-details"><summary>افحص دليلين من عند الحارس.</summary><p>المهمة الأولى: استخدم عدسة الدليل واختار سلوكين ظهروا فعلًا، من غير تخمين أسبابهم.</p></details>
         </div>
       </section>
 
-      <div class="status-chip"><span class="status-light" aria-hidden="true"></span> المسار الأول <bdi dir="ltr">1 / 10</bdi></div>
+      <div class="status-chip"><span class="status-light" aria-hidden="true"></span> بوابة الشهادات <bdi dir="ltr">L01 / 10</bdi></div>
       <div class="guardian-marker" aria-hidden="true"><div class="guardian-glow"></div><div class="guardian-body"><span>◈</span></div><div class="guardian-label">حارس الملاحظة</div></div>
       <div class="map-placeholder-note" aria-hidden="true">WORLD MAP / PLACEHOLDER ONLY</div>
-      <div class="proximity-cue" role="status" aria-live="polite">◈ حارس قريب · اضغط «تفاعل»</div>
+      <div class="proximity-cue" role="status" aria-live="polite">◈ دليل قريب · اضغط «افحص»</div>
 
       <div class="game-controls" aria-label="أزرار الحركة والتفاعل — عرض تصميم فقط">
         <div class="movement" aria-label="تخطيط عصاية التحريك، مش متصلة بالمحرك"><span aria-hidden="true">✛</span><div class="movement-center" aria-hidden="true">◆</div></div>
-        <button class="interact-button" id="actionTrigger" data-preview-to="challenge" type="button"><span class="interact-glyph" aria-hidden="true">✧</span>تفاعل</button>
+        <button class="interact-button" id="actionTrigger" data-preview-to="challenge" type="button"><span class="interact-glyph" aria-hidden="true">✧</span>افحص</button>
       </div>
       <span class="safe-hint">التحريك من الـEngine · الواجهة دي Design Preview</span>
     </main>
@@ -83,21 +83,21 @@
   </dialog>
 
   <template id="challengeBody">
-    <p class="intro-copy">في الـ<code>Observation</code> إحنا بنوصف حاجة نقدر نلاحظها، من غير ما نفترض السبب.</p>
+    <p class="intro-copy">استخدم <bdi dir="ltr">Evidence Lens</bdi> عشان تفرق بين الفعل اللي اتشاف والسبب اللي لسه مش مثبت.</p>
     <section class="evidence-section" aria-labelledby="evidenceHeading">
-      <div class="section-kicker"><span class="micro-icon">◉</span><h3 id="evidenceHeading">إيه اللي اتقال فعلًا؟</h3></div>
-      <ol class="evidence-list">
-        <li>«استعرت كتابين الأسبوع ده، ورجّعتهم قبل ما أخلّصهم.»</li>
-        <li>«بقرا أول فصل من كذا كتاب، وبعدين بسيبهم.»</li>
-        <li>«كل شهر باستعير رواية جديدة، ولسه القديمة ما خلصتش.»</li>
-      </ol>
+      <div class="section-kicker"><span class="micro-icon">◉</span><h3 id="evidenceHeading">افحص آثار الاستعارة</h3></div>
+      <p class="field-hint">المكتبة فيها 3 ملاحظات متفرقة. اختار <strong>دليلين على سلوك حصل فعلًا</strong>، مش تفسير للنوايا.</p>
+      <fieldset class="evidence-pick" aria-describedby="selectionCounter">
+        <legend class="sr-only">اختار دليلين من ثلاثة</legend>
+        <label class="evidence-option"><input class="evidence-choice" type="checkbox" value="observed-return"><span><strong>وصل إرجاع</strong> «واحد استعار كتابين ورجّعهم قبل ما يخلصهم.»</span></label>
+        <label class="evidence-option"><input class="evidence-choice" type="checkbox" value="observed-start"><span><strong>سجل قراءة</strong> «قارئ بدأ روايات مختلفة وما كمّلش القديمة.»</span></label>
+        <label class="evidence-option"><input class="evidence-choice" type="checkbox" value="assumption"><span><strong>صدى في الغابة</strong> «كل اللي بيرجعوا الكتب بدري بيكونوا زهقانين من القراية.»</span></label>
+      </fieldset>
+      <p class="selection-counter" id="selectionCounter" role="status" aria-live="polite">اتحدد 0 من 2</p>
     </section>
-    <section class="mission-callout" aria-labelledby="missionHeading"><strong id="missionHeading">مهمتك</strong><p>اكتب سلوك واحد متكرر في الشهادات دي، <em>من غير ما تقول ليه بيحصل.</em></p></section>
-    <label class="field-label" for="userAnswer">إجابتك</label>
-    <textarea id="userAnswer" name="answer" rows="3" maxlength="600" placeholder="أنا لاحظت إن..."></textarea>
-    <p class="field-hint" id="answerHelp">وصف السلوك كفاية. مش محتاج تفسّر دوافع الناس.</p>
-    <p id="hintText" class="inline-hint" hidden>تلميح: دور على اللي اتكرر بين البداية وعدم إكمال الكتاب.</p>
-    <p class="grading-note">ده مثال للواجهة فقط. مفيش تقييم أو حفظ Progress شغّال هنا.</p>
+    <section class="mission-callout" aria-labelledby="missionHeading"><strong id="missionHeading">مهمتك</strong><p>بعد ما تفحص الدليلين، راجع إذا كانوا بيوصفوا سلوك ولا بيفترضوا دافع.</p></section>
+    <p id="hintText" class="inline-hint" hidden>تلميح: «رجّع كتاب» فعل نقدر نراجعه في سجل، لكن «زهقان» تفسير محتاج Evidence تانية.</p>
+    <p class="grading-note">الاختيارات دي محاكاة للـUI فقط. مفيش تقييم حقيقي أو XP أو فتح طريق مربوط بالـEngine.</p>
   </template>
 
   <template id="weakBody">
@@ -120,13 +120,23 @@
       <div><span class="eyebrow">المواجهة الأخيرة</span><h3>وحش الافتراضات</h3><p>اكسر 3 دروع بالتفكير، مش بالاختيار العشوائي.</p></div>
     </div>
     <div class="phase-rail" role="list" aria-label="تقدم مراحل الوحش">
-      <span role="listitem" class="phase complete">✓ <bdi dir="ltr">01</bdi><small>فرق بين الاتنين</small></span>
-      <span role="listitem" class="phase active" aria-current="step">◈ <bdi dir="ltr">02</bdi><small>ابني Observation</small></span>
-      <span role="listitem" class="phase locked" aria-disabled="true">🔒 <bdi dir="ltr">03</bdi><small>برّر اختيارك</small></span>
+      <span role="listitem" class="phase complete">✓ <bdi dir="ltr">01</bdi><small>الدليل</small></span>
+      <span role="listitem" class="phase active" aria-current="step">◈ <bdi dir="ltr">02</bdi><small>الفرضية والاختبار</small></span>
+      <span role="listitem" class="phase locked" aria-disabled="true">🔒 <bdi dir="ltr">03</bdi><small>الـConcept</small></span>
     </div>
-    <section class="mission-callout boss-mission"><strong>الدرع التاني: ابنِ ملاحظتك</strong><p>شخصين بيقارنوا المنتجات وبيصوّروا الأسعار. اكتب اللي شُفته، مش اللي متوقعه عن نيتهم.</p></section>
-    <label class="field-label" for="bossAnswer">الـObservation بتاعتك</label>
-    <textarea id="bossAnswer" rows="3" maxlength="600" placeholder="من اللي اتقال، أقدر ألاحظ إن..."></textarea>
+    <section class="mission-callout boss-mission"><strong>الدرع التاني: المراية</strong><p>زوار معرض الحرف صوّروا قطع، وسجّلوا المقاسات، ورجع بعضهم للأجنحة. اختار تفسير <em>محتمل</em> ومعاه دليل نقدر نجمعه لاختباره.</p></section>
+    <label class="field-label" for="bossHypothesis">تفسير محتمل مش حقيقة مؤكدة</label>
+    <select id="bossHypothesis" class="answer-select">
+      <option value="">اختار فرضية...</option>
+      <option value="tentative">ممكن بيجمعوا تفاصيل للمقارنة بعد الجولة.</option>
+      <option value="unsupported">كل الزوار خايفين من الأسعار.</option>
+    </select>
+    <label class="field-label" for="bossEvidence">هتختبر الفرضية بإيه؟</label>
+    <select id="bossEvidence" class="answer-select">
+      <option value="">اختار دليل تختبر بيه...</option>
+      <option value="follow-up">اسأل عينة من الزوار: ليه صوّرت القطع ورجعت للأجنحة؟</option>
+      <option value="irrelevant">اعرف لون أشجار الغابة.</option>
+    </select>
     <p class="field-hint">الدرع التالت مقفول لحد ما Boss Engine يؤكد نجاح المرحلة دي.</p>
     <p class="grading-note">تقدم المرحلة <bdi dir="ltr">2 / 3</bdi> تجريبي وثابت في الـPreview، مش متصل بـBoss Engine.</p>
   </template>
