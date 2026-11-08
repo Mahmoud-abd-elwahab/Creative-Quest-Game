@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101926">
+  <title>Creative Quest · First-world UI study</title>
+  <link rel="stylesheet" href="./first-world.css">
+  <script src="./first-world.js" defer></script>
+</head>
+<body>
+  <!-- Standalone UX preview only. No game engine, saves or live evaluation are connected. -->
+  <div class="shell" id="ui-preview">
+    <header class="topbar" aria-label="معلومات اللعب">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">CQ</span>
+        <div class="brand-text">
+          <strong>CREATIVE QUEST</strong>
+          <span>غابة الملاحظة <bdi dir="ltr">· WORLD 01</bdi></span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="xp-pill" aria-label="نقاط خبرة توضيحية وليست تقدّم حقيقي"><span aria-hidden="true">✦</span> <bdi dir="ltr">XP —</bdi></div>
+        <button class="icon-button" id="menuTrigger" data-preview-to="locked" type="button" aria-label="افتح القائمة">☰</button>
+      </div>
+    </header>
+
+    <main class="map-canvas" aria-label="منطقة اللعب: رسم تخطيطي مؤقت؛ خريطة العالم النهائية مش موجودة لسه">
+      <div class="world-vignette" aria-hidden="true"></div>
+      <div class="world-draft" aria-hidden="true">
+        <svg viewBox="0 0 760 980" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <defs>
+            <pattern id="earth" width="78" height="76" patternUnits="userSpaceOnUse"><path d="M18 16 24 20m18 36 18 7M0 66l10-5" stroke="#88a393" stroke-width="2" opacity=".18"/></pattern>
+          </defs>
+          <rect width="760" height="980" fill="url(#earth)"/>
+          <path d="M-80 70 Q200 20 390 190 T820 240" fill="none" stroke="#536d62" stroke-width="126" opacity=".32"/>
+          <path d="M-30 780 Q140 700 220 800 T700 785" fill="none" stroke="#547d75" stroke-width="155" opacity=".3"/>
+          <path d="M265 1030C220 830 450 760 348 640S190 430 330 345 380 180 520 -50" fill="none" stroke="#1c292e" stroke-width="92" stroke-linecap="round"/>
+          <path d="M265 1030C220 830 450 760 348 640S190 430 330 345 380 180 520 -50" fill="none" stroke="#c7b892" stroke-width="62" stroke-linecap="round"/>
+          <path d="M265 1030C220 830 450 760 348 640S190 430 330 345 380 180 520 -50" fill="none" stroke="#e4d6ad" stroke-width="2" stroke-dasharray="4 24" opacity=".6"/>
+          <g fill="#223e3c" stroke="#628b71" stroke-width="4" opacity=".9">
+            <circle cx="108" cy="160" r="30"/><circle cx="650" cy="490" r="32"/><circle cx="80" cy="565" r="26"/>
+            <circle cx="610" cy="750" r="25"/><circle cx="510" cy="345" r="24"/><circle cx="100" cy="895" r="30"/>
+          </g>
+          <g fill="#acc3a4" opacity=".28">
+            <path d="m120 100 40-75 45 75Z"/><path d="m600 150 46-66 52 66Z"/><path d="m490 840 44-67 45 67Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <section class="quest-card" aria-label="المهمة الحالية">
+        <div class="quest-icon" aria-hidden="true">◈</div>
+        <div class="quest-copy"><small><bdi dir="ltr">LEVEL 01 · OBSERVATION</bdi></small>
+          <h1>شاف ولا افترض؟</h1>
+          <details class="quest-details"><summary>افحص دليلين من عند الحارس.</summary><p>المهمة الأولى: استخدم عدسة الدليل واختار سلوكين ظهروا فعلًا، من غير تخمين أسبابهم.</p></details>
+        </div>
+      </section>
+
+      <div class="status-chip"><span class="status-light" aria-hidden="true"></span> بوابة الشهادات <bdi dir="ltr">L01 / 10</bdi></div>
+      <div class="guardian-marker" aria-hidden="true"><div class="guardian-glow"></div><div class="guardian-body"><span>◈</span></div><div class="guardian-label">حارس الملاحظة</div></div>
+      <div class="map-placeholder-note" aria-hidden="true">WORLD MAP / PLACEHOLDER ONLY</div>
+      <div class="proximity-cue" role="status" aria-live="polite">◈ دليل قريب · اضغط «افحص»</div>
+
+      <div class="game-controls" aria-label="أزرار الحركة والتفاعل — عرض تصميم فقط">
+        <div class="movement" aria-label="تخطيط عصاية التحريك، مش متصلة بالمحرك"><span aria-hidden="true">✛</span><div class="movement-center" aria-hidden="true">◆</div></div>
+        <button class="interact-button" id="actionTrigger" data-preview-to="challenge" type="button"><span class="interact-glyph" aria-hidden="true">✧</span>افحص</button>
+      </div>
+      <span class="safe-hint">التحريك من الـEngine · الواجهة دي Design Preview</span>
+    </main>
+  </div>
+
+  <dialog class="ui-dialog" id="uxDialog" aria-labelledby="dialogTitle">
+    <div class="dialog-layout">
+      <header class="dialog-head">
+        <div class="dialog-head-copy"><span class="eyebrow" id="dialogEyebrow"><bdi dir="ltr">OBSERVATION · LEVEL 01</bdi></span>
+          <h2 id="dialogTitle">المهمة الأولى</h2>
+        </div>
+        <button type="button" class="icon-button close-button" id="closeDialog" aria-label="اقفل النافذة وارجع للخريطة">×</button>
+      </header>
+      <div class="dialog-scroll" id="dialogContent"></div>
+      <footer class="dialog-foot" id="dialogFooter"></footer>
+    </div>
+  </dialog>
+
+  <template id="challengeBody">
+    <p class="intro-copy">استخدم <bdi dir="ltr">Evidence Lens</bdi> عشان تفرق بين الفعل اللي اتشاف والسبب اللي لسه مش مثبت.</p>
+    <section class="evidence-section" aria-labelledby="evidenceHeading">
+      <div class="section-kicker"><span class="micro-icon">◉</span><h3 id="evidenceHeading">افحص آثار الاستعارة</h3></div>
+      <p class="field-hint">المكتبة فيها 3 ملاحظات متفرقة. اختار <strong>دليلين على سلوك حصل فعلًا</strong>، مش تفسير للنوايا.</p>
+      <fieldset class="evidence-pick" aria-describedby="selectionCounter">
+        <legend class="sr-only">اختار دليلين من ثلاثة</legend>
+        <label class="evidence-option"><input class="evidence-choice" type="checkbox" value="observed-return"><span><strong>وصل إرجاع</strong> «واحد استعار كتابين ورجّعهم قبل ما يخلصهم.»</span></label>
+        <label class="evidence-option"><input class="evidence-choice" type="checkbox" value="observed-start"><span><strong>سجل قراءة</strong> «قارئ بدأ روايات مختلفة وما كمّلش القديمة.»</span></label>
+        <label class="evidence-option"><input class="evidence-choice" type="checkbox" value="assumption"><span><strong>صدى في الغابة</strong> «كل اللي بيرجعوا الكتب بدري بيكونوا زهقانين من القراية.»</span></label>
+      </fieldset>
+      <p class="selection-counter" id="selectionCounter" role="status" aria-live="polite">اتحدد 0 من 2</p>
+    </section>
+    <section class="mission-callout" aria-labelledby="missionHeading"><strong id="missionHeading">مهمتك</strong><p>بعد ما تفحص الدليلين، راجع إذا كانوا بيوصفوا سلوك ولا بيفترضوا دافع.</p></section>
+    <p id="hintText" class="inline-hint" hidden>تلميح: «رجّع كتاب» فعل نقدر نراجعه في سجل، لكن «زهقان» تفسير محتاج Evidence تانية.</p>
+    <p class="grading-note">الاختيارات دي محاكاة للـUI فقط. مفيش تقييم حقيقي أو XP أو فتح طريق مربوط بالـEngine.</p>
+  </template>
+
+  <template id="weakBody">
+    <div class="feedback-card feedback-weak" role="status" aria-live="polite"><span class="feedback-icon" aria-hidden="true">!</span><div><h3>لسه محتاج تدقّق الملاحظة</h3><p>إجابتك افترضت سبب للسلوك. الشهادات بتثبت إن الكتب ما اتكملتش، لكن ما بتقولش ليه.</p></div></div>
+    <div class="reasoning-card"><span class="card-label">فين الفرق؟</span><p><b><bdi dir="ltr">Interpretation:</bdi></b> «الناس بتزهق من القراية.»</p><p><b><bdi dir="ltr">Observation:</bdi></b> «القراء بدأوا كذا كتاب وما كملوهمش.»</p></div>
+    <p class="coach-note">جرّب تصف الفعل اللي حصل من غير تفسير المشاعر. مفيش خصم XP في تصميم الحالة دي.</p>
+    <p class="grading-note">النص ده مثال Rubric توضيحي، مش نتيجة تقييم حقيقي.</p>
+  </template>
+
+  <template id="successBody">
+    <div class="feedback-card feedback-success" role="status" aria-live="polite"><span class="feedback-icon" aria-hidden="true">✓</span><div><h3>وصفت السلوك بدقة</h3><p>أنت فصلت اللي الناس عملته عن أي تفسير ممكن لسلوكهم.</p></div></div>
+    <div class="reasoning-card"><span class="card-label">اتعلمت إيه؟</span><p>الملاحظة القوية ممكن نرجعلها ونشوف دليلها. أما سبب السلوك، فمحتاج Evidence إضافية.</p></div>
+    <div class="reward-example"><span>مكافأة توضيحية، مش XP حقيقي</span><strong><bdi dir="ltr">+20 XP</bdi></strong></div>
+    <p class="grading-note">المكافأة دي Fixture. في اللعبة لا تُعرض إلا بعد تأكيد Engine حفظ التقدم.</p>
+  </template>
+
+  <template id="bossBody">
+    <div class="boss-top">
+      <div class="boss-emblem" aria-hidden="true">✺</div>
+      <div><span class="eyebrow">المواجهة الأخيرة</span><h3>وحش الافتراضات</h3><p>اكسر 3 دروع بالتفكير، مش بالاختيار العشوائي.</p></div>
+    </div>
+    <div class="phase-rail" role="list" aria-label="تقدم مراحل الوحش">
+      <span role="listitem" class="phase complete">✓ <bdi dir="ltr">01</bdi><small>الدليل</small></span>
+      <span role="listitem" class="phase active" aria-current="step">◈ <bdi dir="ltr">02</bdi><small>الفرضية والاختبار</small></span>
+      <span role="listitem" class="phase locked" aria-disabled="true">🔒 <bdi dir="ltr">03</bdi><small>الـConcept</small></span>
+    </div>
+    <section class="mission-callout boss-mission"><strong>الدرع التاني: المراية</strong><p>زوار معرض الحرف صوّروا قطع، وسجّلوا المقاسات، ورجع بعضهم للأجنحة. اختار تفسير <em>محتمل</em> ومعاه دليل نقدر نجمعه لاختباره.</p></section>
+    <label class="field-label" for="bossHypothesis">تفسير محتمل مش حقيقة مؤكدة</label>
+    <select id="bossHypothesis" class="answer-select">
+      <option value="">اختار فرضية...</option>
+      <option value="tentative">ممكن بيجمعوا تفاصيل للمقارنة بعد الجولة.</option>
+      <option value="unsupported">كل الزوار خايفين من الأسعار.</option>
+    </select>
+    <label class="field-label" for="bossEvidence">هتختبر الفرضية بإيه؟</label>
+    <select id="bossEvidence" class="answer-select">
+      <option value="">اختار دليل تختبر بيه...</option>
+      <option value="follow-up">اسأل عينة من الزوار: ليه صوّرت القطع ورجعت للأجنحة؟</option>
+      <option value="irrelevant">اعرف لون أشجار الغابة.</option>
+    </select>
+    <p class="boss-preview-feedback" id="bossPreviewFeedback" role="status" aria-live="polite" tabindex="-1" hidden></p>
+    <p class="field-hint">الدرع التالت مقفول لحد ما Boss Engine يؤكد نجاح المرحلة دي.</p>
+    <p class="grading-note">تقدم المرحلة <bdi dir="ltr">2 / 3</bdi> تجريبي وثابت في الـPreview، مش متصل بـBoss Engine.</p>
+  </template>
+
+  <template id="loadingBody"><div class="system-state"><div class="loading-orb" aria-hidden="true">◌</div><h3>بنجهز العالم...</h3><p>جاري تحميل الخريطة والعناصر الأساسية.</p><p class="grading-note">مفيش نسبة تحميل وهمية. بنعرض نسبة بس لو الـEngine بيقدم Progress فعلي.</p></div></template>
+  <template id="offlineBody"><div class="system-state"><div class="state-glyph">⌁</div><h3>إنت Offline حاليًا</h3><p>لو ملفات العالم اتحمّلت قبل كده، ممكن تكمل محليًا. مش هنقول إن التقدم اتزامن مع أي سيرفر.</p></div></template>
+  <template id="lockedBody"><div class="system-state"><div class="state-glyph">🔒</div><h3>الميزة دي لسه مش متاحة</h3><p>الـInventory وشراء الـSkills مش متوصلين بالـRuntime. مش هنعرضهم كأنهم شغالين.</p></div></template>
+</body>
+</html>
