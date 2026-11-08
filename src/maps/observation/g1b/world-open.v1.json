@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "id": "observation",
+  "widthPx": 1280,
+  "heightPx": 900,
+  "spawn": {
+    "x": 700,
+    "y": 785
+  },
+  "layers": {
+    "background": "assets/worlds/observation/g1b/background.svg",
+    "ground": "assets/worlds/observation/g1b/ground.svg",
+    "props": "assets/worlds/observation/g1b/props-open.svg",
+    "foreground": "assets/worlds/observation/g1b/foreground.svg"
+  },
+  "collisions": [
+    {
+      "id": "w01-g1b-west-hedge-solid",
+      "kind": "rect",
+      "rect": {
+        "x": 215,
+        "y": 390,
+        "width": 435,
+        "height": 84
+      }
+    },
+    {
+      "id": "w01-g1b-east-hedge-solid",
+      "kind": "rect",
+      "rect": {
+        "x": 760,
+        "y": 390,
+        "width": 335,
+        "height": 84
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "w01-e01-receipt-41",
+      "kind": "clue",
+      "position": {
+        "x": 390,
+        "y": 675
+      },
+      "radius": 65
+    },
+    {
+      "id": "w01-e01-receipt-57",
+      "kind": "clue",
+      "position": {
+        "x": 970,
+        "y": 675
+      },
+      "radius": 65
+    },
+    {
+      "id": "w01-e01-receipt-62",
+      "kind": "clue",
+      "position": {
+        "x": 155,
+        "y": 595
+      },
+      "radius": 64
+    },
+    {
+      "id": "w01-e01-linking-table",
+      "kind": "clue",
+      "position": {
+        "x": 705,
+        "y": 555
+      },
+      "radius": 65,
+      "challengeId": "cq_obs_w01_e01_inspect_v1"
+    },
+    {
+      "id": "w01-g1b-north-landing",
+      "kind": "npc",
+      "position": {
+        "x": 705,
+        "y": 250
+      },
+      "radius": 70
+    }
+  ]
+}

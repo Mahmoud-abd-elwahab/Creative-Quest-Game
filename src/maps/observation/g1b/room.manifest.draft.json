@@ -1,0 +1,132 @@
+{
+  "schema": "CQ_W01_WORLD_G1B_CANDIDATE_1",
+  "stage": "DESIGN PROPOSAL ONLY — NOT A PLAYABLE G1 GAME",
+  "baselineSha": "ca2012f9bf1ddb1cefca310bfabca29691feb31e",
+  "worldId": "observation",
+  "contract": "src/contracts/v1.ts#WorldSpecV1",
+  "units": "world pixels; origin top-left; x right; y down; actor pivot feet-center",
+  "roomWidthPx": 1280,
+  "roomHeightPx": 900,
+  "collisionAgentRadiusTestPx": 15,
+  "states": {
+    "closed": {
+      "worldSpec": "src/maps/observation/g1b/world-closed.v1.json",
+      "gateBarrierId": "w01-g1b-shortcut-gate-solid",
+      "shortcutOpen": false
+    },
+    "open": {
+      "worldSpec": "src/maps/observation/g1b/world-open.v1.json",
+      "gateBarrierId": null,
+      "shortcutOpen": true
+    }
+  },
+  "physicalEvidence": [
+    {
+      "nodeId": "w01-e01-receipt-41",
+      "evidenceId": "W1E01_REC_A",
+      "optionId": "W1E01_ACT_A",
+      "recordNumber": "41",
+      "required": false,
+      "sourceKind": "fictional-record"
+    },
+    {
+      "nodeId": "w01-e01-receipt-57",
+      "evidenceId": "W1E01_REC_B",
+      "optionId": "W1E01_ACT_B",
+      "recordNumber": "57",
+      "required": false,
+      "sourceKind": "fictional-record"
+    },
+    {
+      "nodeId": "w01-e01-receipt-62",
+      "evidenceId": "W1E01_REC_C",
+      "optionId": "W1E01_ACT_C",
+      "recordNumber": "62",
+      "required": false,
+      "sourceKind": "fictional-record",
+      "note": "Optional third source keeps Content E01's three equivalent valid two-record routes possible. Props 41 and 57 remain the two main discoverable sources."
+    }
+  ],
+  "nonPhysicalEvidenceInE01": [
+    "W1E01_REC_D",
+    "W1E01_HYP"
+  ],
+  "linkChallengeNodeId": "w01-e01-linking-table",
+  "linkChallengeId": "cq_obs_w01_e01_inspect_v1",
+  "shortCut": {
+    "id": "w01-e01-shortcut-north",
+    "purpose": "Fast route directly between south-gate approach and north-gate approach. North clearing is still reachable by long visible perimeter detour before unlock; no trap or invisible hard wall.",
+    "beforeCollision": "w01-g1b-shortcut-gate-solid",
+    "afterCollision": null,
+    "southApproach": {
+      "x": 705,
+      "y": 520
+    },
+    "northApproach": {
+      "x": 705,
+      "y": 340
+    },
+    "routeDeparture": {
+      "x": 705,
+      "y": 560
+    },
+    "northLanding": {
+      "x": 705,
+      "y": 250
+    },
+    "guard": {
+      "requiresDistinctDiscoveredSourceIds": 2,
+      "validSourcePairs": [
+        [
+          "W1E01_REC_A",
+          "W1E01_REC_B"
+        ],
+        [
+          "W1E01_REC_A",
+          "W1E01_REC_C"
+        ],
+        [
+          "W1E01_REC_B",
+          "W1E01_REC_C"
+        ]
+      ],
+      "requiresAuthoritativeAssessment": {
+        "challengeId": "cq_obs_w01_e01_inspect_v1",
+        "status": "PASSED",
+        "narrativeCleared": true
+      },
+      "requiresDurableRouteUnlock": true,
+      "warn": "Guard is a contractual proposal. G1 Engine does not persist discovery or route unlock; test files are STATIC fixtures, no game automation."
+    }
+  },
+  "visualOwnership": {
+    "groundFootprint": "Visible gap between west and east hedgerows in ground; closed state shows stone gate occupying it.",
+    "solidRects": [
+      "w01-g1b-west-hedge-solid",
+      "w01-g1b-shortcut-gate-solid",
+      "w01-g1b-east-hedge-solid"
+    ],
+    "foregroundOcclusion": "Top/lateral forest silhouettes only; no E01 prop or gate hidden under foreground",
+    "evidenceProps": "Three distinct physical receipt displays with neutral iconographic affordance, no Arabic sentence or answer baked into environment art",
+    "fxIds": [
+      "w01-e01-receipt-inspected-v1",
+      "w01-e01-two-sources-linked-v1",
+      "w01-e01-shortcut-open-v1"
+    ],
+    "licensing": "All SVG primitives created for this internal draft; owner/HQ licenses production asset release. No third-party imagery.",
+    "cameraPending": "Engine/HQ determines actual zoom and viewport rules. Suggested test screenshots at 640x360 engine viewport and CSS 360x740 portrait, 740x360 landscape, 1280x800 desktop. Do not claim tested."
+  },
+  "compatibility": {
+    "v1WorldSpecShapesOnly": true,
+    "engineCompatibleForRuntime": false,
+    "reason": "Current G1EngineBridge can open challenge-bearing clue only; it cannot inspect prop-only node IDs or persist discovery/gate state. No approved route/unlock events. Need HQ-signed delta.",
+    "proposedContractReport": "src/maps/observation/g1b/HANDOFF.md"
+  },
+  "evidenceAssertions": {
+    "allSourcesPhysicallyDistinct": true,
+    "receipt41_57SeparatedPx": 580,
+    "acceptsCurrentContentEquivalentPairs": true,
+    "noGameAssetLicensesClaimed": true,
+    "QAStatus": "Design validator pending; real Phaser, Android, E-key and persistence NOT RUN"
+  }
+}

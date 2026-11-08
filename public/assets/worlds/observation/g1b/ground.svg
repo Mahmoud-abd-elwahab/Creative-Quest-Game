@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="900" viewBox="0 0 1280 900" role="img" aria-label="G1b Observation ground and legible permanent detour routes"><title>G1b Observation ground and legible permanent detour routes</title><defs><pattern id="pebbles" width="74" height="68" patternUnits="userSpaceOnUse"><circle cx="14" cy="23" r="2.5" fill="#b9b394" opacity=".24"/><circle cx="57" cy="53" r="3" fill="#dbc29a" opacity=".22"/></pattern></defs>
+<rect width="1280" height="900" fill="#31584a"/>
+<!-- Long west/east visible detours: BOTH stay accessible when central shortcut is locked. -->
+<g fill="none" stroke="#172f2c" stroke-linecap="round" stroke-linejoin="round" stroke-width="94">
+<path d="M705 790 L705 553 L705 230"/>
+<path d="M700 775 L388 679 L175 525 L155 345 L240 248 L705 230"/>
+<path d="M700 775 L970 675 L1170 505 L1170 335 L1110 248 L705 230"/>
+<path d="M390 675 L705 555 L970 675"/><path d="M155 595 L155 345"/>
+</g>
+<g fill="none" stroke="#b9a783" stroke-linecap="round" stroke-linejoin="round" stroke-width="75">
+<path d="M705 790 L705 553 L705 230"/>
+<path d="M700 775 L388 679 L175 525 L155 345 L240 248 L705 230"/>
+<path d="M700 775 L970 675 L1170 505 L1170 335 L1110 248 L705 230"/>
+<path d="M390 675 L705 555 L970 675"/><path d="M155 595 L155 345"/>
+</g><rect width="1280" height="900" fill="url(#pebbles)" pointer-events="none"/>
+<g fill="#4c7566" opacity=".3"><ellipse cx="395" cy="137" rx="155" ry="64"/><ellipse cx="980" cy="155" rx="130" ry="67"/><ellipse cx="380" cy="790" rx="130" ry="67"/></g>
+<!-- Stone pads identify interactable footprint; world text/evidence remains UI-owned. -->
+<g fill="#486b59" stroke="#cfe2a9" stroke-width="4" stroke-dasharray="9 6">
+<circle cx="390" cy="675" r="53"/><circle cx="970" cy="675" r="53"/><circle cx="155" cy="595" r="53"/><circle cx="705" cy="555" r="53"/>
+</g><circle cx="705" cy="250" r="62" fill="#4c6a62" stroke="#d5b979" stroke-width="5" opacity=".85"/></svg>
