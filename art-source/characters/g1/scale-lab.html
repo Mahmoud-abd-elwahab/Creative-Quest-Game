@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G1 Canonical Hero — private reference scale lab (NOT gameplay)</title>
+<style>
+:root{font:16px/1.5 system-ui,sans-serif;color-scheme:dark;background:#111b2b;color:#e6f1f6}body{max-width:1320px;margin:auto;padding:20px}h1{font-size:1.5rem}strong{color:#ffe0aa}.warn{padding:14px;border:1px solid #b49c64;background:#363027;border-radius:10px}label{display:inline-flex;align-items:center;gap:8px;padding:8px}input[type=file]{max-width:320px}.grid{display:grid;grid-template-columns:minmax(250px,360px) minmax(350px,1fr);gap:25px;align-items:start}.screen{min-width:0}.screen canvas{width:100%;height:auto;background:#16283a;border:1px solid #6f8999}.muted{color:#adbbcb}@media(max-width:750px){.grid{grid-template-columns:1fr}}
+</style></head>
+<body>
+<h1>Canon Hero — controlled viewport comparison</h1>
+<div class="warn"><strong>NOT a game screenshot or sprite export.</strong> Upload the owner-approved canonical PNG locally. This browser-only design probe shows the source illustration including its halo/background, which MUST be removed/reworked in an approved sprite redraw. This page never uploads any image to a server, and stores nothing.</div>
+<p><label>Local approved reference: <input type="file" id="file" accept="image/png"></label>
+<label>Concept actor height (CSS px): <input type="range" min="40" max="180" value="96" id="height"><output id="readout">96</output></label></p>
+<p class="muted">Hero is rendered from the full single-view illustration. This is for legibility and framing decisions ONLY. Camera/actor scale, pivot, collision, and four facing directions are not approved.</p>
+<div class="grid">
+<section class="screen"><h2>360 × 740 · mobile conceptual framing</h2><canvas id="mobile" width="360" height="740" aria-label="360 by 740 design scale probe"></canvas></section>
+<section class="screen"><h2>1280 × 800 · desktop conceptual framing</h2><canvas id="desktop" width="1280" height="800" aria-label="1280 by 800 design scale probe"></canvas></section>
+</div>
+<p id="status" role="status" aria-live="polite">No reference loaded. Select the exact owner-approved PNG to compare scales.</p>
+<script>
+'use strict';
+let image = null, objectURL = null;
+const input=document.querySelector('#file'), range=document.querySelector('#height'), readout=document.querySelector('#readout'), status=document.querySelector('#status');
+function panel(canvas, height){
+  const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#1b3b37';ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#264e41';for(let y=60;y<h;y+=90)ctx.fillRect(0,y,w,8);
+  const groundY = Math.round(h*.76);
+  ctx.fillStyle='#c8ab80';ctx.fillRect(0,groundY,w,h-groundY);
+  ctx.fillStyle='#6d5b4e';ctx.fillRect(0,groundY,w,4);
+  const x=Math.round(w*.5);
+  if(image){
+    const targetW=Math.round(image.width*height/image.height);
+    ctx.drawImage(image,x-targetW/2,groundY-height,targetW,height);
+    ctx.strokeStyle='#eaff70';ctx.setLineDash([6,4]);
+    ctx.strokeRect(x-targetW/2,groundY-height,targetW,height);ctx.setLineDash([]);
+  }else{
+    ctx.strokeStyle='#dbf4af';ctx.setLineDash([6,4]);ctx.strokeRect(x-20,groundY-height,40,height);ctx.setLineDash([]);
+  }
+  ctx.strokeStyle='#ffe9a0';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-16,groundY);ctx.lineTo(x+16,groundY);ctx.moveTo(x,groundY-8);ctx.lineTo(x,groundY+8);ctx.stroke();
+  ctx.font='16px system-ui';ctx.fillStyle='#fff';ctx.fillText('REFERENCE ONLY / NO RUNTIME',15,29);
+  ctx.fillText('Study height: '+height+' px',15,52);
+  if(w<500){
+    ctx.strokeStyle='#fff';ctx.strokeRect(20,h-91,70,70);ctx.strokeRect(w-88,h-89,68,68);
+    ctx.fillText('MOVE',31,h-51);ctx.fillText('INSPECT',w-84,h-51);
+  }
+  ctx.font='14px system-ui';ctx.fillText('Ground cue / provisional feet baseline',Math.max(6,x-114),Math.min(h-18,groundY+28));
+}
+function draw(){const h=Number(range.value);readout.value=h;panel(document.querySelector('#mobile'),h);panel(document.querySelector('#desktop'),h);}
+range.addEventListener('input',draw);
+input.addEventListener('change',()=>{
+  const file=input.files?.[0];if(!file)return;
+  if(file.type!=='image/png'){status.textContent='PNG only — not loaded';return;}
+  if(objectURL)URL.revokeObjectURL(objectURL);
+  objectURL=URL.createObjectURL(file);
+  const next=new Image();next.onload=()=>{image=next;status.textContent='Local preview: '+file.name+' ('+next.width+'×'+next.height+'); no upload, no approval implied.';draw();};
+  next.onerror=()=>{status.textContent='Failed to decode input PNG';};next.src=objectURL;
+});
+draw();
+</script></body></html>
