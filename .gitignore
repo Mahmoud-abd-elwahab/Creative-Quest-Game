@@ -1,0 +1,6 @@
+# G1 local-only artifacts
+node_modules/
+dist/
+dev/g1/evidence/
+*.tsbuildinfo
+.DS_Store

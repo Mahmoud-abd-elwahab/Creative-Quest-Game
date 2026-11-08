@@ -1,0 +1,24 @@
+{
+  "name": "creative-quest-game",
+  "version": "0.5.0-g1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev:g1": "vite --config vite.g1.config.mjs",
+    "typecheck:g1": "tsc --noEmit -p tsconfig.g1.json",
+    "build:g1": "vite build --config vite.g1.config.mjs",
+    "check:contracts": "python src/contracts/verify-v1.py",
+    "smoke:g1": "node dev/g1/smoke.mjs"
+  },
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "7.3.7",
+    "playwright": "1.65.0"
+  }
+}
