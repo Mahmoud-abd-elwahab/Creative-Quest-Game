@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Creative Quest W01 — Issue 58 world design preview</title>
+<style>
+:root{color-scheme:dark;background:#111e1b;color:#eef2e9;font-family:system-ui,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;min-width:280px}header,main,footer{max-width:1280px;margin:auto;padding:12px 16px}
+h1{font-size:clamp(17px,2.2vw,24px);margin:0 0 5px}p{font-size:13px;line-height:1.6;color:#c6cfc5;margin:8px 0}
+button{min-height:46px;min-width:48px;border:1px solid #93bc9e;background:#21443b;border-radius:9px;color:#f8f5e6;padding:9px 14px;font:inherit;cursor:pointer}
+button[aria-pressed=true]{background:#507762;color:#fff}button:focus-visible{outline:3px solid #edce82;outline-offset:2px}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+#view{position:relative;isolation:isolate;overflow:hidden;background:#285346;border:2px solid #98b6a3;width:100%;height:clamp(360px,55dvh,620px)}
+.layer-stack{width:1280px;height:900px;position:absolute;transform-origin:0 0;left:0;top:0;will-change:transform}
+.layer-stack img{position:absolute;width:1280px;height:900px;left:0;top:0;pointer-events:none;user-select:none}
+#debug{position:absolute;top:12px;left:12px;z-index:4;max-width:80%;border:1px solid #aec6ac;background:#112c29e8;padding:8px 12px;font-size:13px;line-height:1.4;pointer-events:none}
+.small{font-size:12px;color:#e8ca95}
+#status{border:1px solid #779c8b;border-radius:10px;padding:12px;min-height:52px;background:#183a33;color:#f6eccc}
+@media(max-width:480px){header,main,footer{padding:9px 8px}#view{height:67dvh;min-height:390px;border-left:0;border-right:0}nav button{font-size:12px;flex-grow:1;padding:8px 10px}#debug{font-size:11px;max-width:70%}}
+@media(prefers-reduced-motion:reduce){.layer-stack{will-change:auto}}
+</style>
+</head>
+<body>
+<header><h1>G1b Observation Evidence Room — STATIC DESIGN REVIEW</h1>
+<p>Not an integrated Phaser scene. This overlay previews separate SVG exports and the before/after collision layout. Gate switching is a manual review toggle, NOT an implemented Evidence/SaveState event.</p></header>
+<main>
+<nav aria-label="Design state"><button type="button" id="closed" aria-pressed="true">Gate BLOCKED — before</button><button type="button" id="opened" aria-pressed="false">Gate OPEN — after</button><button type="button" id="overlay" aria-pressed="true">Hide debug overlays</button></nav>
+<nav aria-label="Camera proof positions"><button data-focus="spawn">Spawn</button><button data-focus="r41">Receipt 41</button><button data-focus="r57">Receipt 57</button><button data-focus="r62">Optional 62</button><button data-focus="desk">Linking desk</button><button data-focus="gate">Gate</button><button data-focus="north">North landing</button></nav>
+<div id="view" tabindex="0" role="region" aria-label="World-pixel map preview with gate state toggle and camera focus buttons">
+<div class="layer-stack" id="layers">
+<img id="bg" alt="" aria-hidden="true">
+<img id="ground" alt="" aria-hidden="true">
+<img id="props" alt="" aria-hidden="true">
+<img id="foreground" alt="" aria-hidden="true">
+<img id="debugLayer" alt="" aria-hidden="true">
+</div>
+<div id="debug" aria-hidden="true">PROPOSAL ONLY · 1280×900 world pixels<br>Foot-center anchor / radius15 design sample</div>
+</div>
+<p id="status" role="status" aria-live="polite"></p>
+<p class="small">At 360px layout, zoom and contrast shown here are only a browser review hypothesis; 360 portrait, 740×360 landscape, 1280 desktop and actual Android gameplay still require independent QA. The props contain no baked challenge answers, dialogue or player sprite.</p>
+</main>
+<footer><p>World Lead ownership: art-source/worlds/, src/maps/ and public/assets/worlds/ only. The real G1 bridge cannot inspect evidence-only nodes or persist route unlock before HQ accepts the proposed contract delta.</p></footer>
+<script>
+(() => {
+const base='../../../../public/assets/worlds/observation/g1b/';
+const coords={spawn:[700,785],r41:[390,675],r57:[970,675],r62:[155,595],desk:[705,555],gate:[705,433],north:[705,250]};
+const imageNames={bg:'background.svg',ground:'ground.svg',foreground:'foreground.svg'};
+for (const [id,name] of Object.entries(imageNames))document.getElementById(id).src=base+name;
+const view=document.getElementById('view'),layers=document.getElementById('layers'),props=document.getElementById('props'),overlay=document.getElementById('debugLayer');
+const bClosed=document.getElementById('closed'),bOpen=document.getElementById('opened'),bOverlay=document.getElementById('overlay'),status=document.getElementById('status');
+let state='closed',focus='desk',debugVisible=true;
+function render(){
+ props.src=base+'props-'+state+'.svg';
+ overlay.src=base+'review-overlay'+(state==='open'?'-open':'')+'.svg';
+ overlay.style.display=debugVisible?'block':'none';
+ bClosed.setAttribute('aria-pressed',String(state==='closed'));bOpen.setAttribute('aria-pressed',String(state==='open'));
+ bOverlay.setAttribute('aria-pressed',String(debugVisible));
+ const width=view.clientWidth,height=view.clientHeight;
+ // Viewport only. Engine owns the final world camera and zoom contracts.
+ const scale=width<=480?0.78:Math.min(1.25,Math.max(.72,width/940));
+ const [cx,cy]=coords[focus];
+ const x=Math.max(Math.min(width/2-cx*scale,0),Math.min(0,width-1280*scale));
+ const y=Math.max(Math.min(height/2-cy*scale,0),Math.min(0,height-900*scale));
+ layers.style.transform='translate('+x+'px,'+y+'px) scale('+scale+')';
+ const statement=state==='closed'?'Closed center shortcut: solid 110×84 px visible stone gate; perimeter detours remain reachable.':'Open center shortcut: matching collision rectangle removed in candidate WorldSpec; it opens only in a static map-state comparison here.';
+ status.textContent=statement+' Focus: '+focus+' / camera preview '+width+'×'+height+' CSS px, zoom '+scale.toFixed(2)+'.';
+}
+bClosed.addEventListener('click',()=>{state='closed';render()});
+bOpen.addEventListener('click',()=>{state='open';render()});
+bOverlay.addEventListener('click',()=>{debugVisible=!debugVisible;render()});
+document.querySelectorAll('[data-focus]').forEach(b=>b.addEventListener('click',()=>{focus=b.dataset.focus;render()}));
+window.addEventListener('resize',render);
+render();
+})();
+</script></body></html>
