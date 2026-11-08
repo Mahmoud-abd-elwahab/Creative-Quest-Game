@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="900" viewBox="0 0 1280 900" role="img" aria-label="G1b debug overview: receipts, comparison desk, shortcut gate and collision overlay; labels are never in gameplay art"><title>G1b debug overview: receipts, comparison desk, shortcut gate and collision overlay; labels are never in gameplay art</title><rect width="1280" height="900" fill="none"/><g font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#fff9de"><rect x="10" y="10" rx="14" width="960" height="80" fill="#122e30" opacity=".92"/><text x="25" y="43">W01 G1b / Two physical records + honest gated short route</text><text x="25" y="71" font-size="16">WORLD PIXELS / PROPOSAL ONLY / NOT an integrated Phaser render</text></g>
+<g stroke="#f38581" stroke-width="3" fill="#ed686a" fill-opacity=".15" stroke-dasharray="12 7">
+<rect x="215" y="390" width="435" height="84"/><rect x="760" y="390" width="335" height="84"/></g>
+<g font-family="Arial,sans-serif" font-size="17" font-weight="bold" text-anchor="middle">
+<g fill="#bff0ca" stroke="#17322d" stroke-width="3"><circle cx="390" cy="675" r="18"/><circle cx="970" cy="675" r="18"/><circle cx="155" cy="595" r="18"/><circle cx="705" cy="555" r="18"/></g>
+<g fill="#f7f6e5"><text x="390" y="725">Receipt 41</text><text x="970" y="725">Receipt 57</text><text x="155" y="650">Optional 62</text><text x="705" y="610">E01 link desk</text><text x="705" y="200">North landing</text><text x="705" y="838">SPAWN</text><text x="705" y="353">OPEN GAP</text></g>
+</g>
+<g fill="none" stroke="#b9eea9" stroke-width="4" stroke-dasharray="9 11" opacity=".9"><path d="M705 520L705 340"/></g>
+<g fill="#e6d399" font-family="Arial,sans-serif" font-size="17" font-weight="bold"><text x="45" y="325">WEST DETOUR</text><text x="1070" y="310">EAST DETOUR</text></g></svg>
