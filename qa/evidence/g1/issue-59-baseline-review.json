@@ -68,6 +68,35 @@
         "issue59TracesIncluded": false
       },
       "note": "New test screenshots/JSON not archived because initial output was outside QA CI upload path; corrected in subsequent branch commit"
+    },
+    {
+      "id": "qa-pr63-same-sha-attempt1",
+      "run": 42492916474,
+      "attempt": 1,
+      "head_sha": "c4ab4d8b281d7b5b280d2c709d28a4a8c8fdced5",
+      "landscape": "PASS",
+      "browser": "7 pass / 2 fail (#46/#47)",
+      "newDiagnostics": "6/6 PASS",
+      "artifact": {
+        "id": 13622705545,
+        "sha256": "513c24be42ebb4810af01c0ee8a90d690200f38f11025269f813dedda20801c2",
+        "tracesIncluded": true
+      }
+    },
+    {
+      "id": "qa-pr63-same-sha-attempt2",
+      "run": 42492916474,
+      "attempt": 2,
+      "head_sha": "c4ab4d8b281d7b5b280d2c709d28a4a8c8fdced5",
+      "landscape": "PASS",
+      "desktopE01": "FAIL: original 7000ms dialog timeout despite near WorldNode",
+      "browser": "6 pass / 3 fail (#46/#47 plus desktop E input)",
+      "newDiagnostics": "6/6 PASS",
+      "artifact": {
+        "id": 13622014303,
+        "sha256": "14f54f1a81c0ac41e252493d3ee16cce4702b6a028a3c3d833bf7c804caa5df9",
+        "tracesIncluded": true
+      }
     }
   ],
   "sourceReview": {
@@ -91,11 +120,13 @@
       "L740-short-1",
       "L740-short-2",
       "L740-short-3",
+      "D1280-rapid-E-edge",
+      "L740-rapid-E-edge",
       "P360-short-control",
       "L740-held-key-diagnostic",
       "L740-inspect-button-control"
     ],
-    "outcome": "EXECUTED: 6/6 scenarios passed on PR63 first CI but original landscape failed in same job; must diagnose at original test invocation",
+    "outcome": "6 initial original diagnostics PASS in CI; two new quick keydown/up stress cases added, actual CI execution pending",
     "failurePolicy": "A missed primary E request remains FAIL even if later diagnostic touch opens",
     "instrumentation": "read-only DOM keydown/up/focusin, status MutationObserver, approved bridge state snapshots, screenshots, evidence JSON, no gameplay source changes",
     "artifactPath": "qa/evidence/g1/runtime/issue-59/",
@@ -103,5 +134,40 @@
   },
   "localRerun": "BLOCKED: git clone DNS for github.com and Playwright local navigation blocked policy; running browser on GitHub CI via new QA PR",
   "release": "G1 CHANGES REQUIRED; production NO-GO; physical Android BLOCKED",
-  "replaySourceDiscrepancy": "Original integration CI attempt1 FAIL and attempt2 PASS at same SHA. Flaky behavior observed under CI, ownership still UNTRIAGED."
+  "replaySourceDiscrepancy": "Original integration CI attempt1 FAIL and attempt2 PASS at same SHA. Flaky behavior observed under CI, ownership still UNTRIAGED.",
+  "actualFailureTrace": {
+    "artifactId": 13622014303,
+    "file": "qa/evidence/g1/runtime/issue-59/01-desktop-valid-and-reload-original-e.json",
+    "sourceSha": "c4ab4d8b281d7b5b280d2c709d28a4a8c8fdced5",
+    "viewport": "1280x800",
+    "before": {
+      "near": true,
+      "paused": false,
+      "openChallengeId": null
+    },
+    "eKeydownMs": 894.6,
+    "eKeyupMs": 895.2,
+    "pulseDurationMs": 0.6,
+    "trusted": true,
+    "target": "BODY",
+    "documentFocused": true,
+    "defaultPrevented": false,
+    "after": {
+      "near": true,
+      "paused": false,
+      "openChallengeId": null,
+      "modalOpen": false
+    },
+    "successfulPulseDurationsMs": [
+      27,
+      26.2,
+      24.7,
+      24.1,
+      27.3,
+      25.4
+    ],
+    "classification": "short DOM key pulse missed before authoritative dialog.opened; Phaser JustDown polling suspected, no per-frame key or raw GameEvent trace approved",
+    "enginePatchAuthorized": false
+  },
+  "sourceConclusion": "Input edge failure confirmed on desktop while landscape passes in same SHA rerun; not exclusive to viewport; UI never received Engine pause. Underlying Phaser frame sampling causal mechanism remains inference until HQ-approved read-only key + GameEvent trace"
 }
